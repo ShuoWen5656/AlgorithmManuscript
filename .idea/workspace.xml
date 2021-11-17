@@ -19,11 +19,7 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="160af2ce-9cc3-4bfe-a851-5edcc58a3a78" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/classespackage/MyStack1.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
-    </list>
+    <list default="true" id="8ad0f78f-caa3-42ca-90e0-de2adef8ea77" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -41,7 +37,6 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="MavenImportPreferences">
     <option name="generalSettings">
@@ -117,8 +112,13 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="474" y="292" key="#Notifications" timestamp="1637156176344">
+      <screen x="53" y="23" width="1387" height="877" />
+    </state>
+    <state x="474" y="292" key="#Notifications/53.23.1387.877@53.23.1387.877" timestamp="1637156176344" />
     <state x="556" y="184" key="#com.intellij.ide.util.MemberChooser" timestamp="1636641777517">
       <screen x="53" y="23" width="1387" height="877" />
     </state>
@@ -139,10 +139,14 @@
       <screen x="53" y="23" width="1387" height="877" />
     </state>
     <state width="1339" height="257" key="GridCell.Tab.0.right/53.23.1387.877@53.23.1387.877" timestamp="1636647876902" />
-    <state x="545" y="382" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1636641955549">
+    <state x="343" y="201" key="Vcs.Push.Dialog.v2" timestamp="1637156085717">
       <screen x="53" y="23" width="1387" height="877" />
     </state>
-    <state x="545" y="382" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/53.23.1387.877@53.23.1387.877" timestamp="1636641955549" />
+    <state x="343" y="201" key="Vcs.Push.Dialog.v2/53.23.1387.877@53.23.1387.877" timestamp="1637156085717" />
+    <state x="545" y="382" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1637156108537">
+      <screen x="53" y="23" width="1387" height="877" />
+    </state>
+    <state x="545" y="382" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/53.23.1387.877@53.23.1387.877" timestamp="1637156108537" />
   </component>
   <component name="masterDetails">
     <states>
