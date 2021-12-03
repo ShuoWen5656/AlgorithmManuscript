@@ -16,8 +16,22 @@ public final class Constants {
     public static final String DOG = "dog";
 
 
+    public static final String YES = "1";
 
+    /**
+     * 常量 - 1
+     */
+    public static final int NUM_1 = 1;
 
+    /**
+     * 常量 - 0
+     */
+    public static final int NUM_0 = 0;
+
+    /**
+     * 常量 -2
+     */
+    public static final int NUM_2 = 2;
 
 
 }

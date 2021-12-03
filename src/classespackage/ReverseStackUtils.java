@@ -30,6 +30,9 @@ public class ReverseStackUtils{
 
     /**
      * 取栈底值
+     * 1、递归的截止条件一定要在调用递归方法之前
+     * 2、递归方法之前就是营造一个能够截止递归的操作，如stack.pop()，而截止递归操作就是为了获取栈底
+     * 3、递归方法之后则是处理本次递归的剩余逻辑，如 将栈顶再放回去
      */
     public static <T> T getAndRemoveLastElement(Stack<T> stack){
         try {
@@ -40,7 +43,7 @@ public class ReverseStackUtils{
                 T t2 = getAndRemoveLastElement(stack);
                 stack.push(t);
                 return t2;
-            }
+        }
         }catch (Exception e){
             e.printStackTrace();
         }
