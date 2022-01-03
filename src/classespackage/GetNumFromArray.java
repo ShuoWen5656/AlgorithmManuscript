@@ -7,12 +7,12 @@ import java.util.LinkedList;
  * @date 2021/12/15 10:20 下午
  * @Discreption <>数组array，获取满足最大值-最小值<num的子数组数量
  */
-public class getNumFromArray {
+public class GetNumFromArray {
 
     LinkedList<Integer> qmax;
     LinkedList<Integer> qmin;
 
-    public getNumFromArray(LinkedList<Integer> qmax, LinkedList<Integer> qmin) {
+    public GetNumFromArray(LinkedList<Integer> qmax, LinkedList<Integer> qmin) {
         this.qmax = new LinkedList<>();
         this.qmin = new LinkedList<>();
     }

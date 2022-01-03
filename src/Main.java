@@ -10,70 +10,70 @@ import java.util.*;
 /**
  * 存父节点和本值，角标要不要？？
  */
-class Node{
-    // 父节点
-    Node parent;
-    // 本值
-    Integer num;
+//class Node{
+//    // 父节点
+//    Node parent;
+//    // 本值
+//    Integer num;
+//
+//    public Node(Node parent, Integer num) {
+//        this.parent = parent;
+//        this.num = num;
+//    }
+//
+//    public Node getParent() {
+//        return parent;
+//    }
+//
+//    public void setParent(Node parent) {
+//        this.parent = parent;
+//    }
+//
+//    public Integer getNum() {
+//        return num;
+//    }
+//
+//    public void setNum(Integer num) {
+//        this.num = num;
+//    }
+//}
 
-    public Node(Node parent, Integer num) {
-        this.parent = parent;
-        this.num = num;
-    }
 
-    public Node getParent() {
-        return parent;
-    }
-
-    public void setParent(Node parent) {
-        this.parent = parent;
-    }
-
-    public Integer getNum() {
-        return num;
-    }
-
-    public void setNum(Integer num) {
-        this.num = num;
-    }
-}
-
-
-class Time{
-    String hour;
-    String min;
-    String sec;
-
-    public Time(String hour, String min, String sec) {
-        this.hour = hour;
-        this.min = min;
-        this.sec = sec;
-    }
-
-    public String getHour() {
-        return hour;
-    }
-
-    public void setHour(String hour) {
-        this.hour = hour;
-    }
-
-    public String getMin() {
-        return min;
-    }
-
-    public void setMin(String min) {
-        this.min = min;
-    }
-
-    public String getSec() {
-        return sec;
-    }
-
-    public void setSec(String sec) {
-        this.sec = sec;
-    }
-}
+//class Time{
+//    String hour;
+//    String min;
+//    String sec;
+//
+//    public Time(String hour, String min, String sec) {
+//        this.hour = hour;
+//        this.min = min;
+//        this.sec = sec;
+//    }
+//
+//    public String getHour() {
+//        return hour;
+//    }
+//
+//    public void setHour(String hour) {
+//        this.hour = hour;
+//    }
+//
+//    public String getMin() {
+//        return min;
+//    }
+//
+//    public void setMin(String min) {
+//        this.min = min;
+//    }
+//
+//    public String getSec() {
+//        return sec;
+//    }
+//
+//    public void setSec(String sec) {
+//        this.sec = sec;
+//    }
+//}
 public class Main {
 
 

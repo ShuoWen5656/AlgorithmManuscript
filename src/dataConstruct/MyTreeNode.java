@@ -1,9 +1,9 @@
-package classespackage;
+package dataConstruct;
 
 /**
  * @author swzhao
  * @date 2021/12/2 9:52 下午
- * @Discreption <>树节点
+ * @Discreption <>公共数据结构：二叉树
  */
 public class MyTreeNode {
 
