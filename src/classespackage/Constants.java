@@ -33,5 +33,14 @@ public final class Constants {
      */
     public static final int NUM_2 = 2;
 
+    /**
+     * 顺序常量 - 顺序
+     */
+    public static final byte ORDER_ASC = 0;
+
+    /**
+     * 顺序常量 - 倒叙
+     */
+    public static final byte ORDER_DESC = 1;
 
 }
