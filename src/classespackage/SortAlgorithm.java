@@ -1,5 +1,8 @@
 package classespackage;
 
+import javax.swing.*;
+import java.util.*;
+
 /**
  * @Author swzhao
  * @Date 2022/2/13 20:12
@@ -299,7 +302,195 @@ public class SortAlgorithm {
     }
 
 
+    /**
+     * 堆排序 时间 O(nlogn) 空间 O(1) 非稳定排序 原地排序
+     * @param array
+     * @param order
+     * @return
+     */
+     public static int[] heapSort(int[] array, byte order){
+         // 获取长度
+         int len = array.length;
+         // 构建最值堆
+         for (int i = (len-2)/2; i >= 1; i--){
+             heapSort2(array, i, len-1);
+         }
+        // 将顶和最后一个元素交换，重新构建最值堆
+         for (int j = len-1; j >= 1; j++){
+             // 顶底交换
+             int temp = array[0];
+             array[0] = array[j];
+             array[j] = temp;
+            heapSort2(array, 0, len - 1);
+         }
+         return array;
+     }
+
+    /**
+     * 构建最值堆
+     * @param array
+     * @param parent
+     * @param len
+     */
+    public static void heapSort2(int[] array, int parent, int len){
+        int temp = array[parent];
+        // 左孩子
+        int child = parent * 2 + 1;
+        // 将当前的parent下沉
+        while (child <= len){
+            if(child + 1 <= len && array[child] <= array[child+1]){
+                // 右孩子大一点，指针指向右孩子
+                child ++;
+            }
+            // 如果父节点就是最大值，直接不用下沉
+            if(array[parent] > array[child]) break;
+            // 否则将父节点下沉
+            array[parent] = array[child];
+            // parent指针指向孩子
+            parent = child;
+            // child指向孩子的孩子
+            child = child * 2 + 1;
+        }
+        // 结束以后将原parent值复制给现在的
+        array[parent] = temp;
+    }
+
+    /**
+     * 计数排序,将所有的元素出现次数保存下来重新排序 O（n+k）O（k), 稳定排序，非原地排序
+     * @param array
+     * @param order
+     * @return
+     */
+    public static int[] countSort(int[] array, byte order){
+        try{
+            if(array == null || array.length < 2) return array;
+            // 取最大值和最小值
+            int min = Integer.MAX_VALUE;
+            int max = Integer.MIN_VALUE;
+            for (int i = 0; i < array.length; i++){
+                if (array[i] > max){
+                    max  = array[i];
+                }
+                if (array[i] < min){
+                    min = array[i];
+                }
+            }
+            // 根据最值区间定义一个数组
+            int[] temp = new int[max - min + 1];
+            for (int j = 0; j < array.length; j++){
+                temp[array[j] - min]++;
+            }
+            // 统计完成，将数组返回到原来的数组中
+            int[] result = new int[array.length];
+            int k = 0;
+            for (int q = 0; q < temp.length; q++){
+                if(temp[q] > 0){
+                    for (int t = 0; t < temp[q]; t++){
+                        // 循环t次，将数字放入数组
+                        result[k++] = q + min;
+                    }
+                }
+            }
+            return result;
+        }catch (Exception e){
+            e.printStackTrace();
+            return array;
+        }
+    }
 
 
+    /**
+     * 桶排序：通过定义若干桶，桶范围连续，将数据分到桶内，通过桶内排序再合并
+     * O(n+k) O(n+k) 稳定排序，非原地排序
+     * @param array
+     * @param order
+     * @return
+     */
+    public static int[] BucketSort(int[] array, byte order){
+        if(array == null || array.length < 2) return array;
+        // 获取最值
+        // 取最大值和最小值
+        int min = Integer.MAX_VALUE;
+        int max = Integer.MIN_VALUE;
+        for (int i = 0; i < array.length; i++){
+            if (array[i] > max){
+                max  = array[i];
+            }
+            if (array[i] < min){
+                min = array[i];
+            }
+        }
+        // 计算应该需要多少个桶，当前定义每个桶的范围是5
+        int range = 5;
+        int arrayRange = max - min;
+        int bucketNum = arrayRange/5 + 1;
+        List<LinkedList<Integer>> bucket = new ArrayList<>(bucketNum);
+        // 初始化
+        for (int i = 0; i < bucketNum; i++){
+            bucket.add(new LinkedList<>());
+        }
+        // 将数组值按照范围放入桶
+        for (int j = 0; j < array.length; j++){
+            int temp = array[j];
+            bucket.get((temp - min)/5).add(temp);
+        }
+        int q = 0;
+        int[] result = new int[array.length];
+        // 桶内各自排序,并放入result
+        for (int i = 0; i < bucketNum; i++){
+            LinkedList<Integer> integers = bucket.get(i);
+            Collections.sort(integers);
+            // 放进result
+            for (int k = 0; k < integers.size(); k++){
+                result[q++] = integers.get(k)*5 + min;
+            }
+        }
+        return result;
+    }
 
+    /**
+     * 基数排序
+     * 1、时间复杂度：O(kn)  2、空间复杂度：O(n+k)  3、稳定排序  4、非原地排序
+     * @param array
+     * @param order
+     * @return
+     */
+    public static int[] radioSort(int[] array, byte order){
+        if(array == null || array.length < 2) return array;
+        // 取最大值多少位
+        int max = Integer.MIN_VALUE;
+        for (int i = 0; i < array.length; i++){
+            if(array[i] > max) max = array[i];
+        }
+        // 最大数的位数
+        int num = 0;
+        while ((max = max/10) > 0){
+            num ++;
+        }
+        // 造桶，造10个桶
+        List<LinkedList<Integer>> bucket = new ArrayList<>(10);
+        for (int i = 0; i < 10; i++){
+            bucket.add(new LinkedList<>());
+        }
+        // 将数组按照个位数开始，依次放入桶中排序
+        for (int i = 0; i < num; i++){
+            // 将数组按照某位数，进行装桶
+            for (int j = 0; j < array.length; j++){
+                // 取出当前的某一位
+                int tem = (int)(array[i]/Math.pow(10, i))%10;
+                bucket.get(tem).add(array[i]);
+            }
+            int index = 0;
+            // 将桶中的数据重新放入array
+            for (int k = 0; k < 10; k++){
+                LinkedList<Integer> integers = bucket.get(k);
+                for (Integer integer : integers){
+                    array[index++] = integer;
+                }
+                // 将当前桶清空
+                integers.clear();
+            }
+        }
+        return array;
+    }
 }
