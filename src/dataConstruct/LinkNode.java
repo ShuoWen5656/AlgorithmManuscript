@@ -11,6 +11,8 @@ public class LinkNode {
 
     private LinkNode next;
 
+    private LinkNode radomNode;
+
     public LinkNode(Integer value) {
         this.value = value;
     }
@@ -29,5 +31,13 @@ public class LinkNode {
 
     public void setNext(LinkNode next) {
         this.next = next;
+    }
+
+    public LinkNode getRadomNode() {
+        return radomNode;
+    }
+
+    public void setRadomNode(LinkNode radomNode) {
+        this.radomNode = radomNode;
     }
 }
