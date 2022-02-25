@@ -311,7 +311,7 @@ public class SortAlgorithm {
      public static int[] heapSort(int[] array, byte order){
          // 获取长度
          int len = array.length;
-         // 构建最值堆
+         // 构建最值堆：从最后一个父节点开始往回遍历，每一次遍历都是一次父节点下沉
          for (int i = (len-2)/2; i >= 1; i--){
              heapSort2(array, i, len-1);
          }

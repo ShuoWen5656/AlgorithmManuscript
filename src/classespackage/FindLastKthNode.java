@@ -1,7 +1,6 @@
 package classespackage;
 
 import dataConstruct.LinkNode;
-import sun.jvm.hotspot.HelloWorld;
 
 /**
  * @author swzhao
@@ -24,7 +23,7 @@ public class FindLastKthNode {
      */
     public LinkNode findTheLast(LinkNode head, int k){
         try{
-            // 思路1
+            // 思路1 米卡，，
 //            LinkNode knode = head;
 //            LinkNode qnode = head;
 //            // 遍历
@@ -39,10 +38,11 @@ public class FindLastKthNode {
 //                }
 //            }
 //            return qnode;
-            // 思路2
+            // 思路2,全部遍历完，再往回加，其实跟知道长度计算出来一样。
             LinkNode knode = head;
             while (knode.getNext() != null){
                 k--;
+                knode = knode.getNext();
             }
             // 遍历完毕
             if(k > 0){

@@ -4,6 +4,7 @@ import dataConstruct.LinkNode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * @author swzhao
@@ -55,6 +56,92 @@ public class listPartition {
     }
 
     /**
+     * 进阶解法，不使用额外空间,将链表直接拆成三个，大于等于小于的三个单链表，然后合并
+     * @param head
+     * @param num
+     * @return
+     */
+    public static LinkNode listPartition2(LinkNode head, int num){
+        try{
+            // largeNode,大于的链表
+            LinkNode ln = null;
+            // 大于链表的尾巴
+            LinkNode ln2 = null;
+            LinkNode mn = null;
+            LinkNode mn2 = null;
+            LinkNode sn = null;
+            LinkNode sn2 = null;
+            LinkNode cur = head;
+            // 将链表分成三段
+            while (cur != null){
+                Integer value = cur.getValue();
+                if(value > num){
+                    setLinkNodeToLinkList(ln, ln2, cur);
+                }else if(value == num){
+                    setLinkNodeToLinkList(mn, mn2, cur);
+                }else if(value < num){
+                    setLinkNodeToLinkList(sn, sn2, cur);
+                }
+                cur = cur.getNext();
+            }
+            // 合并，注意一下null情况
+            if (sn == null){
+                // 从中间和
+                if(mn == null){
+                    ln2.setNext(null);
+                    return ln;
+                }else{
+                    if(ln == null){
+                        sn2.setNext(null);
+                        return sn;
+                    }else{
+                        sn.setNext(ln);
+                        ln2.setNext(null);
+                        return sn;
+                    }
+                }
+            }else{
+                if(mn == null){
+                    sn.setNext(ln);
+                    ln2.setNext(null);
+                    return sn;
+                }else{
+                    sn2.setNext(mn);
+                    if(ln == null){
+                        mn2.setNext(null);
+                        return sn;
+                    }else{
+                        ln2.setNext(null);
+                        mn.setNext(ln);
+                        return sn;
+                    }
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return head;
+        }
+    }
+
+
+    /**
+     * 将cur节点放入指定list后面
+     * @param head
+     * @param tail
+     * @param cur
+     */
+    public static void setLinkNodeToLinkList(LinkNode head, LinkNode tail, LinkNode cur){
+        if(head == null){
+            head = tail = cur;
+        }else{
+            tail.setNext(cur);
+            tail = tail.getNext();
+        }
+    }
+
+
+
+    /**
      * 快排中的一次排序
      * @param linkNodes
      * @param num
@@ -89,6 +176,9 @@ public class listPartition {
         linkNodes[start] = linkNodes[end];
         linkNodes[end] = tem;
     }
+
+
+
 
 
 }
