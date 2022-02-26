@@ -54,10 +54,58 @@ public class JudgeNodeListCross {
         return fast;
     }
 
+    /**
+     * 两个单链表无环时，求交点，如果不相交，返回null
+     * @return
+     */
+    public static LinkNode noLoop(LinkNode head1, LinkNode head2) throws Exception{
+        // 找到各自的尾巴，并计算出长度
+        LinkNode tail1 = head1;
+        LinkNode tail2 = head2;
+        int count1 = 0;
+        int count2 = 0;
+        if(head1 == null || head2 == null) {
+            return null;
+        }
+        while (tail1.getNext() != null){
+            tail1 = tail1.getNext();
+            count1++;
+        }
+        while (tail2.getNext() != null){
+            tail2 = tail2.getNext();
+            count2++;
+        }
+        if(tail1 != tail2){
+            // 如果尾巴不相同，则没有相交
+            return null;
+        }
+        if(count1 >= count2){
+            return findCrossForNoLoop(head1 , head2, count1, count2);
+        }else{
+            return findCrossForNoLoop(head2, head1, count1, count2);
+        }
+    }
 
 
-
-
-
+    /**
+     * 找出无环链表的相交点
+     * @param largeList 长list
+     * @param smallList 短list
+     * @param largeLen  长list长度
+     * @param smallLen  短list长度
+     * @return
+     */
+    public static LinkNode findCrossForNoLoop(LinkNode largeList, LinkNode smallList, int largeLen, int smallLen){
+            int sub = largeLen - smallLen;
+            while (sub > 0){
+                sub--;
+                largeList = largeList.getNext();
+            }
+            while (largeList != null && smallList != null && largeList != smallList){
+                largeList = largeList.getNext();
+                smallList = smallList.getNext();
+            }
+            return largeList;
+    }
 
 }
