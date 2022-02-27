@@ -10,6 +10,33 @@ import dataConstruct.LinkNode;
 public class JudgeNodeListCross {
 
     /**
+     * 判断单链表是否相交，如果相交，返回第一个相交的节点指针
+     * 1、一个有环，另一个无环，则不可能相交
+     * 2、两个都有环
+     * 3、两个都无环
+     * @return
+     */
+    public static LinkNode getCrossNode(LinkNode head1, LinkNode head2){
+        try{
+            LinkNode inLoop1 = getLoopNode(head1);
+            LinkNode inLoop2 = getLoopNode(head2);
+            if((inLoop1 != null && inLoop2 == null)
+                    || (inLoop1 == null && inLoop2 != null)){
+                // 不可能相交
+                return null;
+            }
+            if(inLoop1 == null && inLoop2 == null){
+                return noLoop(head1, head2);
+            }else{
+                // 两个有环的
+                return loopCross(head1, head2);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+    /**
      * 判断nodelist是否存在环，如果存在返回入环点，不存在null
      * 原理：
      * 1、假设环长度x，整个链表取余x为n，则链表应该为若干x+n长度，即为（m+1）x+n
@@ -106,6 +133,60 @@ public class JudgeNodeListCross {
                 smallList = smallList.getNext();
             }
             return largeList;
+    }
+
+
+    /**
+     * 两个链表都有环的时候：
+     * 1、入环点相等，说明入环之前就已经相交了
+     * 2、入环点不相等：循环一个链判断是否经过另一个链的入环点
+     *      · 经过：有相交点，返回任何一个入环店都可以
+     *      · 不经过：不相交，返回null
+     * @param head1
+     * @param head2
+     * @return
+     */
+    public static LinkNode loopCross(LinkNode head1, LinkNode head2) throws Exception{
+        if(head1 == null || head2 == null) return null;
+        LinkNode inLoop1 = getLoopNode(head1);
+        LinkNode inLoop2 = getLoopNode(head2);
+        LinkNode tem = head1;
+        if(inLoop1 == null || inLoop2 == null) return null;
+        if(inLoop1 == inLoop2){
+            int count1 = 1;
+            int count2 = 1;
+            while (tem != inLoop1){
+                tem = tem.getNext();
+                count1 ++;
+            }
+            tem = head2;
+            while (tem != inLoop2){
+                tem = tem.getNext();
+                count2++;
+            }
+            if(count1 > count2){
+                return findCrossForNoLoop(head1, head2, count1, count2);
+            }else{
+                return findCrossForNoLoop(head2, head1, count2, count1);
+            }
+        }else{
+            // 两种情况：head1循环查找head2的入环点
+            boolean isCross = false;
+            tem = inLoop1.getNext();
+            while (tem != inLoop1){
+                if(tem == inLoop2){
+                    isCross = true;
+                }
+                tem = tem.getNext();
+            }
+            if(!isCross){
+                // 说明不相交
+                return null;
+            }else{
+                // 说明相交，返回任意一个即可
+                return inLoop1;
+            }
+        }
     }
 
 }
