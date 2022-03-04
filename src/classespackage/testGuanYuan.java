@@ -61,5 +61,24 @@ public class testGuanYuan {
     }
 
 
+    /**
+     * 给定矩阵，返回最短路径数量
+     * @param x
+     * @param y
+     * @return
+     */
+    public static int getNumByXY(int x, int y){
+        try{
+            if((x == 0 || y == 0)){
+                return 1;
+            }
+            return getNumByXY(x - 1, y) + getNumByXY(x, y-1);
+        }catch (Exception e){
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+
 
 }
