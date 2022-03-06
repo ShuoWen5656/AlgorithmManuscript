@@ -17,6 +17,11 @@ public class LinkNode {
         this.value = value;
     }
 
+    public LinkNode(Integer value, LinkNode next) {
+        this.value = value;
+        this.next = next;
+    }
+
     public Integer getValue() {
         return value;
     }
