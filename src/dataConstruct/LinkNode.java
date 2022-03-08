@@ -5,7 +5,7 @@ package dataConstruct;
  * @date 2021/12/18 8:54 下午
  * @Discreption <>公共数据结构：单链表数据结构
  */
-public class LinkNode {
+public class LinkNode{
 
     private Integer value;
 
