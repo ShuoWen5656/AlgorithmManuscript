@@ -86,6 +86,7 @@ public class Main {
      */
     public static void main(String[] args) {
         try{
+            LinkedList<Object> objects = new LinkedList<>();
 //            Scanner input = new Scanner(System.in);
 //            String arrayStr = input.nextLine();
 //            String[] arrayS = arrayStr.split(" ");
@@ -266,12 +267,41 @@ public class Main {
 //                    }
 //                }
 //            }
+
+
+
+
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
 
 
-
+    /**
+     * 朝厚科技：两个有序队列，判断是否存在两个数字相加 == target
+     * @param array1
+     * @param array2
+     * @param target
+     * @return
+     */
+    public static boolean solution(int[] array1, int[] array2, int target){
+        try {
+            int index1 = array1.length - 1;
+            int index2 = 0;
+            while (index1 > 0 && index2 < array2.length){
+                if(array1[index1] + array2[index2] > target){
+                    index1--;
+                }else if(array1[index1] + array2[index2] < target){
+                    index2++;
+                }else{
+                    return true;
+                }
+            }
+            return false;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
     }
 //    public static void main(String[] args) {
 //

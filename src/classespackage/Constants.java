@@ -43,4 +43,18 @@ public final class Constants {
      */
     public static final byte ORDER_DESC = 1;
 
+    /**
+     * 树位置 - 右节点
+     */
+    public static final String TYPE_RIGHT = "right";
+
+    /**
+     * 树位置 - 左节点
+     */
+    public static final String TYPE_LEFT = "left";
+
+    /**
+     * 树位置 - 根节点
+     */
+    public static final String TYPE_ROOT = "root";
 }
