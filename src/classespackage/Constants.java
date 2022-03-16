@@ -57,4 +57,9 @@ public final class Constants {
      * 树位置 - 根节点
      */
     public static final String TYPE_ROOT = "root";
+
+    /**
+     * 树节点的结束标志
+     */
+    public static final String END_MARK_OF_TREE = "#";
 }

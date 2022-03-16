@@ -5,7 +5,11 @@ import classespackage.MaxWindow;
 import classespackage.MyStack1;
 import classespackage.MyStack2;
 import com.sun.corba.se.spi.ior.ObjectKey;
+import com.sun.org.apache.bcel.internal.generic.LNEG;
 import com.sun.xml.internal.ws.api.message.ExceptionHasMessage;
+import dataConstruct.LinkNode;
+import dataConstruct.MyTreeNode;
+import sun.awt.image.ImageWatched;
 
 import java.util.*;
 
@@ -79,6 +83,104 @@ import java.util.*;
 public class Main {
 
 
+    /**
+     * 奇数正序，偶数倒序，将该链表变成正序链表：
+     * 1、拆出来偶数节点
+     * 2、将偶数节点反转或者直接遍历插入到奇数节点中
+     * @param head
+     * @return
+     */
+    public static LinkNode getOrderNode(LinkNode head){
+        try{
+            if(head == null || head.getNext() == null){
+                return head;
+            }
+            // 偶数头节点
+            LinkNode head2 = head.getNext();
+            // 移动指针
+            LinkNode cur1 = head;
+            LinkNode cur2 = head.getNext();
+            while (cur1 == null || cur2 == null){
+                if(cur2.getNext() == null){
+                    // 进这里说明双数节点，cur2是最后一个节点
+                    break;
+                }
+                LinkNode t1 = cur1.getNext().getNext();
+                LinkNode t2 = cur2.getNext().getNext();
+                // 各自指向下两个并往下走两个
+                cur1.setNext(t1);
+                cur1 = cur1.getNext();
+                cur2.setNext(t2);
+                cur2 = cur2.getNext();
+            }
+            // 反转head2
+            head2 = reverseHead(head2);
+            // 遍历head2，插入head
+            while (head2 != null){
+                LinkNode cur3 = head;
+                Integer value = head2.getValue();
+                LinkNode tem2 = head2.getNext();
+                // 是否已经插入了，标记边界值
+                boolean isInsert = false;
+                while (cur3.getNext() != null){
+                    // 循环比对，找到插入点
+                    if(cur3.getValue() < value && cur3.getNext() != null && cur3.getValue() > value){
+                        isInsert = true;
+                        LinkNode tem = cur3.getNext();
+                        cur3.setNext(head2);
+                        head2.setNext(tem);
+                        cur3 = head2;
+                        break;
+                    }
+                    // 这里说明不满足条件
+                    cur3 = cur3.getNext();
+                }
+                if(!isInsert){
+                    // 说明是边界值
+                    if(cur3.getValue() < value){
+                        cur3.setNext(head2);
+                        // 这是因为head2大于当前链表最大节点了，剩下的也不用比较了
+                        break;
+                    }else{
+                        // 插入头节点
+                        head2.setNext(head);
+                        // 更新头节点
+                        head = head2;
+                    }
+                }
+                // 将刚才预存的下一个节点复制给head2 ，继续下一个。
+                head2 = tem2;
+            }
+            return head;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    /**
+     * 反转单链表
+     * @param head
+     * @return
+     */
+    public static LinkNode reverseHead(LinkNode head){
+        if(head == null || head.getNext() == null){
+            return head;
+        }
+        LinkNode cur = head;
+        LinkNode next = head.getNext();
+        while (next != null){
+            LinkNode tem = next.getNext();
+            next.setNext(cur);
+            cur = next;
+            next = tem;
+        }
+        // 头节点现在是尾巴，需要next = null
+        head.setNext(null);
+        head = cur;
+        return head;
+    }
 
     /**
      * 华为od面试
@@ -87,6 +189,12 @@ public class Main {
     public static void main(String[] args) {
         try{
             LinkedList<Object> objects = new LinkedList<>();
+
+
+
+
+
+
 //            Scanner input = new Scanner(System.in);
 //            String arrayStr = input.nextLine();
 //            String[] arrayS = arrayStr.split(" ");
