@@ -1,6 +1,5 @@
-package classespackage.Tree;
+package classespackage.tree;
 
-import com.oracle.tools.packager.EnumeratedBundlerParam;
 import dataConstruct.MyTreeNode;
 
 /**

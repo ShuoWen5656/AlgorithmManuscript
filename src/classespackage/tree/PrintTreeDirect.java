@@ -1,4 +1,4 @@
-package classespackage.Tree;
+package classespackage.tree;
 
 import classespackage.Constants;
 import dataConstruct.MyTreeNode;

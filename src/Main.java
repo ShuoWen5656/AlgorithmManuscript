@@ -173,13 +173,21 @@ public class Main {
         return head;
     }
 
+
+
+    public static void test1(){
+
+    }
+
+
+
     /**
      * 华为od面试
      * @param args
      */
     public static void main(String[] args) {
         try{
-            LinkedList<Object> objects = new LinkedList<>();
+//            LinkedList<Object> objects = new LinkedList<>();
 
 
 

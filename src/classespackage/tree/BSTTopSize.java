@@ -1,4 +1,4 @@
-package classespackage.Tree;
+package classespackage.tree;
 
 import dataConstruct.MyTreeNode;
 import dataConstruct.Record;

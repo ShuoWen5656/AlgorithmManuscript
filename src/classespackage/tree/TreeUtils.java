@@ -1,8 +1,7 @@
-package classespackage.Tree;
+package classespackage.tree;
 
 import dataConstruct.MyTreeNode;
 
-import javax.swing.tree.TreeNode;
 import java.util.*;
 
 /**
