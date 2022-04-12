@@ -20,6 +20,10 @@ public class MyTreeNode {
      */
     public Integer data;
 
+    /**
+     * 二叉树的父级节点（正常二叉树没有这个变量，此变量为了特殊数据结构而设计）
+     */
+    public MyTreeNode parent;
 
     public MyTreeNode(Integer data) {
         this.data = data;
@@ -47,5 +51,13 @@ public class MyTreeNode {
 
     public void setData(Integer data) {
         this.data = data;
+    }
+
+    public MyTreeNode getParent() {
+        return parent;
+    }
+
+    public void setParent(MyTreeNode parent) {
+        this.parent = parent;
     }
 }
