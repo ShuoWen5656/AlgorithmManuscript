@@ -62,4 +62,18 @@ public final class Constants {
      * 树节点的结束标志
      */
     public static final String END_MARK_OF_TREE = "#";
+
+    /**
+     * 汉诺塔 - 左
+     */
+    public static final String HANOI_LEFT = "left";
+    /**
+     * 汉诺塔 - 右
+     */
+    public static final String HANOI_RIGHT = "right";
+    /**
+     * 汉诺塔 - 中
+     */
+    public static final String HANOI_MID = "mid";
+
 }
