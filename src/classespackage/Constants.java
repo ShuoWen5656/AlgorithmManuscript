@@ -76,4 +76,9 @@ public final class Constants {
      */
     public static final String HANOI_MID = "mid";
 
+    /**
+     * 字符串 - 空
+     */
+    public static final String EMPTY_STR = "";
+
 }
