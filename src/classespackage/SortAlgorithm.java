@@ -316,7 +316,7 @@ public class SortAlgorithm {
              heapSort2(array, i, len-1);
          }
         // 将顶和最后一个元素交换，重新构建最值堆
-         for (int j = len-1; j >= 1; j++){
+         for (int j = len-1; j >= 1; j--){
              // 顶底交换
              int temp = array[0];
              array[0] = array[j];
