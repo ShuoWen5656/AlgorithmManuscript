@@ -35,10 +35,10 @@ public class PrintOddTimeNum {
                 e0 ^= cur;
             }
             // 此时e0是两个数的异或，取出最右边的1
-            tem = e0 & (~e0 + 1);
+            int rightOne = e0 & (~e0 + 1);
             for (int cur : array){
-                if((cur&tem) != 0){
-                    // 只跟tem位不为0的数进行异或
+                if((cur&rightOne) != 0){
+                    // 只跟tem位不为0的数进行异或，因为这一位跟1异或到最后能保证这一位变成0，就是数字a了。
                     // 1、异或是可逆的2、tem位为1的必定是两个结果中的一个，所以将另一个结果逆过程回来即可
                     tem ^= cur;
                 }
