@@ -13,8 +13,8 @@ public class SpiralOrderPrint {
      */
     public static void spiralOrderPrint(int[][] array){
         try {
-            int topR = -1, topC = -1;
-            int downR = array.length, downC = array[0].length;
+            int topR = 0, topC = 0;
+            int downR = array.length-1, downC = array[0].length-1;
             // 从外往内进行顺时针遍历
             while (topR <= downR && topC <= downC){
                 process(array, topR++, topC++, downR--, downC--);
