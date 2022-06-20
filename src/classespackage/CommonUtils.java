@@ -19,5 +19,16 @@ public class CommonUtils {
         array[index2] = temp;
     }
 
+    /**
+     * 获取中间值，如果为偶数，则取前一个
+     * @param left
+     * @param right
+     */
+    public static int getMid(int left, int right){
+        return (left + right) /2;
+    }
+
+
+
 
 }
