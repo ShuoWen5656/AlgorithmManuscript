@@ -35,6 +35,7 @@ public class ArrayPartitionMove {
 
     /**
      * 问题二：将0,1,2组成的数组进行排序，0,1,2变成有序如0000,1111,22222
+     * 变种：将红黄蓝色的球进行分类，顺序为红黄蓝
      * @param array
      */
     public static void partitionMove2(int[] array){
