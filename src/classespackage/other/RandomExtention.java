@@ -1,4 +1,4 @@
-package classespackage.arrayAndMartrix;
+package classespackage.other;
 
 import java.util.Random;
 import java.util.function.Function;
