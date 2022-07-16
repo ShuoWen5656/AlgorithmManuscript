@@ -81,4 +81,9 @@ public final class Constants {
      */
     public static final String EMPTY_STR = "";
 
+    /**
+     * 字符串 - 零
+     */
+    public static final String ZERO_ZH = "零";
+
 }
