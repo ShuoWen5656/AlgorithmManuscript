@@ -5,7 +5,7 @@ package classespackage;
  * @Date 2022/2/13 21:02
  * @Discription<>公共方法
  */
-public class CommonUtils {
+public class CommonUtils<T> {
 
     /**
      * 交换1、2索引值
@@ -29,6 +29,12 @@ public class CommonUtils {
     }
 
 
+
+    public static <T> void swapPlus(T[] array, int index1, int index2){
+        T temp = array[index1];
+        array[index1] = array[index2];
+        array[index2] = temp;
+    }
 
 
 }
