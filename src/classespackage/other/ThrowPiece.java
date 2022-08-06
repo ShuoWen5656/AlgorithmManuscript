@@ -155,4 +155,63 @@ public class ThrowPiece {
         return dp[levelNum][pieceNum];
     }
 
+
+    /**
+     * 最优解
+     * 原理：二分法寻找是最少步骤的最优解，如果棋子够就直接用二分法扔即可
+     * 2、计算k个棋子在扔n次后能够搞定最多多少楼层
+     * 3、直接找到第一个大于levelNum的单元即可
+     * @param levelNum
+     * @param pieceNum
+     * @return
+     */
+    public static int bestSolution(int levelNum, int pieceNum){
+        if (levelNum < 1 || pieceNum < 1){
+            return 0;
+        }
+        int bsTimes = log2N(levelNum);
+        // 二分法如果能够解决就用二分法
+        if (pieceNum > bsTimes){
+            return bsTimes;
+        }
+        // 棋子数量
+        int[] dp = new int[pieceNum+1];
+        // 这里不需要初始化dp，因为当前dp更新后的结果就是下一个dp,向后更新，无需依赖前面
+        int res = 0;
+        while (true){
+            res++;
+            // 前一个的上面一个
+            int pre = 0;
+            /**
+             * pre   x         pre x
+             * dp[i] x   ->    tem dp[i]新
+             */
+            for (int i = 0; i < pieceNum; i ++){
+                int tmp = dp[i];
+                dp[i] = dp[i] + pre + 1;
+                pre = tmp;
+                if (dp[i] > levelNum){
+                    return res;
+                }
+            }
+        }
+    }
+
+
+
+    /**
+     * 找到2的几次方边界
+     * 因为楼层用二分的方式一定能够找到，这里求出二分的方式需要几个棋子，如果给的棋子大于这个数值，那就直接用这个数值
+     * @param num
+     * @return
+     */
+    public static int log2N(int num){
+        int res = -1;
+        while (num != 0){
+            num >>>= 1;
+        }
+        return res;
+    }
+
+
 }
