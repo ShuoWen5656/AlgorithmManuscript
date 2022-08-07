@@ -4,6 +4,7 @@ package classespackage.other;
  * @author swzhao
  * @data 2022/8/1 21:58
  * @Discreption <> 丢棋子问题
+ * 问题：一共level层楼，棋子数量为pieceNum，每一层都可以扔棋子，棋子可能碎掉也可能不碎，现在需要找到碎与不碎的临界楼层，在最坏的情况下，扔最少的次数是多少
  */
 public class ThrowPiece {
 
