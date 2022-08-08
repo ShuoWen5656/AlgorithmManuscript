@@ -58,23 +58,24 @@ public class PainterProblem {
         if (arr == null || arr.length == 0 || k < 1){
             return 0;
         }
-        // 动态规划表
-        int[] dp = new int[arr.length];
-        // 少一个画匠时，从arr【0...k】所需要的时间
+        // 累加和数组
+        int[] sumArr = new int[arr.length];
+        // 上一轮中的值，dp
         int[] map = new int[arr.length];
-        dp[0] = 0;
+        sumArr[0] = 0;
         map[0] = 0;
         for (int i = 1; i < arr.length; i++){
-            dp[i] = dp[i-1] + arr[i];
-            map[i] = dp[i];
+            sumArr[i] = sumArr[i-1] + arr[i];
+            map[i] = sumArr[i];
         }
         // 从只有一幅画开始
         for (int i = 1; i < arr.length; i++){
-            for (int j = dp.length; j > 0 ; j--){
+            // 画匠数不能比画数多
+            for (int j = map.length-1; j > i-1; j--){
                 int min = Integer.MAX_VALUE;
                 for (int l = j ; l > 0; l--){
                     // 少一个画匠所用的时间、剩下的都让一个画匠去干所用的时间取最大值
-                    min = Math.min(min, Math.max(map[l], dp[j] - dp[l]));
+                    min = Math.min(min, Math.max(map[l], sumArr[j] - sumArr[l]));
                 }
                 map[j] = min;
             }
@@ -83,6 +84,46 @@ public class PainterProblem {
     }
 
 
+    /**
+     * 方法二：四边形不等式
+     * @param arr
+     * @param num
+     * @return
+     */
+    public static int solution2(int[] arr, int num){
+        if (arr == null || num < 1){
+            return 0;
+        }
+        int[] sumArr = new int[arr.length];
+        // 在i个画匠面前，j副画最少需要的时间，map[j]
+        int[] map = new int[arr.length];
+        // 四边形不等式专属变量，每一个元素为上一个的最优解的分割点k
+        int[] cand = new int[arr.length];
+        sumArr[0] = arr[0];
+        map[0] = arr[0];
+        for (int i = 1; i < arr.length ;i++){
+            sumArr[i] = sumArr[i-1] + arr[i];
+            map[i] = sumArr[i];
+        }
+        // i 是画匠数
+        for (int i = 1; i < num; i++){
+            // j是[0...j]副画需要画匠来画
+            for (int j = arr.length-1; j > i-1; j++){
+                int min = Integer.MAX_VALUE;
+                int minPar = cand[j];
+                int maxPar = j == arr.length-1 ? j:cand[j+1];
+                for (int k = minPar; k <= maxPar; k++){
+                    int cur = Math.max(map[k], sumArr[j] - sumArr[k]);
+                    if (cur < min){
+                        min = cur;
+                        cand[j] = k;
+                    }
+                }
+                map[j] = min;
+            }
+        }
+        return map[arr.length-1];
+    }
 
 
 
