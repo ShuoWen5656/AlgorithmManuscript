@@ -1,5 +1,7 @@
 package classespackage.other;
 
+import classespackage.CommonUtils;
+
 /**
  * @author swzhao
  * @data 2022/8/7 9:46
@@ -126,6 +128,69 @@ public class PainterProblem {
     }
 
 
+    /**
+     * 如果每一个画匠只能干limit个小时（就像扔棋子问题中的一个棋子扔多少次能够搞定多少层楼一般），至少需要多少个画匠
+     * @param arr
+     * @param limit
+     * @return
+     */
+    public static int getNeedNum(int[] arr, int limit){
+        int res = 0;
+        int sum = 0;
+        for (int i = 0; i < arr.length; i++){
+            if (arr[i] > limit){
+                // 无论多少个画匠都无法完成
+                return Integer.MAX_VALUE;
+            }
+            sum += arr[i];
+            if (sum > limit){
+                // 当前任务分配给一个画匠
+                res++;
+                sum = arr[i];
+            }
+        }
+        return res;
+    }
+
+
+    /**
+     * 最优解
+     * @param arr
+     * @param num
+     * @return
+     */
+    public static int solution3(int[] arr, int num){
+        if (arr == null || num < 1){
+            return 0;
+        }
+        if (num > arr.length){
+            // 一个干一个都够了，所以取得最大值即可
+            return CommonUtils.getMaxValue(arr);
+        }else {
+            // 确定答案范围
+            int minV = 0;
+            int maxV = 0;
+            for (int i = 0; i < arr.length ; i++){
+                maxV += arr[i];
+            }
+            // 答案就在[0, 累加和之间]，最坏就一个人干所有的活画最久的时间
+            while (minV < maxV){
+                int mid = (minV + maxV)/2;
+                if (getNeedNum(arr, mid) > num){
+                    // 每个人只能干minV时间时，需要的数量大于给定的数量了,每个人需要干的时间增加
+                    minV = mid;
+                }else {
+                    maxV = mid;
+                }
+            }
+            return maxV;
+        }
+
+
+
+
+
+    }
 
 
 
