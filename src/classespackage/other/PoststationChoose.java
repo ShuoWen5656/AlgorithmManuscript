@@ -43,4 +43,55 @@ public class PoststationChoose {
         return dp[num-1][arr.length-1];
     }
 
+
+    /**
+     * 方法二:
+     * 四边形不等式降低一介
+     * @param arr
+     * @param num
+     * @return
+     */
+    public static int minDistants2(int[] arr, int num){
+        if (arr == null || arr.length == 0 || num < 1){
+            return 0;
+        }
+        int[][] w = new int[arr.length][arr.length];
+        int[][] dp = new int[num][arr.length];
+        // 上一局的最优解,
+        // todo 其中的横坐标是否有意义呢？？？？
+        int[][] cand = new int[num][arr.length];
+        // 0~0的居民放一个邮局最短距离就是0
+        w[0][0] = 0;
+        // 初始化w
+        for (int i = 1; i < arr.length; i++){
+            w[i][i] = 0;
+            for (int j = i; j < arr.length; j++){
+                w[i][j] = w[i][j-1] + arr[j] - arr[(i+j)/2];
+            }
+        }
+        for (int i = 0; i < arr.length; i++){
+            dp[0][i] = w[0][i];
+            cand[0][i] = 0;
+        }
+        for (int i = 1; i < num; i++){
+            for (int j = arr.length-1; j > i; j--){
+                dp[i][j] = Integer.MAX_VALUE;
+                // 上下界计算
+                // todo 当前倒着赋值的话，当前j应该是i-1那一轮的结果
+                int min = cand[i-1][j];
+                // todo 当前倒着赋值，j+1应该是当前轮的赋值结果，所以i应该是没有意义的，cand完全可以使用一维数组代替
+                int max = j == arr.length-1? j : cand[i][j+1];
+                for (int k = min; k < max; k++){
+                    int cur = dp[i-1][k] + w[k+1][j];
+                    if (cur < dp[i][j]){
+                        cand[i][j] = k;
+                        dp[i][j] = cur;
+                    }
+                }
+            }
+        }
+        return dp[num-1][arr.length-1];
+    }
+
+
 }
