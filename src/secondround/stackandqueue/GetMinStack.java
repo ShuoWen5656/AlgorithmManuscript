@@ -1,65 +1,61 @@
-package classespackage.stackAndQueue;
-
-import secondround.stackandqueue.GetMinStack;
+package secondround.stackandqueue;
 
 import java.util.Stack;
 
 /**
- * @Author swzhao
- * @Date 2021/11/20 21:32
- * @Discription<> 设计一个有geiMin功能的栈
+ * @author swzhao
+ * @data 2022/8/12 19:45
+ * @Discreption <> 设计一个有getMin功能的栈
  */
-public class MyStack1 {
-    private Stack<Integer> dataStack;
-    private Stack<Integer> minStack;
+public class GetMinStack {
+
+    /**
+     * 数据栈
+     */
+    Stack<Integer> dataStack;
+    /**
+     * 最小值栈
+     */
+    Stack<Integer> minStack;
 
 
-    public MyStack1() {
+    public GetMinStack() {
         this.dataStack = new Stack<>();
         this.minStack = new Stack<>();
     }
 
-    /**
-     * 弹出
-     * @return
-     */
-    public int pop(){
-        if(this.dataStack.isEmpty()){
-            throw new RuntimeException("dataStack is Empty");
-        }
-        Integer integer = this.dataStack.pop();
-        if(integer == this.getmin()){
-            this.minStack.pop();
-        }
-        return integer;
-    }
-
-    /**
-     * 进
-     * @param num
-     */
     public void push(Integer num){
-        if(this.minStack.isEmpty() || this.getmin() >= num){
-            this.minStack.push(num);
+        if (minStack.isEmpty() || minStack.peek() > num){
+            minStack.push(num);
         }
         dataStack.push(num);
     }
 
-    /**
-     * 获取最小值
-     * @return
-     */
-    public int getmin(){
-        if(this.minStack.isEmpty()){
-            throw new RuntimeException("minStack is Empty");
-        }else{
-            return this.minStack.peek();
+
+    public int pop(){
+        if (dataStack.isEmpty()){
+            throw new RuntimeException("no element");
         }
+        Integer pop = dataStack.pop();
+        if (pop.equals(minStack.peek())){
+            minStack.pop();
+        }
+        return pop;
     }
 
 
 
-    private boolean isEmpty() {
+    public int getMin(){
+        if (minStack.isEmpty()){
+            throw new RuntimeException("no element");
+        }
+        return minStack.peek();
+    }
+
+
+
+
+    public boolean isEmpty(){
         return dataStack.isEmpty();
     }
 
@@ -76,7 +72,7 @@ public class MyStack1 {
      * @param args
      */
     public static void main(String[] args) {
-        MyStack1 getMinStack = new MyStack1();
+        GetMinStack getMinStack = new GetMinStack();
         try {
             getMinStack.push(2);
             getMinStack.push(1);
@@ -85,7 +81,7 @@ public class MyStack1 {
             getMinStack.push(3);
             printStack(getMinStack);
             while (!getMinStack.isEmpty()){
-                System.out.println("当前最小值" + getMinStack.getmin());
+                System.out.println("当前最小值" + getMinStack.getMin());
                 System.out.println(getMinStack.pop());
                 // 打印当前栈状态
                 System.out.println("当前栈状态");
@@ -97,8 +93,7 @@ public class MyStack1 {
     }
 
 
-
-    public static void printStack(MyStack1 getMinStack){
+    public static void printStack(GetMinStack getMinStack){
         Stack<Integer> dataStack = getMinStack.getDataStack();
         Stack<Integer> minStack = getMinStack.getMinStack();
         for (int i = 0; i < dataStack.size(); i++){
@@ -110,4 +105,6 @@ public class MyStack1 {
         }
         System.out.println();
     }
+
+
 }
