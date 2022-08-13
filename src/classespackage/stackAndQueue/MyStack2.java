@@ -5,7 +5,8 @@ import java.util.Stack;
 /**
  * @Author swzhao
  * @Date 2021/11/13 12:09
- * @Discription<> 最小值栈的第二种是实现形式：比起第一种，第二种返回的时间快，空间会多一些，第一种（MyStack1）空间会节省，时间会多一些
+ * @Discription<> 方案2：设计一个有geiMin功能的栈
+ *     最小值栈的第二种是实现形式：比起第一种，第二种返回的时间快，空间会多一些，第一种（MyStack1）空间会节省，时间会多一些
  */
 public class MyStack2 {
     private Stack<Integer> dataStack;
