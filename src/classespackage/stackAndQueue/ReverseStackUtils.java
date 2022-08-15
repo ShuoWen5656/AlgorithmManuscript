@@ -1,16 +1,17 @@
 package classespackage.stackAndQueue;
 
+import java.util.Arrays;
 import java.util.Stack;
 
 /**
  * @Author swzhao
  * @Date 2021/11/16 21:53
- * @Discription<> 将一个栈通过递归方式逆序化
+ * @Discription<> 如何仅用递归函数和栈操作逆序一个栈
  */
 public class ReverseStackUtils{
 
     /**
-     * 递归取栈底并放入
+     * 递归取栈底并放入,通用方法
      */
     public static <T> void reverse(Stack<T> stack){
         try {
@@ -43,11 +44,51 @@ public class ReverseStackUtils{
                 T t2 = getAndRemoveLastElement(stack);
                 stack.push(t);
                 return t2;
-        }
+            }
         }catch (Exception e){
             e.printStackTrace();
         }
         return null;
+    }
+
+
+    /**
+     * 普通方法，intger类型
+     * @param stack
+     * @return
+     */
+    public static void reverseForInt(Stack<Integer> stack){
+        if (stack.isEmpty()){
+            return;
+        }
+        Integer curlast = getLastAndRemoveForInt(stack);
+        reverse(stack);
+        stack.push(curlast);
+    }
+
+
+    public static Integer getLastAndRemoveForInt(Stack<Integer> stack){
+        Integer pop = stack.pop();
+        if (stack.isEmpty()){
+            return pop;
+        }
+        Integer last = getLastAndRemoveForInt(stack);
+        stack.push(pop);
+        return last;
+    }
+
+    /**
+     * 测试用例
+     * @param args
+     */
+    public static void main(String[] args) {
+        int[] arr = {5, 4, 3, 2, 1};
+        Stack<Integer> testStack = new Stack<>();
+        Arrays.stream(arr).forEach(u -> testStack.push(u));
+        System.out.println(testStack.toString());
+        // 逆序
+        ReverseStackUtils.reverseForInt(testStack);
+        System.out.println(testStack.toString());
     }
 
 
