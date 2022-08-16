@@ -33,4 +33,12 @@ public class CatDogQ {
     public String getType(){
         return p.getType();
     }
+
+    @Override
+    public String toString() {
+        return "CatDogQ{" +
+                "count=" + count +
+                ", p=" + p +
+                '}';
+    }
 }

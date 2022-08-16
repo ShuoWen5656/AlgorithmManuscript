@@ -8,7 +8,7 @@ import java.util.Queue;
 /**
  * @author swzhao
  * @date 2021/11/17 9:50 下午
- * @Discreption <> 猫狗队列：定义两个队列，猫队列和狗队列，进入队列前需要对象带一个时间戳，
+ * @Discreption <> 猫狗队列
  */
 public class CatDogQueue {
 
@@ -16,7 +16,7 @@ public class CatDogQueue {
     private Queue<CatDogQ> dogQ;
     private Integer count;
 
-    public CatDogQueue(Queue<CatDogQ> catQ, Queue<CatDogQ> dogQ, Integer count) {
+    public CatDogQueue() {
         this.catQ = new LinkedList<>();
         this.dogQ = new LinkedList<>();
         this.count = 0;
@@ -91,5 +91,43 @@ public class CatDogQueue {
     public boolean isCatEmpty(){
         return catQ.isEmpty();
     }
+
+    public Queue<CatDogQ> getCatQ() {
+        return catQ;
+    }
+
+    public Queue<CatDogQ> getDogQ() {
+        return dogQ;
+    }
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public static void main(String[] args) {
+        // 猫狗猫猫狗
+        Pet[] pets = {new Cat(Constants.CAT), new Dog(Constants.DOG), new Cat(Constants.CAT), new Cat(Constants.CAT), new Dog(Constants.DOG)};
+        CatDogQueue catDogQueue1 = new CatDogQueue();
+        // 先放三个
+        for (int i = 0; i < pets.length-2; i++){
+            catDogQueue1.add(pets[i]);
+        }
+        // 当前q
+        System.out.printf("catQ : %s, dogQ : %s \n", catDogQueue1.getCatQ(), catDogQueue1.getDogQ());
+        // polldog
+        System.out.printf("polldog：%s\n", catDogQueue1.pollDog());
+        System.out.printf("catQ : %s, dogQ : %s \n", catDogQueue1.getCatQ(), catDogQueue1.getDogQ());
+        // pollCat
+        System.out.printf("pollcat：%s\n", catDogQueue1.pollCat());
+        System.out.printf("catQ : %s, dogQ : %s\n", catDogQueue1.getCatQ(), catDogQueue1.getDogQ());
+        // 放入剩下两个
+        for (int i = 3; i < pets.length; i++){
+            catDogQueue1.add(pets[i]);
+        }
+        System.out.printf("catQ : %s, dogQ : %s\n", catDogQueue1.getCatQ(), catDogQueue1.getDogQ());
+        System.out.printf("pollall：%s\n", catDogQueue1.pollAll());
+        System.out.printf("catQ : %s, dogQ : %s\n", catDogQueue1.getCatQ(), catDogQueue1.getDogQ());
+    }
+
 
 }

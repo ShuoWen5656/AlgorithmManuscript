@@ -3,7 +3,7 @@ package classespackage.stackAndQueue.catDogQueue;
 /**
  * @author swzhao
  * @date 2021/11/17 9:43 下午
- * @Discreption <> 动物父类
+ * @Discreption <> 动物基类
  */
 public class Pet {
     /**
@@ -21,5 +21,12 @@ public class Pet {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    @Override
+    public String toString() {
+        return "Pet{" +
+                "type='" + type + '\'' +
+                '}';
     }
 }
