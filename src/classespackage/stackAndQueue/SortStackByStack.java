@@ -8,7 +8,6 @@ import java.util.Stack;
  * @Discreption <>用栈给栈排序
  */
 public class SortStackByStack {
-//    private Stack<Integer> help;
 
     /**
      * 用栈排序
@@ -27,4 +26,21 @@ public class SortStackByStack {
             stack.push(help.pop());
         }
     }
+
+    /**
+     * 测试用例
+     * @param args
+     */
+    public static void main(String[] args) {
+        // 42531入栈顺序
+        int[] ints = {4, 2, 5, 3, 1};
+        Stack<Integer> stack = new Stack<>();
+        for (int i = 0; i < ints.length; i++){
+            stack.push(ints[i]);
+        }
+        System.out.printf("当前栈：%s", stack);
+        SortStackByStack.sort(stack);
+        System.out.printf("排序后：%s", stack);
+    }
+
 }
