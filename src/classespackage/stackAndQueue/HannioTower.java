@@ -2,10 +2,12 @@ package classespackage.stackAndQueue;
 
 import classespackage.Constants;
 
+import java.util.Stack;
+
 /**
  * @Author swzhao
  * @Date 2021/11/19 21:56
- * @Discription<> 汉诺塔，返回步数，输出走法
+ * @Discription<> 用栈来求解汉诺塔问题
  */
 public class HannioTower {
 
@@ -28,7 +30,7 @@ public class HannioTower {
     }
 
     /**
-     * 处理函数
+     * 递归函数
      * @param num
      * @param left
      * @param mid
@@ -94,6 +96,66 @@ public class HannioTower {
             return part1StepNum + part2StepNum + part3StepNum + part4StepNum + part5StepNum;
         }
     }
+
+    /**
+     * 栈方式
+     */
+    public static void hanno2(int num, String left, String mid, String right){
+        Stack<Integer> lS = new Stack<>();
+        Stack<Integer> mS = new Stack<>();
+        Stack<Integer> rS = new Stack<>();
+
+        lS.push(Integer.MAX_VALUE);
+        mS.push(Integer.MAX_VALUE);
+        rS.push(Integer.MAX_VALUE);
+        for (int i = num; i > 0; i++){
+            lS.push(i);
+        }
+
+        ActionEnum[] record = new ActionEnum[]{ActionEnum.NO};
+
+        int step = 0;
+        // 每一次都是四种尝试
+        while (rS.size() < num + 1){
+            step += fStack2tStack(record, ActionEnum.M2L, ActionEnum.L2M, lS, mS, left, mid);
+            step += fStack2tStack(record, ActionEnum.L2M, ActionEnum.M2L, mS, lS, mid, left);
+            step += fStack2tStack(record, ActionEnum.R2M, ActionEnum.M2R, mS, rS, mid, right);
+            step += fStack2tStack(record, ActionEnum.M2R, ActionEnum.R2M, rS, mS, right, mid);
+        }
+
+    }
+
+    /**
+     * 判断走法
+     * @param record
+     * @param pre
+     * @param now
+     * @param fStack
+     * @param tStack
+     * @param from
+     * @param to
+     * @return
+     */
+    private static int fStack2tStack(ActionEnum[] record, ActionEnum pre, ActionEnum now, Stack<Integer> fStack, Stack<Integer> tStack, String from, String to) {
+        if (record[0] != pre && fStack.peek() < tStack.peek()){
+            System.out.printf("Move %d from %s to %s\n", fStack.peek(), from, to);
+            tStack.push(fStack.pop());
+            record[0] = now;
+            return 1;
+        }
+        return 0;
+    }
+
+
+    /**
+     * 测试用例
+     * @param args
+     */
+    public static void main(String[] args) {
+        HannioTower hannioTower = new HannioTower();
+        hannioTower.hanioProblem(2, "left", "mid", "right", "left", "right");
+    }
+
 
 
 }
