@@ -9,7 +9,7 @@ import java.util.Stack;
  * @Date 2021/11/19 21:56
  * @Discription<> 用栈来求解汉诺塔问题
  */
-public class HannioTower {
+public class HanoiTower {
 
 
     /**
@@ -98,22 +98,34 @@ public class HannioTower {
     }
 
     /**
-     * 栈方式
+     * 方法二：栈方式实现
+     * 首先每一个盘都有四种选择走法
+     * 1、左-中、中-左、中-右、右到中
+     * 2、每一个状态都面临上面四种抉择
+     * 3、四种抉择中通过以下2条定律就能够筛选出能够使用的唯一那条路
+     *  a)移动不违反大压小原则，需要过去的圆盘不能比目标栈的栈顶大
+     *  b)相邻不可逆：如果前一个动作是左-中，那么下一个动作一定不是中-左，并且不可能重复上一个步骤（违反大压小）
+     * 总结：任何时刻，四个动作都只有一个满足ab原则，剩下三个一定违反原则
+     * @param num
+     * @param left
+     * @param mid
+     * @param right
      */
-    public static void hanno2(int num, String left, String mid, String right){
+    public static int hanoiTower2(int num, String left, String mid, String right){
         Stack<Integer> lS = new Stack<>();
         Stack<Integer> mS = new Stack<>();
         Stack<Integer> rS = new Stack<>();
-
+        // 盘底需要最大值
         lS.push(Integer.MAX_VALUE);
         mS.push(Integer.MAX_VALUE);
         rS.push(Integer.MAX_VALUE);
-        for (int i = num; i > 0; i++){
+        // 先将圆盘放入到最左边的柱子上
+        for (int i = num; i > 0; i--){
             lS.push(i);
         }
-
+        // 上一个动作
         ActionEnum[] record = new ActionEnum[]{ActionEnum.NO};
-
+        // 总步数
         int step = 0;
         // 每一次都是四种尝试
         while (rS.size() < num + 1){
@@ -122,7 +134,7 @@ public class HannioTower {
             step += fStack2tStack(record, ActionEnum.R2M, ActionEnum.M2R, mS, rS, mid, right);
             step += fStack2tStack(record, ActionEnum.M2R, ActionEnum.R2M, rS, mS, right, mid);
         }
-
+        return step;
     }
 
     /**
@@ -137,6 +149,7 @@ public class HannioTower {
      * @return
      */
     private static int fStack2tStack(ActionEnum[] record, ActionEnum pre, ActionEnum now, Stack<Integer> fStack, Stack<Integer> tStack, String from, String to) {
+        // 上一波动作不可逆，并且不能出现大压小的问题就可以走
         if (record[0] != pre && fStack.peek() < tStack.peek()){
             System.out.printf("Move %d from %s to %s\n", fStack.peek(), from, to);
             tStack.push(fStack.pop());
@@ -152,8 +165,9 @@ public class HannioTower {
      * @param args
      */
     public static void main(String[] args) {
-        HannioTower hannioTower = new HannioTower();
-        hannioTower.hanioProblem(2, "left", "mid", "right", "left", "right");
+//        HanoiTower hanoiTower = new HanoiTower();
+        // 两个盘从左边到右边
+        HanoiTower.hanoiTower2(2, "left", "mid", "right");
     }
 
 
