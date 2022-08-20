@@ -1,13 +1,14 @@
-package classespackage.tree;
+package classespackage.stackAndQueue;
 
 import dataConstruct.MyTreeNode;
+import dataConstruct.MyTreeNodePlus;
 
 import java.util.*;
 
 /**
  * @author swzhao
  * @date 2021/12/2 9:47 下午
- * @Discreption <>构造数组的maxtree：
+ * @Discreption <>构造数组的MaxTree：
  * 1、数组不能有重复元素
  * 2、树是二叉树，
  * 3、值最大的节点是树头
@@ -17,6 +18,7 @@ import java.util.*;
  * 2、第一个比他大的使用栈可以一次遍历获取，每一个数都pop栈直到比栈底空或者比自己大时，栈顶为自己的某一边第一个最大值
  */
 public class MaxTree {
+
 
     /**
      * 辅助栈
@@ -113,8 +115,6 @@ public class MaxTree {
                 }
                 //直到比自己大的值出现了
                 stackHelper.push(node);
-                // 添加该节点到list
-                myTreeNodes.add(node);
             }
         }else{
             map = rightMap;
@@ -126,8 +126,6 @@ public class MaxTree {
                 }
                 //直到比自己大的值出现了
                 stackHelper.push(node);
-                // 添加该节点到list
-                myTreeNodes.add(node);
             }
         }
         // 到这里栈里面维护了从顶到底 从小到大的顺序，或者为空，这时遍历栈
@@ -151,6 +149,89 @@ public class MaxTree {
 
     }
 
+
+    public static MyTreeNode getMytreeNode(int[] arr){
+        MyTreeNode[] myTreeNodes = new MyTreeNode[arr.length];
+        MyTreeNode head = null;
+        Stack<MyTreeNode> stack = new Stack<>();
+        Map<MyTreeNode, MyTreeNode> treeNodeMap = new HashMap<>();
+        for (int i = 0; i < arr.length; i++){
+            myTreeNodes[i] = new MyTreeNode(arr[i]);
+            treeNodeMap.put(myTreeNodes[i], new MyTreeNode(-1));
+            while (!stack.isEmpty() && arr[i] > stack.peek().getData()){
+                stack.pop();
+            }
+            if (stack.isEmpty()){
+                treeNodeMap.get(myTreeNodes[i]).setLeft(null);
+            }else {
+                treeNodeMap.get(myTreeNodes[i]).setLeft(stack.peek());
+            }
+            stack.push(myTreeNodes[i]);
+        }
+        stack.clear();
+        for (int i = arr.length-1; i >= 0; i--){
+            MyTreeNode cur = myTreeNodes[i];
+            while (!stack.isEmpty() && cur.getData() > stack.peek().getData()){
+                stack.pop();
+            }
+            if (stack.isEmpty()){
+                treeNodeMap.get(cur).setRight(null);
+            }else{
+                treeNodeMap.get(cur).setRight(stack.peek());
+            }
+            stack.push(cur);
+        }
+
+        for (MyTreeNode myTreeNode : treeNodeMap.keySet()){
+            MyTreeNode leftAndRight = treeNodeMap.get(myTreeNode);
+            MyTreeNode left = leftAndRight.getLeft();
+            MyTreeNode right = leftAndRight.getRight();
+            if (left == null && right == null){
+                head = myTreeNode;
+            }else if (left == null || right == null){
+                MyTreeNode parent = left == null? right : left;
+                if (parent.getLeft() == null){
+                    parent.setLeft(myTreeNode);
+                }else {
+                    parent.setRight(myTreeNode);
+                }
+            }else {
+                MyTreeNode parent = left.getData() > right.getData() ? right : left;
+                if (parent.getLeft() == null){
+                    parent.setLeft(myTreeNode);
+                }else {
+                    parent.setRight(myTreeNode);
+                }
+            }
+        }
+        return head;
+    }
+
+
+    /**
+     * 测试用例
+     * @param args
+     */
+    public static void main(String[] args) {
+        // 详解版
+        MaxTree maxTree = new MaxTree();
+        MyTreeNode maxTree1 = maxTree.getMaxTree(new Integer[]{3, 4, 5, 1, 2});
+        printNode(maxTree1);
+
+        //// 简化版
+        //MyTreeNode mytreeNode = getMytreeNode(new int[]{3, 4, 5, 1, 2});
+        //// 遍历二叉树
+        //printNode(mytreeNode);
+    }
+
+    private static void printNode(MyTreeNode mytreeNode) {
+        if (mytreeNode == null){
+            return;
+        }
+        System.out.println(mytreeNode.getData());
+        printNode(mytreeNode.getLeft());
+        printNode(mytreeNode.getRight());
+    }
 
 
 }

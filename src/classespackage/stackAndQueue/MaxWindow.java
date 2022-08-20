@@ -2,12 +2,15 @@ package classespackage.stackAndQueue;
 
 import classespackage.Constants;
 
+import java.util.Deque;
 import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * @Author swzhao
  * @Date 2021/11/20 21:32
- * @Discription<> 窗口最大值：一个数组和一个窗口，窗口移动到数组尾部，打印出每一步的窗口最大值
+ * @Discription<>生成窗口最大值数组
+ *     窗口最大值：一个数组和一个窗口，窗口移动到数组尾部，打印出每一步的窗口最大值
  */
 public class MaxWindow {
 
@@ -53,6 +56,43 @@ public class MaxWindow {
             e.printStackTrace();
             return null;
         }
+    }
+
+
+    /**
+     * 二轮
+     * @param arr
+     * @param w
+     * @return
+     */
+    public static int[] getmin(int[] arr, int w){
+        if (arr == null || w < 1){
+            return null;
+        }
+        int length = arr.length;
+        Deque<Integer> queue = new LinkedList<>();
+        int index = 0;
+        int[] res = new int[length - w + 1];
+        for (int i = 0; i < arr.length ; i++){
+            while (!queue.isEmpty() && arr[i] > arr[queue.getLast()]){
+                queue.pollLast();
+            }
+            queue.addLast(i);
+            if (i - queue.getFirst() > 2){
+                queue.pollFirst();
+            }
+            if (i >= w-1){
+                res[index++] = arr[queue.getFirst()];
+            }
+        }
+        return res;
+    }
+
+
+    public static void main(String[] args) {
+
+        int[] maxWindow = MaxWindow.getMaxWindow(new int[]{4, 3, 5, 4, 3, 3, 6, 7}, 3);
+
     }
 
 
