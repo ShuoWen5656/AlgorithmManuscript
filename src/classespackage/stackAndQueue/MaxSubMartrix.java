@@ -1,11 +1,14 @@
 package classespackage.stackAndQueue;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Stack;
+import java.util.jar.JarEntry;
 
 /**
  * @author swzhao
  * @date 2021/12/8 9:58 下午
- * @Discreption <>最大子矩阵大小
+ * @Discreption <>求最大子矩阵的大小
  */
 public class MaxSubMartrix {
 
@@ -47,15 +50,17 @@ public class MaxSubMartrix {
         Stack<Integer> stack = new Stack<>();
         int max = 0;
         for (int i = 0; i < height.length; i++){
-            // 挖比自己大的或者相等的，直到遇到比自己小的
-            while (!stack.isEmpty() && height[i] <= stack.peek()){
+            // 栈保持栈顶到栈底 大-小，相等必须进去，否则会影响比该值大的值计算
+            while (!stack.isEmpty() && height[i] <= height[stack.peek()]){
                 Integer topIndex = stack.pop();
-                max = Math.max(max, (i - stack.peek() - 1) * height[topIndex]);
+                int k = stack.isEmpty() ? -1 : stack.peek();
+                // 这里在多个相等的情况下可能计算的不对，但是相等情况下当前计算的值也不会是最后的答案随意无关紧要
+                max = Math.max(max, (i - k - 1) * height[topIndex]);
             }
             // 挖完之后把自己放进去,放的不是值，是角标
             stack.push(i);
         }
-        // 结束之后如果stack还有值，则继续执行
+        // 结束之后如果stack还有值，说明右边没有比自己小的值了，就按照右边的边界减，则继续执行
         while (!stack.isEmpty()){
             int topIndex = stack.pop();
             int k = stack.isEmpty()? -1 : stack.peek();
@@ -64,6 +69,95 @@ public class MaxSubMartrix {
         }
         return max;
     }
+
+
+
+
+    public static int getMaxSubMaxSize(int[][] arr) {
+        if (arr == null || arr.length == 0 || arr[0].length == 0){
+            return 0;
+        }
+        int[] helpeArr = new int[arr[0].length];
+
+        int max = Integer.MIN_VALUE;
+        for (int i = 0; i < arr.length; i++){
+            for (int j = 0; j < arr[i].length; j++){
+                helpeArr[j] = arr[i][j] == 0? 0: helpeArr[j] + arr[i][j];
+            }
+            max = Math.max(max, getMaxValueFromHelperArr(helpeArr));
+        }
+        return max;
+    }
+
+    private static int getMaxValueFromHelperArr(int[] helpeArr) {
+        Stack<Integer> stack = new Stack<>();
+        // linked为了好debug带顺序看,key 当前index，value为当前index左边第一个比自己小的数的index
+        Map<Integer, Integer> leftMap = new LinkedHashMap<>();
+        Map<Integer, Integer> rightMap = new LinkedHashMap<>();
+        for (int i = 0; i < helpeArr.length; i++){
+            while (!stack.isEmpty() && helpeArr[i] <= helpeArr[stack.peek()]){
+                stack.pop();
+            }
+            if (stack.isEmpty()){
+                leftMap.put(i, null);
+            }else {
+                leftMap.put(i, stack.peek());
+            }
+            stack.push(i);
+        }
+        stack.clear();
+        for (int j = helpeArr.length-1; j >= 0; j--){
+            while (!stack.isEmpty() && helpeArr[j] <= helpeArr[stack.peek()]){
+                stack.pop();
+            }
+            if (stack.isEmpty()){
+                rightMap.put(j, null);
+            }else {
+                rightMap.put(j, stack.peek());
+            }
+            stack.push(j);
+        }
+        int max = Integer.MIN_VALUE;
+        for (int k = 0; k < helpeArr.length; k++){
+            Integer left = leftMap.get(k);
+            Integer right = rightMap.get(k);
+            if (left == null && right == null){
+                // 左右都没比它小的，就直接乘以长度即可
+                max = Math.max(max, helpeArr[k] * helpeArr.length);
+            }else if (left == null || right == null){
+                if (left == null){
+                    max = Math.max(max, helpeArr[k] * right);
+                }else{
+                    max = Math.max(max, helpeArr[k] * (helpeArr.length - left));
+                }
+            }else {
+                max = Math.max(max, (right-left-1) * helpeArr[k]);
+            }
+        }
+        return max;
+    }
+
+
+    public static void main(String[] args) {
+        int[][] ints = new int[][]{{1,0,1,1}, {1,1,1,1}, {1,1,1,0}};
+        for (int[] anInt : ints) {
+            for (int i : anInt) {
+                System.out.print(i);
+            }
+            System.out.println();
+        }
+
+        MaxSubMartrix maxSubMartrix = new MaxSubMartrix();
+        int i = maxSubMartrix.maxRecSize(ints);
+
+        System.out.println(i);
+
+        // 我的方法
+        //int maxSubMaxSize = getMaxSubMaxSize(ints);
+        //System.out.println(maxSubMaxSize);
+
+    }
+
 
 
 }
