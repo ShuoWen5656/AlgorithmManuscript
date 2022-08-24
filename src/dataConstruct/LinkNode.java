@@ -45,4 +45,14 @@ public class LinkNode{
     public void setRadomNode(LinkNode radomNode) {
         this.radomNode = radomNode;
     }
+
+
+    @Override
+    public String toString() {
+        return "LinkNode{" +
+                "value=" + value +
+                ", next=" + next +
+                ", radomNode=" + radomNode +
+                '}';
+    }
 }

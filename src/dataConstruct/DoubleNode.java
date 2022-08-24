@@ -46,4 +46,5 @@ public class DoubleNode {
     public void setLast(DoubleNode last) {
         this.last = last;
     }
+
 }

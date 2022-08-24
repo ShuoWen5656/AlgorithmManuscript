@@ -1,5 +1,8 @@
 package classespackage;
 
+import dataConstruct.DoubleNode;
+import dataConstruct.LinkNode;
+
 /**
  * @Author swzhao
  * @Date 2022/2/13 21:02
@@ -42,6 +45,45 @@ public class CommonUtils<T> {
             max = Math.max(max, arr[i]);
         }
         return max;
+    }
+
+
+    /**
+     * 形成一个单链表返回头节点
+     * @param arr
+     * @return
+     */
+    public static LinkNode getLinkNodeListByArr(int[] arr){
+        if (arr == null || arr.length == 0){
+            return null;
+        }
+        LinkNode head = new LinkNode(arr[0]);
+        LinkNode cur = head;
+        for (int i = 1; i < arr.length; i++){
+            cur.setNext(new LinkNode(arr[i]));
+            cur = cur.getNext();
+        }
+        return head;
+    }
+
+    /**
+     * 形成一个双向链表返回
+     * @param arr
+     * @return
+     */
+    public static DoubleNode getDoubleNodeListByArr(int[] arr){
+        if (arr == null || arr.length == 0){
+            return null;
+        }
+        DoubleNode head = new DoubleNode(String.valueOf(arr[0]));
+        DoubleNode cur = head;
+        for (int i = 1; i < arr.length; i++){
+            DoubleNode newNode = new DoubleNode(String.valueOf(arr[i]));
+            cur.setNext(newNode);
+            newNode.setLast(cur);
+            cur = cur.getNext();
+        }
+        return head;
     }
 
 

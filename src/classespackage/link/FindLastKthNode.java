@@ -1,11 +1,14 @@
 package classespackage.link;
 
+import classespackage.CommonUtils;
+import dataConstruct.DoubleNode;
 import dataConstruct.LinkNode;
 
 /**
  * @author swzhao
  * @date 2021/12/18 10:03 下午
- * @Discreption <>查找倒数第k个节点：
+ * @Discreption <>在单链表和双链表中删除倒数第k个节点
+ *     查找倒数第k个节点：
  * 思路1：
  * 1、遍历链表，当遍历到第k个时，头节点设置一个临时指针q，接下来，k走一个，q走一个，直到k到底，q就是倒数第k个节点
  * 思路2：
@@ -100,6 +103,87 @@ public class FindLastKthNode {
         }
         return tem;
     }
+
+
+    /**
+     * 找到倒数k个节点并删除返回
+     * @param head
+     * @param k
+     * @return
+     */
+    public static LinkNode findLastKNode(LinkNode head, int k){
+        LinkNode p = head;
+        LinkNode q = head;
+        int index = 1;
+        while (p != null){
+            p = p.getNext();
+            // 因为要找到前一个删掉
+            if (index++ > k+1){
+                q = q.getNext();
+            }
+        }
+        if (index < k){
+            // 说明长度小于k
+            return null;
+        }
+        LinkNode next = q.getNext();
+        q.setNext(next.getNext());
+        next.setNext(null);
+        return next;
+    }
+
+
+    /**
+     * 双向链表删除倒数k个节点
+     * 方案二
+     * @param head
+     * @param k
+     * @return
+     */
+    public static DoubleNode findLastKDoubleNode(DoubleNode head, int k){
+        DoubleNode p = head;
+        DoubleNode remove = null;
+        while (p != null){
+            p = p.getNext();
+            k--;
+        }
+        if (k == 0){
+            // 头结点
+            DoubleNode next = head.getNext();
+            head.setNext(null);
+            next.setLast(null);
+            remove = head;
+            head = next;
+        }else if (k > 0){
+            // 不存在
+            return null;
+        }else {
+            p = head;
+            // 找前一个
+            while (++k != 0){
+                p = p.getNext();
+            }
+            DoubleNode next = p.getNext();
+            next.setLast(null);
+            p.setNext(next.getNext());
+            remove = next;
+        }
+        return remove;
+    }
+
+
+    public static void main(String[] args) {
+        //LinkNode linkNodeListByArr = CommonUtils.getLinkNodeListByArr(new int[]{5, 2, 4, 6, 7});
+        //LinkNode lastKNode = findLastKNode(linkNodeListByArr, 4);
+        //System.out.println(lastKNode);
+
+        DoubleNode doubleNodeListByArr = CommonUtils.getDoubleNodeListByArr(new int[]{5, 2, 4, 6, 7});
+        DoubleNode lastKDoubleNode = findLastKDoubleNode(doubleNodeListByArr, 5);
+        System.out.println(lastKDoubleNode.getValue());
+
+
+    }
+
 
 //    public void removeTheLast(){
 //
