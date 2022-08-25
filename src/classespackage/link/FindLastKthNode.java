@@ -8,6 +8,7 @@ import dataConstruct.LinkNode;
  * @author swzhao
  * @date 2021/12/18 10:03 下午
  * @Discreption <>在单链表和双链表中删除倒数第k个节点
+ * 删除链表的中间节点和a/b处的节点
  *     查找倒数第k个节点：
  * 思路1：
  * 1、遍历链表，当遍历到第k个时，头节点设置一个临时指针q，接下来，k走一个，q走一个，直到k到底，q就是倒数第k个节点
@@ -72,18 +73,37 @@ public class FindLastKthNode {
      * @return
      */
     private LinkNode getMidNode(LinkNode head){
+        if (head == null || head.getNext() == null){
+            return null;
+        }
+        LinkNode pre = head;
+        boolean start = false;
         LinkNode mid = head;
-        LinkNode headTem = head;
+        LinkNode headTem = head.getNext();
         int count = 0;
-        while (headTem.getNext() != null){
+        while (headTem != null){
             count ++;
             if(count%2 == 0){
+                start = true;
                 mid = mid.getNext();
+            }
+            if (start){
+                pre = pre.getNext();
             }
             headTem = headTem.getNext();
         }
+        if (pre == mid){
+            //头结点
+            LinkNode next = mid.getNext();
+            mid.setNext(null);
+            head = next;
+        }else {
+            pre.setNext(mid.getNext());
+            mid.setNext(null);
+        }
         return mid;
     }
+
 
     /**
      * 获取第a/b个节点：double类型a/b向上取整，获取到第几个
@@ -93,13 +113,37 @@ public class FindLastKthNode {
      * @return
      */
     private LinkNode getNodeByAB(LinkNode head, int a, int b){
-        double index = (double)a/(double)b;
-        int temIndex =  (int) Math.ceil(index);
-        LinkNode tem = head;
+        if (head == null || head.getNext() == null){
+            return null;
+        }
         int count = 0;
+        LinkNode len = head;
+        while (len != null){
+            len = len.getNext();
+            count++;
+        }
+        double index = (double)(a*count)/(double)b;
+        int temIndex =  (int) Math.ceil(index);
+        LinkNode pre = null;
+        LinkNode tem = head;
+        count = 1;
         while (count != temIndex){
             tem = tem.getNext();
             count ++;
+            if (pre  == null){
+                pre = head;
+                continue;
+            }
+            pre = pre.getNext();
+        }
+        if (pre == null && tem == head){
+            //头结点
+            LinkNode next = tem.getNext();
+            tem.setNext(null);
+            head = next;
+        }else {
+            pre.setNext(tem.getNext());
+            tem.setNext(null);
         }
         return tem;
     }
@@ -177,9 +221,18 @@ public class FindLastKthNode {
         //LinkNode lastKNode = findLastKNode(linkNodeListByArr, 4);
         //System.out.println(lastKNode);
 
-        DoubleNode doubleNodeListByArr = CommonUtils.getDoubleNodeListByArr(new int[]{5, 2, 4, 6, 7});
-        DoubleNode lastKDoubleNode = findLastKDoubleNode(doubleNodeListByArr, 5);
-        System.out.println(lastKDoubleNode.getValue());
+        //DoubleNode doubleNodeListByArr = CommonUtils.getDoubleNodeListByArr(new int[]{5, 2, 4, 6, 7});
+        //DoubleNode lastKDoubleNode = findLastKDoubleNode(doubleNodeListByArr, 5);
+        //System.out.println(lastKDoubleNode.getValue());
+
+        LinkNode linkNodeListByArr = CommonUtils.getLinkNodeListByArr(new int[]{5, 2, 4, 6, 7});
+
+        FindLastKthNode findLastKthNode = new FindLastKthNode();
+        LinkNode midNode = findLastKthNode.getNodeByAB(linkNodeListByArr, 3, 5);
+        System.out.println(midNode);
+
+
+
 
 
     }
