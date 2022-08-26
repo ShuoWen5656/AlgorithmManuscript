@@ -13,41 +13,13 @@ public class ReverseListNode {
 
 
     /**
-     * 反转部分链表
+     * 翻转部分单链表
+     * @param head
+     * @param from
+     * @param to
      * @return
      */
-    public LinkNode reversePartList(LinkNode head, int from, int to){
-        int length = 0;
-        LinkNode fromNode = null;
-        LinkNode toNode = null;
-        LinkNode tem = head;
-        // 遍历：1、找出长度2、找出from前一个节点和to的后一个节点
-        while (tem.getNext() != null){
-            length ++;
-            if(length == from){
-                // from前面的节点
-                fromNode = tem;
-            }
-            if(length == to){
-                toNode = tem.getNext().getNext();
-            }
-        }
-        if(to - from + 1 > length){
-            return head;
-        }
-        // 反转from-to,返回部分链表的前一个node
-        LinkNode headFrom = ReverseListNode.reverse(fromNode);
-        // 先取出反转前第一个存起来
-        LinkNode lastNode = fromNode.getNext();
-        // 将反转后的第一个位置设置为fromNode的next
-        fromNode.setNext(headFrom.getNext());
-        // 反转前第一个现在是尾巴，尾巴设置next为to的后一个即可
-        lastNode.setNext(toNode);
-        return head;
-    }
-
-
-    public static LinkNode reverseNodesFomeTo(LinkNode head, int from, int to){
+    public static LinkNode reverseNodesFromTo(LinkNode head, int from, int to){
         int length = 0;
         LinkNode cur = head;
         LinkNode pre = head;
@@ -90,6 +62,11 @@ public class ReverseListNode {
     }
 
 
+    /**
+     * 翻转单链表
+     * @param head
+     * @return
+     */
     public static LinkNode reverse(LinkNode head){
         if (head == null || head.getNext() == null){
             return head;
@@ -108,7 +85,11 @@ public class ReverseListNode {
     }
 
 
-
+    /**
+     * 翻转双链表
+     * @param head
+     * @return
+     */
     public static DoubleNode reverseD(DoubleNode head){
         if (head == null || head.getNext() == null){
             return head;
@@ -133,17 +114,12 @@ public class ReverseListNode {
     public static void main(String[] args) {
         //ReverseListNode reverseListNode = new ReverseListNode();
         LinkNode linkNodeListByArr = CommonUtils.getLinkNodeListByArr(new int[]{5, 2, 4, 6, 7});
-        //LinkNode reverse = reverse(linkNodeListByArr);
-        //LinkNode lastKNode = findLastKNode(linkNodeListByArr, 4);
-        //System.out.println(reverse);
+        LinkNode reverse = reverse(linkNodeListByArr);
+        System.out.println(reverse);
 
         //DoubleNode doubleNodeListByArr = CommonUtils.getDoubleNodeListByArr(new int[]{5, 2, 4, 6, 7});
         //DoubleNode lastKDoubleNode = reverseD(doubleNodeListByArr);
         //System.out.println(lastKDoubleNode.getValue());
-
-
-        LinkNode linkNode = reverseNodesFomeTo(linkNodeListByArr, 2, 3);
-        CommonUtils.printLinkNode(linkNode);
 
 
     }
