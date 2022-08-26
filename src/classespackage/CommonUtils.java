@@ -87,4 +87,17 @@ public class CommonUtils<T> {
     }
 
 
+    /**
+     * 打印单链表结构
+     * @param linkNode
+     */
+    public static void printLinkNode(LinkNode linkNode){
+        LinkNode cur = linkNode;
+        while (cur != null){
+            System.out.println(cur.getValue());
+            cur = cur.getNext();
+        }
+    }
+
+
 }

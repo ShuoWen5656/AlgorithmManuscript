@@ -1,5 +1,6 @@
 package classespackage.link;
 
+import classespackage.CommonUtils;
 import dataConstruct.DoubleNode;
 import dataConstruct.LinkNode;
 
@@ -10,53 +11,6 @@ import dataConstruct.LinkNode;
  */
 public class ReverseListNode {
 
-    /**
-     * 反转全链表
-     * @param head
-     * @return
-     */
-    public LinkNode reverseList(LinkNode head){
-        LinkNode temp = null;
-        LinkNode next = head.getNext();
-        LinkNode pre = null;
-        while (next != null){
-            // 将下一个先放好
-            pre = next.getNext();
-            // 上一个设置为next
-            next.setNext(temp);
-            // 上一个进一位，这个时候next应改了，所以千万不能getnext
-            temp = next;
-            // next进一位，不能用getNext
-            next = pre;
-        }
-        head.setNext(next);
-        return head;
-    }
-
-    /**
-     * 反转双向链表
-     * @param head
-     * @return
-     */
-    public DoubleNode reverseList(DoubleNode head){
-        DoubleNode temp = null;
-        DoubleNode next = head.getNext();
-        DoubleNode pre = null;
-        while (next != null){
-            // 将下一个先放好
-            pre = next.getNext();
-            // 上一个设置为next
-            next.setNext(temp);
-            // 下一个设置为last
-            next.setLast(pre);
-            // 上一个进一位，这个时候next应改了，所以千万不能getnext
-            temp = next;
-            // next进一位，不能用getNext
-            next = pre;
-        }
-        head.setNext(next);
-        return head;
-    }
 
     /**
      * 反转部分链表
@@ -82,7 +36,7 @@ public class ReverseListNode {
             return head;
         }
         // 反转from-to,返回部分链表的前一个node
-        LinkNode headFrom = reverseList(fromNode);
+        LinkNode headFrom = ReverseListNode.reverse(fromNode);
         // 先取出反转前第一个存起来
         LinkNode lastNode = fromNode.getNext();
         // 将反转后的第一个位置设置为fromNode的next
@@ -92,5 +46,106 @@ public class ReverseListNode {
         return head;
     }
 
+
+    public static LinkNode reverseNodesFomeTo(LinkNode head, int from, int to){
+        int length = 0;
+        LinkNode cur = head;
+        LinkNode pre = head;
+        LinkNode fromNode = null;
+        LinkNode toNode = null;
+        while (cur != null){
+            length ++;
+            if (length+1 == from){
+                // from的前一个
+                pre = cur;
+            }
+            if (length == from){
+                fromNode = cur;
+            }
+            if (length == to){
+                toNode = cur;
+            }
+            cur = cur.getNext();
+        }
+        if (fromNode == null || toNode == null){
+            return null;
+        }
+        LinkNode toNext = toNode.getNext();
+        if (fromNode == head){
+            if (toNext == null){
+                return reverse(fromNode);
+            }else {
+                toNode.setNext(null);
+                reverse(fromNode);
+                fromNode.setNext(toNext);
+                head = toNode;
+            }
+        }else {
+            toNode.setNext(null);
+            reverse(fromNode);
+            pre.setNext(toNode);
+            fromNode.setNext(toNext);
+        }
+        return head;
+    }
+
+
+    public static LinkNode reverse(LinkNode head){
+        if (head == null || head.getNext() == null){
+            return head;
+        }
+        LinkNode cur = head;
+        LinkNode next = head.getNext();
+        while (next != null){
+            LinkNode tem = next.getNext();
+            next.setNext(cur);
+            cur = next;
+            next = tem;
+        }
+        head.setNext(null);
+        head = cur;
+        return head;
+    }
+
+
+
+    public static DoubleNode reverseD(DoubleNode head){
+        if (head == null || head.getNext() == null){
+            return head;
+        }
+        DoubleNode cur = head;
+        DoubleNode next = head.getNext();
+        // 先做这一步
+        head.setLast(head.getNext());
+        while (next != null){
+            DoubleNode tem = next.getNext();
+            next.setNext(cur);
+            next.setLast(tem);
+            cur = next;
+            next = tem;
+        }
+        head.setNext(null);
+        head = cur;
+        return head;
+    }
+
+
+    public static void main(String[] args) {
+        //ReverseListNode reverseListNode = new ReverseListNode();
+        LinkNode linkNodeListByArr = CommonUtils.getLinkNodeListByArr(new int[]{5, 2, 4, 6, 7});
+        //LinkNode reverse = reverse(linkNodeListByArr);
+        //LinkNode lastKNode = findLastKNode(linkNodeListByArr, 4);
+        //System.out.println(reverse);
+
+        //DoubleNode doubleNodeListByArr = CommonUtils.getDoubleNodeListByArr(new int[]{5, 2, 4, 6, 7});
+        //DoubleNode lastKDoubleNode = reverseD(doubleNodeListByArr);
+        //System.out.println(lastKDoubleNode.getValue());
+
+
+        LinkNode linkNode = reverseNodesFomeTo(linkNodeListByArr, 2, 3);
+        CommonUtils.printLinkNode(linkNode);
+
+
+    }
 
 }
