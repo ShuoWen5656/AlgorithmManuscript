@@ -47,12 +47,12 @@ public class LinkNode{
     }
 
 
-    @Override
-    public String toString() {
-        return "LinkNode{" +
-                "value=" + value +
-                ", next=" + next +
-                ", radomNode=" + radomNode +
-                '}';
-    }
+    //@Override
+    //public String toString() {
+    //    return "LinkNode{" +
+    //            "value=" + value +
+    //            ", next=" + next +
+    //            ", radomNode=" + radomNode +
+    //            '}';
+    //}
 }
