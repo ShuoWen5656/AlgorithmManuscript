@@ -21,18 +21,19 @@ import java.util.Objects;
     public LinkNode kill2(LinkNode head, int num){
         try{
             LinkNode cur = head;
-            int tem = 0;
+            int tem = 1;
             int result = 1;
             // 环形链表长度遍历
             while (cur.getNext() != head){
                 tem ++;
+                cur = cur.getNext();
             }
             result = getLive(tem, num);
             while (--result != 0){
                 head = head.getNext();
             }
             // 幸存者变成head
-            head = head.getNext();
+            head.setNext(head);
             return head;
         }catch (Exception e){
             e.printStackTrace();
@@ -51,7 +52,7 @@ import java.util.Objects;
         if(tem == 1){
             return 1;
         }
-        return (getLive(tem - 1, num) + num - 1) / tem + 1;
+        return (getLive(tem - 1, num) + num - 1) % tem + 1;
     }
 
 
@@ -91,7 +92,12 @@ import java.util.Objects;
     }
 
 
-
+    /**
+     * 利用递归方式直接找到需要删除的节点
+     * @param head
+     * @param num
+     * @return
+     */
     public static LinkNode mykill2(LinkNode head, int num){
         if (head == null || head.getNext() == null){
             return head;
@@ -110,6 +116,12 @@ import java.util.Objects;
         return head;
     }
 
+    /**
+     * 递归从new一层层获取到old
+     * @param len
+     * @param num
+     * @return
+     */
     private static int getNum(int len, int num) {
         if (len == 1){
             return 1;
@@ -126,10 +138,12 @@ import java.util.Objects;
             cur = cur.getNext();
         }
         cur.setNext(linkNodeListByArr);
-        LinkNode linkNode = mykill2(linkNodeListByArr, 3);
+        JosePhosKill josePhosKill = new JosePhosKill();
+        LinkNode linkNode = josePhosKill.kill2(linkNodeListByArr, 3);
+
+
+//        LinkNode linkNode = mykill2(linkNodeListByArr, 3);
         System.out.println(linkNode);
-
-
     }
 
 
