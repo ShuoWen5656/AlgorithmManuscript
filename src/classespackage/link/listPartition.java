@@ -1,5 +1,6 @@
 package classespackage.link;
 
+import classespackage.CommonUtils;
 import dataConstruct.LinkNode;
 
 import java.util.ArrayList;
@@ -9,7 +10,8 @@ import java.util.ListIterator;
 /**
  * @author swzhao
  * @date 2022/1/22 1:03 下午
- * @Discreption <>将单链表按照某个值分为小于的（左），等于的（中），大于的
+ * @Discreption <>将单向链表按某值划分成左边小、中间相等、右边大的形式
+ *     将单链表按照某个值分为小于的（左），等于的（中），大于的
  */
 public class listPartition {
 
@@ -55,6 +57,44 @@ public class listPartition {
         }
     }
 
+
+    static class Helper {
+        LinkNode head;
+        LinkNode tail;
+        LinkNode cur;
+
+        public Helper(LinkNode head, LinkNode tail, LinkNode cur) {
+            this.head = head;
+            this.tail = tail;
+            this.cur = cur;
+        }
+
+        public LinkNode getHead() {
+            return head;
+        }
+
+        public void setHead(LinkNode head) {
+            this.head = head;
+        }
+
+        public LinkNode getTail() {
+            return tail;
+        }
+
+        public void setTail(LinkNode tail) {
+            this.tail = tail;
+        }
+
+        public LinkNode getCur() {
+            return cur;
+        }
+
+        public void setCur(LinkNode cur) {
+            this.cur = cur;
+        }
+    }
+
+
     /**
      * 进阶解法，不使用额外空间,将链表直接拆成三个，大于等于小于的三个单链表，然后合并
      * @param head
@@ -76,13 +116,24 @@ public class listPartition {
             while (cur != null){
                 Integer value = cur.getValue();
                 if(value > num){
-                    setLinkNodeToLinkList(ln, ln2, cur);
+                    Helper helper = new Helper(ln, ln2, cur);
+                    setLinkNodeToLinkList(helper);
+                    ln = helper.getHead();
+                    ln2 = helper.getTail();
                 }else if(value == num){
-                    setLinkNodeToLinkList(mn, mn2, cur);
+                    Helper helper = new Helper(mn, mn2, cur);
+                    setLinkNodeToLinkList(helper);
+                    mn = helper.getHead();
+                    mn2 = helper.getHead();
                 }else if(value < num){
-                    setLinkNodeToLinkList(sn, sn2, cur);
+                    Helper helper = new Helper(sn, sn2, cur);
+                    setLinkNodeToLinkList(helper);
+                    sn = helper.getHead();
+                    sn2 = helper.getTail();
                 }
+                LinkNode pre = cur;
                 cur = cur.getNext();
+                pre.setNext(null);
             }
             // 合并，注意一下null情况
             if (sn == null){
@@ -126,17 +177,20 @@ public class listPartition {
 
     /**
      * 将cur节点放入指定list后面
-     * @param head
-     * @param tail
-     * @param cur
      */
-    public static void setLinkNodeToLinkList(LinkNode head, LinkNode tail, LinkNode cur){
+    public static void setLinkNodeToLinkList(Helper helper){
+        LinkNode head = helper.getHead();
+        LinkNode tail = helper.getTail();
+        LinkNode cur = helper.getCur();
         if(head == null){
-            head = tail = cur;
+            head = cur;
+            tail = cur;
         }else{
             tail.setNext(cur);
             tail = tail.getNext();
         }
+        helper.setHead(head);
+        helper.setTail(tail);
     }
 
 
@@ -177,6 +231,92 @@ public class listPartition {
         linkNodes[end] = tem;
     }
 
+
+    /**
+     * 1、小的和放到small后面
+     * 2、大的放到尾巴
+     * 3、等于的不处理
+     * @param head
+     * @param pivot
+     */
+    public static void changeLinkNode(LinkNode head, int pivot){
+        LinkNode small = null;
+        LinkNode index = head;
+        LinkNode tail  = head;
+        LinkNode pre = null;
+        // 第一个比pivot大的节点，很重要
+        LinkNode firstBig = null;
+        // 获取尾巴节点
+        while (tail.getNext() != null){
+            tail = tail.getNext();
+        }
+        while (index != firstBig){
+            if (index.getValue() < pivot){
+                if (small == null){
+                    if (index == head){
+                        small = index;
+                    }else {
+                        LinkNode next = index.getNext();
+                        pre.setNext(next);
+                        small = index;
+                        small.setNext(head);
+                        head = small;
+                        index = next;
+                    }
+
+                }else {
+                    LinkNode next = small.getNext();
+                    LinkNode next1 = index.getNext();
+                    pre.setNext(next1);
+                    small.setNext(index);
+                    index.setNext(next);
+                    // index和pre要到下一场,small 为下一个
+                    small = small.getNext();
+                    index = next1;
+                    continue;
+                }
+            }else if (index.getValue() > pivot){
+                if (firstBig == null){
+                    firstBig = index;
+                }
+                if (index == head){
+                    LinkNode next1 = index.getNext();
+                    index.setNext(null);
+                    tail.setNext(index);
+                    tail = tail.getNext();
+                    head = next1;
+                    index = next1;
+                }else {
+                    LinkNode next1 = index.getNext();
+                    pre.setNext(next1);
+                    index.setNext(null);
+                    tail.setNext(index);
+                    tail = tail.getNext();
+                    index = next1;
+                    continue;
+                }
+            }
+            if (pre == null){
+                pre = head;
+            }else {
+                pre = pre.getNext();
+            }
+            index = index.getNext();
+        }
+    }
+
+
+    /**
+     * 测试用例
+     * @param args
+     */
+    public static void main(String[] args) {
+        LinkNode head = CommonUtils.getLinkNodeListByArr(new int[]{1, 2, 1, 4, 3, 9, 7});
+        //listPartition2(head, 2);
+        changeLinkNode(head, 2);
+        CommonUtils.printLinkNode(head);
+
+    }
 
 
 
