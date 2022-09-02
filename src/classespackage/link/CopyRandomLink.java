@@ -1,5 +1,6 @@
 package classespackage.link;
 
+import classespackage.CommonUtils;
 import dataConstruct.LinkNode;
 
 /**
@@ -93,6 +94,71 @@ public class CopyRandomLink {
             head.setNext(insertNode);
             insertNode.setNext(next);
         }
+    }
+
+
+    /**
+     * 简化版本
+     * @param head
+     * @return
+     */
+    public static LinkNode copy(LinkNode head){
+        if (head == null){
+            return head;
+        }
+        LinkNode cur = head;
+        while (cur != null){
+            LinkNode copy = new LinkNode(cur.getValue());
+            // 先指向母节点的下一个
+            copy.setRadomNode(cur.getRadomNode());
+            LinkNode next = cur.getNext();
+            cur.setNext(copy);
+            copy.setNext(next);
+            cur = copy.getNext();
+        }
+        cur = head;
+        LinkNode head2 = cur.getNext();
+        LinkNode cur2 = head2;
+        while (cur != null){
+            LinkNode copy = cur.getNext();
+            // 解决radom
+            LinkNode radomNode = copy.getRadomNode();
+            if (radomNode != null){
+                copy.setRadomNode(radomNode.getNext());
+            }
+            // 剔出来
+            cur.setNext(copy.getNext());
+            copy.setNext(null);
+            // 放入新列表中
+            if (cur2 != copy){
+                // 头结点
+                cur2.setNext(copy);
+                cur2 = copy;
+            }
+            cur = cur.getNext();
+        }
+        return head2;
+    }
+
+
+    public static void main(String[] args) {
+        LinkNode head = CommonUtils.getLinkNodeListByArr(new int[]{2, 3, 1, 5, 4});
+        //3-5
+        head.getNext().setRadomNode(head.getNext().getNext().getNext());
+        // 2-3
+        head.setRadomNode(head.getNext());
+        LinkNode head2 = copy(head);
+        // 检测一下
+        LinkNode cur1 = head;
+        LinkNode cur2 = head2;
+        while (cur1 != null){
+            if (cur1 == cur2){
+                System.out.println(false);
+            }
+            cur1 = cur1.getNext();
+            cur2 = cur2.getNext();
+        }
+        CommonUtils.printLinkNode(head2);
     }
 
 
