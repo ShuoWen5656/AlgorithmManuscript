@@ -48,28 +48,6 @@ public class CopyRandomLink {
                 next1.setNext(next2.getNext() == null ? null : next2.getNext());
                 cur = next2;
             }
-            // 分离代码有问题，cur复制给自己了
-//            while (cur != null){
-//                if(count%2 == 0){
-//                    // 偶数为新值
-//                    if(newhead == null){
-//                        newhead = newTail = cur;
-//                    }else{
-//                        newTail.setNext(cur);
-//                        newTail = newTail.getNext();
-//                    }
-//                }else{
-//                    // 奇数为老值
-//                    if(oldhead == null){
-//                        oldhead = oldTail = cur;
-//                    }else{
-//                        oldTail.setNext(cur);
-//                        oldTail = oldTail.getNext();
-//                    }
-//                }
-//                cur = cur.getNext();
-//                count++;
-//            }
             return newhead;
         }catch (Exception e){
             e.printStackTrace();
