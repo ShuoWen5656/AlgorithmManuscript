@@ -100,4 +100,56 @@ public class CommonUtils<T> {
     }
 
 
+    /**
+     * 获取单链表的长度
+     * @param head
+     * @param loop 成环的话 成环点
+     * @return
+     */
+    public static int getLinkNodeLenth(LinkNode head, LinkNode loop){
+        int len = 0;
+        LinkNode cur =  head;
+        // 第一次遇到入环点
+        boolean isFirst = true;
+        if (loop == null){
+            while (cur != null){
+                len++;
+                cur = cur.getNext();
+            }
+        }else {
+            while (cur != loop || isFirst){
+                if (cur == loop){
+                    isFirst = false;
+                }
+                len++;
+                cur = cur.getNext();
+            }
+        }
+        return len;
+    }
+
+    /**
+     * 根据value获取第一个node
+     * @return
+     */
+    public static LinkNode findFirstNodeByValue(LinkNode head ,int value){
+        LinkNode cur = head;
+        while (cur != null){
+            if (value == cur.getValue()){
+                return cur;
+            }
+            cur = cur.getNext();
+        }
+        return null;
+    }
+
+
+
+    public static void main(String[] args) {
+        LinkNode linkNodeListByArr = getLinkNodeListByArr(new int[]{2, 4, 6, 8});
+        int linkNodeLenth = getLinkNodeLenth(linkNodeListByArr, null);
+    }
+
+
+
 }

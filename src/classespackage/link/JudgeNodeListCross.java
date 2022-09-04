@@ -1,5 +1,6 @@
 package classespackage.link;
 
+import classespackage.CommonUtils;
 import dataConstruct.LinkNode;
 
 /**
@@ -187,6 +188,142 @@ public class JudgeNodeListCross {
                 return inLoop1;
             }
         }
+    }
+
+
+
+    public static LinkNode myGetCross(LinkNode head1, LinkNode head2){
+        if (head1 == null || head2 == null){
+            return null;
+        }
+        LinkNode res = null;
+        LinkNode loopNode1 = myGetLoopNode(head1);
+        LinkNode loopNode2 = myGetLoopNode(head2);
+        if (loopNode1 == null && loopNode2 == null){
+            res = findCross(head1, head2, null, null);
+        }else if (loopNode1 != null && loopNode2 != null){
+            // 都成环
+            if (loopNode1 == loopNode2){
+                // 入环点相同
+                res = findCross(head1, head2, loopNode1, loopNode2);
+            }else {
+                LinkNode cur = head1;
+                boolean isFirst = true;
+                while (cur != loopNode1 || isFirst){
+                    if (cur == loopNode1){
+                        isFirst = false;
+                    }
+                    if (cur == loopNode2){
+                        // loop1和2都可以
+                        res = loopNode2;
+                        break;
+                    }
+                    cur = cur.getNext();
+                }
+
+            }
+        }
+        return res;
+    }
+
+
+    /**
+     * 寻找入环点
+     * @param head
+     * @return
+     */
+    private static LinkNode myGetLoopNode(LinkNode head) {
+        LinkNode fast = head;
+        LinkNode slow = head;
+        //一轮
+        while (fast != null && fast.getNext() != null){
+            fast = fast.getNext().getNext();
+            slow = slow.getNext();
+            if (fast == slow){
+                break;
+            }
+        }
+        fast = head;
+        // 二轮
+        while (fast != null && slow != null && fast != slow){
+            fast = fast.getNext();
+            slow = slow.getNext();
+        }
+        // 这里只能给slow，因为无环单链表的情况下slow先到头
+        return slow;
+    }
+
+    private static LinkNode findCross(LinkNode head1, LinkNode head2, LinkNode loop1, LinkNode loop2){
+        LinkNode res = null;
+        // 没有环
+        int len1 = CommonUtils.getLinkNodeLenth(head1, loop1);
+        int len2 = CommonUtils.getLinkNodeLenth(head2, loop2);
+        int abs = Math.abs(len1 - len2);
+        LinkNode lenHead = len1 >= len2 ? head1 : head2;
+        LinkNode shortHead = len1 >= len2? head2 : head1;
+        while (abs-- != 0){
+            lenHead = lenHead.getNext();
+        }
+        boolean isFirst = true;
+        while ((lenHead != loop1 || lenHead != loop2) || isFirst){
+            if (lenHead == loop1 || lenHead == loop2){
+                // 第一次遇到入环点
+                isFirst = false;
+            }
+            if (lenHead == shortHead){
+                res = lenHead;
+                break;
+            }
+            lenHead = lenHead.getNext();
+            shortHead = shortHead.getNext();
+        }
+        //if (loop1 != null && loop2 != null && loop1 == loop2){
+        //    res = loop1;
+        //}
+        return res;
+    }
+
+
+    public static void main(String[] args) {
+        LinkNode head1 = CommonUtils.getLinkNodeListByArr(new int[]{1, 2, 3, 4, 5});
+        LinkNode head2 = CommonUtils.getLinkNodeListByArr(new int[]{6, 7, 8, 9, 0});
+        // 成环接入
+        LinkNode commonLoop = CommonUtils.getLinkNodeListByArr(new int[]{11, 12, 13});
+        LinkNode node13 = CommonUtils.findFirstNodeByValue(commonLoop, 13);
+        node13.setNext(commonLoop);
+        LinkNode node12 = CommonUtils.findFirstNodeByValue(commonLoop, 12);
+
+        LinkNode node3 = CommonUtils.findFirstNodeByValue(head1, 3);
+        LinkNode node5 = CommonUtils.findFirstNodeByValue(head1, 5);
+
+        LinkNode node9 = CommonUtils.findFirstNodeByValue(head2, 9);
+        LinkNode node0 = CommonUtils.findFirstNodeByValue(head2, 0);
+
+        // 情况一
+        //// 0-9
+        //node0.setNext(node9);
+        //// 5-3
+        //node5.setNext(node3);
+
+        // 情况二
+        // 9->3
+        //node9.setNext(node3);
+
+        // 情况三：什么都不做，没有焦点
+        // 情况四：
+        //node5.setNext(commonLoop);
+        //node0.setNext(node3);
+        // 情况五：
+        //node5.setNext(commonLoop);
+        //node0.setNext(commonLoop);
+        // 情况六
+        node0.setNext(commonLoop);
+        node5.setNext(node12);
+
+
+        System.out.println(myGetCross(head1, head2));
+
+
     }
 
 }
