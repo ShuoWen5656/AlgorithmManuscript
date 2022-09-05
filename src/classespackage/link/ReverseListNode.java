@@ -40,7 +40,7 @@ public class ReverseListNode {
             cur = cur.getNext();
         }
         if (fromNode == null || toNode == null){
-            return null;
+            return head;
         }
         LinkNode toNext = toNode.getNext();
         if (fromNode == head){
