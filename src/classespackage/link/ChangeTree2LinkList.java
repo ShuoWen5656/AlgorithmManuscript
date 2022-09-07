@@ -128,4 +128,114 @@ public class ChangeTree2LinkList {
         treeNodes.offer(root);
         inOrderToQueue(root.getRight(), treeNodes);
     }
+
+
+    /**
+     * 搜索二叉树转双向链表
+     * @param root
+     * @return
+     */
+    public static DoubleNode change2TreeNode(MyTreeNode root){
+        // 存储头尾的
+        DoubleNode[] leftRecord = new DoubleNode[2];
+        DoubleNode[] rightRecord = new DoubleNode[2];
+
+        DoubleNode head = null;
+        DoubleNode cur = new DoubleNode(root.getData());
+
+
+        process(root.getLeft(), leftRecord);
+        process(root.getRight(), rightRecord);
+
+        if (leftRecord[0] != null){
+            head = leftRecord[0];
+            leftRecord[1].setNext(cur);
+            cur.setLast(leftRecord[1]);
+        }
+        if (head == null){
+            head = cur;
+        }
+        if (rightRecord[0] != null){
+            rightRecord[0].setLast(cur);
+            cur.setNext(rightRecord[0]);
+        }
+        return head;
+    }
+
+    private static void process(MyTreeNode root, DoubleNode[] record) {
+        if (root == null){
+            record[0] = null;
+            record[1] = null;
+            return;
+        }
+        DoubleNode head = null;
+        DoubleNode tail = null;
+        // 自己先变成节点
+        DoubleNode doubleNode = new DoubleNode(root.getData());
+        if (root.getRight() == null && root.getLeft() == null){
+            // 叶子节点
+            record[0] = doubleNode;
+            record[1] = doubleNode;
+            return;
+        }
+        if (root.getLeft() != null){
+            // 左子树递归转链表
+            process(root.getLeft(), record);
+            if (record[0] != null){
+                // 左边有
+                head = record[0];
+                record[1].setNext(doubleNode);
+                doubleNode.setLast(record[1]);
+                tail = doubleNode;
+            }
+        }
+        if (head == null){
+            head = doubleNode;
+        }
+        if (root.getRight() != null){
+            process(root.getRight(), record);
+            if (record[0] != null){
+                doubleNode.setNext(record[0]);
+                record[0].setLast(doubleNode);
+                tail = record[1];
+            }
+        }
+        record[0] = head;
+        record[1] = tail;
+        return;
+    }
+
+    /**
+     * 测试用例
+     * @param args
+     */
+    public static void main(String[] args) {
+        MyTreeNode myTreeNode6 = new MyTreeNode(6);
+        MyTreeNode myTreeNode4 = new MyTreeNode(4);
+        MyTreeNode myTreeNode7 = new MyTreeNode(7);
+        MyTreeNode myTreeNode2 = new MyTreeNode(2);
+        MyTreeNode myTreeNode5 = new MyTreeNode(5);
+        MyTreeNode myTreeNode9 = new MyTreeNode(9);
+        MyTreeNode myTreeNode1 = new MyTreeNode(1);
+        MyTreeNode myTreeNode3 = new MyTreeNode(3);
+        MyTreeNode myTreeNode8 = new MyTreeNode(8);
+
+        myTreeNode6.setLeft(myTreeNode4);
+        myTreeNode6.setRight(myTreeNode7);
+        myTreeNode4.setLeft(myTreeNode2);
+        myTreeNode4.setRight(myTreeNode5);
+        myTreeNode7.setRight(myTreeNode9);
+        myTreeNode2.setLeft(myTreeNode1);
+        myTreeNode2.setRight(myTreeNode3);
+        myTreeNode9.setLeft(myTreeNode8);
+
+        DoubleNode doubleNode = change2TreeNode(myTreeNode6);
+        System.out.println(doubleNode);
+
+
+    }
+
+
+
+
 }

@@ -9,6 +9,11 @@ public class DoubleNode {
     private String value;
 
     /**
+     * 整数value
+     */
+    private Integer integerValue;
+
+    /**
      * 下一个
      */
     private DoubleNode next;
@@ -18,6 +23,11 @@ public class DoubleNode {
      */
     private DoubleNode last;
 
+
+
+    public DoubleNode(Integer integer){
+        this.integerValue = integer;
+    }
 
     public DoubleNode(String value) {
         this.value = value;
