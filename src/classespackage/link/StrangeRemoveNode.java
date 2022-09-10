@@ -1,5 +1,6 @@
 package classespackage.link;
 
+import classespackage.CommonUtils;
 import dataConstruct.LinkNode;
 
 /**
@@ -41,5 +42,18 @@ public class StrangeRemoveNode {
             e.printStackTrace();
             return head;
         }
+    }
+
+
+    /**
+     * 测试用例
+     * @param args
+     */
+    public static void main(String[] args) {
+        LinkNode head = CommonUtils.getLinkNodeListByArr(new int[]{1, 2, 3, 4});
+        LinkNode linkNode = remove1(head, 2);
+        CommonUtils.printLinkNode(head);
+
+
     }
 }
