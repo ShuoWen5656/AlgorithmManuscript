@@ -1,5 +1,8 @@
 package classespackage.tree;
 
+import classespackage.CommonUtils;
+import dataConstruct.DoubleNode;
+import dataConstruct.LinkNode;
 import dataConstruct.MyTreeNode;
 
 import java.util.*;
@@ -7,9 +10,17 @@ import java.util.*;
 /**
  * @author swzhao
  * @date 2022/3/7 9:49 下午
- * @Discreption <>树工具类，用来遍历和一些常规操作
+ * @Discreption <>分别用递归和非递归方式实现二叉树先序、中序和后续遍历
+ *     树工具类，用来遍历和一些常规操作
  */
 public class TreeUtils {
+
+
+
+
+
+
+
 
     /**
      * 先序遍历，注：这里的先后是根的遍历顺序
@@ -201,6 +212,153 @@ public class TreeUtils {
             e.printStackTrace();
         }
     }
+
+
+
+    public static void printPreOrder(MyTreeNode root){
+        if (root == null){
+            return;
+        }
+        System.out.println(root.getData());
+        printPreOrder(root.getLeft());
+        printPreOrder(root.getRight());
+    }
+
+    public static void printMidOrder(MyTreeNode root){
+        if (root == null){
+            return;
+        }
+        printMidOrder(root.getLeft());
+        System.out.println(root.getData());
+        printMidOrder(root.getRight());
+    }
+
+    public static void printPosOrder(MyTreeNode root){
+        if (root == null){
+            return;
+        }
+        printPosOrder(root.getLeft());
+        printPosOrder(root.getRight());
+        System.out.println(root.getData());
+    }
+
+
+
+    public static void printByStackPre(MyTreeNode root){
+        Stack<MyTreeNode> helperStack = new Stack<>();
+        helperStack.push(root);
+        while (!helperStack.isEmpty()){
+            // 根出，右进、左进
+            MyTreeNode pop = helperStack.pop();
+            if (pop.getRight() != null){
+                helperStack.push(pop.getRight());
+            }
+            if (pop.getLeft() != null){
+                helperStack.push(pop.getLeft());
+            }
+            System.out.println(pop.getData());
+        }
+    }
+
+
+
+    public static void printByStackMid(MyTreeNode root){
+        if (root == null){
+            return;
+        }
+        Stack<MyTreeNode> helperStack = new Stack<>();
+        MyTreeNode tem = root;
+        while (tem != null){
+            helperStack.push(tem);
+            tem = tem.getLeft();
+        }
+        while (!helperStack.isEmpty()){
+            MyTreeNode pop = helperStack.pop();
+            // 右子树以及右子树的所有左子节点
+            if (pop.getRight() != null){
+                tem = pop.getRight();
+                while (tem != null){
+                    helperStack.push(tem);
+                    tem = tem.getLeft();
+                }
+            }
+            System.out.println(pop.getData());
+        }
+    }
+
+
+    /**
+     * 类似先序遍历的逆过程
+     * @param root
+     */
+    public static void printByStackPos(MyTreeNode root){
+        Stack<MyTreeNode> s1 = new Stack<>();
+        Stack<MyTreeNode> s2 = new Stack<>();
+        s1.push(root);
+        while (!s1.isEmpty()){
+            MyTreeNode pop = s1.pop();
+            // 先序遍历时先右后左，这里需要反过来
+            if (pop.getLeft() != null){
+                s1.push(pop.getLeft());
+            }
+            if (pop.getRight() != null){
+                s1.push(pop.getRight());
+            }
+            s2.push(pop);
+        }
+        while (!s2.isEmpty()){
+            MyTreeNode pop = s2.pop();
+            System.out.println(pop.getData());
+        }
+    }
+
+    public static void printByOneStack(MyTreeNode root){
+        Stack<MyTreeNode> stack = new Stack<>();
+        // 上一次的打印节点
+        MyTreeNode h = null;
+        MyTreeNode tem = root;
+        while (tem != null){
+            stack.push(tem);
+            tem = tem.getLeft();
+        }
+        while (!stack.isEmpty()){
+            MyTreeNode peek = stack.peek();
+            // 这只会走一次
+            if (h == null){
+                h = stack.pop();
+                System.out.println(h.getData());
+                continue;
+            }
+            if ((peek.getRight() == null && peek.getLeft() == null)
+                    || h == peek.getRight()
+                    || (h == peek.getLeft() && peek.getRight() == null)){
+                // 三种情况直接输出
+                h = stack.pop();
+                System.out.println(h.getData());
+            }else {
+                // 左边打印完毕,并且右边有值,开始准备右边
+                MyTreeNode right = peek.getRight();
+                while (right != null){
+                    stack.push(right);
+                    right = right.getLeft();
+                }
+            }
+        }
+    }
+
+
+
+
+
+    public static void main(String[] args) {
+
+        MyTreeNode root = CommonUtils.getSearchMyTreeNode();
+
+        printByOneStack(root);
+
+    }
+
+
 
 
 

@@ -1,5 +1,6 @@
 package classespackage.link;
 
+import classespackage.CommonUtils;
 import dataConstruct.DoubleNode;
 import dataConstruct.LinkNode;
 import dataConstruct.MyTreeNode;
@@ -210,26 +211,9 @@ public class ChangeTree2LinkList {
      * @param args
      */
     public static void main(String[] args) {
-        MyTreeNode myTreeNode6 = new MyTreeNode(6);
-        MyTreeNode myTreeNode4 = new MyTreeNode(4);
-        MyTreeNode myTreeNode7 = new MyTreeNode(7);
-        MyTreeNode myTreeNode2 = new MyTreeNode(2);
-        MyTreeNode myTreeNode5 = new MyTreeNode(5);
-        MyTreeNode myTreeNode9 = new MyTreeNode(9);
-        MyTreeNode myTreeNode1 = new MyTreeNode(1);
-        MyTreeNode myTreeNode3 = new MyTreeNode(3);
-        MyTreeNode myTreeNode8 = new MyTreeNode(8);
+        MyTreeNode root = CommonUtils.getSearchMyTreeNode();
 
-        myTreeNode6.setLeft(myTreeNode4);
-        myTreeNode6.setRight(myTreeNode7);
-        myTreeNode4.setLeft(myTreeNode2);
-        myTreeNode4.setRight(myTreeNode5);
-        myTreeNode7.setRight(myTreeNode9);
-        myTreeNode2.setLeft(myTreeNode1);
-        myTreeNode2.setRight(myTreeNode3);
-        myTreeNode9.setLeft(myTreeNode8);
-
-        DoubleNode doubleNode = change2TreeNode(myTreeNode6);
+        DoubleNode doubleNode = change2TreeNode(root);
         System.out.println(doubleNode);
 
 
