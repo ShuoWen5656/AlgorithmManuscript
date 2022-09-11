@@ -214,7 +214,10 @@ public class TreeUtils {
     }
 
 
-
+    /**
+     * 递归先序遍历
+     * @param root
+     */
     public static void printPreOrder(MyTreeNode root){
         if (root == null){
             return;
@@ -224,6 +227,10 @@ public class TreeUtils {
         printPreOrder(root.getRight());
     }
 
+    /**
+     * 递归中序遍历
+     * @param root
+     */
     public static void printMidOrder(MyTreeNode root){
         if (root == null){
             return;
@@ -233,6 +240,10 @@ public class TreeUtils {
         printMidOrder(root.getRight());
     }
 
+    /**
+     * 递归后续遍历
+     * @param root
+     */
     public static void printPosOrder(MyTreeNode root){
         if (root == null){
             return;
@@ -243,7 +254,10 @@ public class TreeUtils {
     }
 
 
-
+    /**
+     * 单栈先序遍历
+     * @param root
+     */
     public static void printByStackPre(MyTreeNode root){
         Stack<MyTreeNode> helperStack = new Stack<>();
         helperStack.push(root);
@@ -261,7 +275,10 @@ public class TreeUtils {
     }
 
 
-
+    /**
+     * 单栈中序遍历
+     * @param root
+     */
     public static void printByStackMid(MyTreeNode root){
         if (root == null){
             return;
@@ -288,7 +305,7 @@ public class TreeUtils {
 
 
     /**
-     * 类似先序遍历的逆过程
+     * 双栈后续遍历
      * @param root
      */
     public static void printByStackPos(MyTreeNode root){
@@ -312,6 +329,10 @@ public class TreeUtils {
         }
     }
 
+    /**
+     * 单栈后续遍历
+     * @param root
+     */
     public static void printByOneStack(MyTreeNode root){
         Stack<MyTreeNode> stack = new Stack<>();
         // 上一次的打印节点
