@@ -3,6 +3,7 @@ package classespackage;
 import dataConstruct.DoubleNode;
 import dataConstruct.LinkNode;
 import dataConstruct.MyTreeNode;
+import dataConstruct.MyTreeNodePlus;
 
 /**
  * @Author swzhao
@@ -145,6 +146,59 @@ public class CommonUtils<T> {
     }
 
 
+    /**
+     * 堆遍历正序的树
+     * @return
+     */
+    public static MyTreeNode getTreeForEdge(){
+        MyTreeNode[] myTreeNodes = new MyTreeNode[17];
+        for (int i = 1; i < myTreeNodes.length; i++){
+            MyTreeNode myTreeNode = new MyTreeNode(i);
+            myTreeNodes[i] = myTreeNode;
+        }
+
+        myTreeNodes[1].setLeft(myTreeNodes[2]);
+        myTreeNodes[1].setRight(myTreeNodes[3]);
+        myTreeNodes[2].setLeft(myTreeNodes[4]);
+        myTreeNodes[3].setLeft(myTreeNodes[5]);
+        myTreeNodes[3].setRight(myTreeNodes[6]);
+        myTreeNodes[4].setLeft(myTreeNodes[7]);
+        myTreeNodes[4].setRight(myTreeNodes[8]);
+        myTreeNodes[5].setLeft(myTreeNodes[9]);
+        myTreeNodes[5].setRight(myTreeNodes[10]);
+        myTreeNodes[8].setRight(myTreeNodes[11]);
+        myTreeNodes[9].setLeft(myTreeNodes[12]);
+        myTreeNodes[11].setLeft(myTreeNodes[13]);
+        myTreeNodes[11].setRight(myTreeNodes[14]);
+        myTreeNodes[12].setLeft(myTreeNodes[15]);
+        myTreeNodes[12].setRight(myTreeNodes[16]);
+
+        return myTreeNodes[1];
+
+    }
+
+
+
+    /**
+     * 获取树当前节点所在高度
+     * @param root
+     * @param curLevel
+     * @return
+     */
+    public static int getTreeHeight(MyTreeNode root, int curLevel){
+        if (root == null){
+            return curLevel;
+        }else {
+            return Math.max(getTreeHeight(root.getLeft(), curLevel+1), getTreeHeight(root.getRight(), curLevel+1));
+        }
+    }
+
+
+
+    /**
+     * 获取一个搜索二叉树
+     * @return
+     */
     public static MyTreeNode getSearchMyTreeNode(){
         MyTreeNode myTreeNode6 = new MyTreeNode(6);
         MyTreeNode myTreeNode4 = new MyTreeNode(4);
@@ -170,8 +224,10 @@ public class CommonUtils<T> {
 
 
     public static void main(String[] args) {
-        LinkNode linkNodeListByArr = getLinkNodeListByArr(new int[]{2, 4, 6, 8});
-        int linkNodeLenth = getLinkNodeLenth(linkNodeListByArr, null);
+        MyTreeNode searchMyTreeNode = getSearchMyTreeNode();
+        int treeHeight = getTreeHeight(searchMyTreeNode, 0);
+        //LinkNode linkNodeListByArr = getLinkNodeListByArr(new int[]{2, 4, 6, 8});
+        //int linkNodeLenth = getLinkNodeLenth(linkNodeListByArr, null);
     }
 
 
