@@ -1,15 +1,18 @@
 package classespackage.tree;
 
+import classespackage.CommonUtils;
 import classespackage.Constants;
 import dataConstruct.MyTreeNode;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 /**
  * @author swzhao
  * @date 2022/3/11 8:50 下午
- * @Discreption <>序列化二叉树和反序列化二叉树
+ * @Discreption <>二叉树的序列化和反序列化
  */
 public class SerialTree {
 
@@ -132,6 +135,123 @@ public class SerialTree {
             return null;
         }
         return new MyTreeNode(Integer.valueOf(s));
+    }
+
+
+
+    public static String mySerialize(MyTreeNode root){
+        if (root == null){
+            return null;
+        }
+        return mySerial(root);
+    }
+
+    private static String mySerial(MyTreeNode root) {
+        if (root == null){
+            return "#!";
+        }
+        String str = Constants.EMPTY_STR;
+        Integer data = root.getData();
+        str += String.format("%d!", data);
+        str += mySerial(root.getLeft());
+        str += mySerial(root.getRight());
+        return str;
+    }
+
+
+
+    public static MyTreeNode unSerial(String serialStr){
+        String[] strs = serialStr.split("!");
+        int[] record = new int[1];
+        record[0] = 0;
+        MyTreeNode root = myUnSerial(strs, record);
+        return root;
+    }
+
+    private static MyTreeNode myUnSerial(String[] strs, int[] record) {
+        if (record[0] == strs.length){
+            return null;
+        }
+        String cur = strs[record[0]];
+        if ("#".equals(cur)){
+            return null;
+        }
+        MyTreeNode myTreeNode = new MyTreeNode(Integer.parseInt(cur));
+        record[0]++;
+        MyTreeNode left = myUnSerial(strs, record);
+        record[0]++;
+        MyTreeNode right = myUnSerial(strs, record);
+        myTreeNode.setLeft(left);
+        myTreeNode.setRight(right);
+        return myTreeNode;
+    }
+
+
+
+    public static String mySerialize2(MyTreeNode root){
+        Queue<MyTreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        String res = Constants.EMPTY_STR;
+        while (!queue.isEmpty()){
+            MyTreeNode cur = queue.poll();
+            if (cur == null){
+                res += "#!";
+            }else {
+                res += cur.getData()+"!";
+                queue.offer(cur.getLeft());
+                queue.offer(cur.getRight());
+            }
+        }
+        return res;
+    }
+
+
+
+
+
+
+    public static MyTreeNode unSerial2(String serialStr){
+        String[] str = serialStr.split("!");
+        Queue<MyTreeNode> queue = new LinkedList<>();
+        int[] record = new int[1];
+        record[0] = 0;
+        String rootData = str[record[0]++];
+        MyTreeNode root = new MyTreeNode(Integer.valueOf(rootData));
+        queue.offer(root);
+        while (!queue.isEmpty()){
+            String curData1 = str[record[0]++];
+            String curData2 = str[record[0]++];
+            MyTreeNode curNode = queue.poll();
+            MyTreeNode data1Node;
+            MyTreeNode data2Node;
+            if ("#".equals(curData1)){
+                data1Node = null;
+            }else {
+                data1Node = new MyTreeNode(Integer.parseInt(curData1));
+                queue.offer(data1Node);
+            }
+            if ("#".equals(curData2)){
+                data2Node = null;
+            }else {
+                data2Node = new MyTreeNode(Integer.parseInt(curData2));
+                queue.offer(data2Node);
+            }
+            curNode.setLeft(data1Node);
+            curNode.setRight(data2Node);
+        }
+        return root;
+    }
+
+    public static void main(String[] args) {
+        MyTreeNode head = CommonUtils.getSearchMyTreeNode();
+
+        String s = mySerialize2(head);
+
+        System.out.println(s);
+
+        MyTreeNode myTreeNode = unSerial2(s);
+        PrintTreeDirect.myPrint(myTreeNode);
+
     }
 
 }
