@@ -138,7 +138,11 @@ public class SerialTree {
     }
 
 
-
+    /**
+     * 先序遍历方式序列化
+     * @param root
+     * @return
+     */
     public static String mySerialize(MyTreeNode root){
         if (root == null){
             return null;
@@ -159,7 +163,11 @@ public class SerialTree {
     }
 
 
-
+    /**
+     * 先序遍历的反序列化
+     * @param serialStr
+     * @return
+     */
     public static MyTreeNode unSerial(String serialStr){
         String[] strs = serialStr.split("!");
         int[] record = new int[1];
@@ -187,7 +195,11 @@ public class SerialTree {
     }
 
 
-
+    /**
+     * 层序遍历（广度优先遍历）序列化
+     * @param root
+     * @return
+     */
     public static String mySerialize2(MyTreeNode root){
         Queue<MyTreeNode> queue = new LinkedList<>();
         queue.offer(root);
@@ -206,10 +218,11 @@ public class SerialTree {
     }
 
 
-
-
-
-
+    /**
+     * 反序列化
+     * @param serialStr
+     * @return
+     */
     public static MyTreeNode unSerial2(String serialStr){
         String[] str = serialStr.split("!");
         Queue<MyTreeNode> queue = new LinkedList<>();
@@ -245,11 +258,11 @@ public class SerialTree {
     public static void main(String[] args) {
         MyTreeNode head = CommonUtils.getSearchMyTreeNode();
 
-        String s = mySerialize2(head);
+        String s = mySerialize(head);
 
         System.out.println(s);
 
-        MyTreeNode myTreeNode = unSerial2(s);
+        MyTreeNode myTreeNode = unSerial(s);
         PrintTreeDirect.myPrint(myTreeNode);
 
     }

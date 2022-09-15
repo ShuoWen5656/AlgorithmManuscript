@@ -1,5 +1,6 @@
 package classespackage.link;
 
+import classespackage.CommonUtils;
 import com.sun.jmx.snmp.SnmpPduBulk;
 import dataConstruct.LinkNode;
 
@@ -44,6 +45,52 @@ public class TheLastThreeLinkedNodeAlgorithm {
             return head;
         }
     }
+
+    /**
+     * 副本
+     * @param head
+     * @param num
+     * @return
+     */
+    public static LinkNode insertNum2(LinkNode head, int num){
+        if (head == null){
+            return new LinkNode(num);
+        }
+        LinkNode linkNode = new LinkNode(num);
+        LinkNode cur = head.getNext();
+        LinkNode pre = head;
+        boolean isInsert = false;
+        while (cur != head){
+            if (cur.getValue() >= num && num > pre.getValue()){
+                pre.setNext(linkNode);
+                linkNode.setNext(cur);
+                isInsert = true;
+                break;
+            }
+            pre = pre.getNext();
+            cur = cur.getNext();
+        }
+        if (!isInsert){
+            pre.setNext(linkNode);
+            linkNode.setNext(cur);
+            if (linkNode.getValue() <= head.getValue()){
+                head = linkNode;
+            }
+        }
+        return head;
+    }
+
+    public static void main(String[] args) {
+        LinkNode head = CommonUtils.getLinkNodeListByArr(new int[]{1, 2, 2, 3, 3, 4, 5, 6});
+        LinkNode tail = head;
+        while (tail.getNext() != null){
+             tail = tail.getNext();
+        }
+        tail.setNext(head);
+        insertNum2(head, 1);
+    }
+
+
 
     /**
      * 合并两个有序链表
