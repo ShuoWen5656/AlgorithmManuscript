@@ -80,15 +80,7 @@ public class TheLastThreeLinkedNodeAlgorithm {
         return head;
     }
 
-    public static void main(String[] args) {
-        LinkNode head = CommonUtils.getLinkNodeListByArr(new int[]{1, 2, 2, 3, 3, 4, 5, 6});
-        LinkNode tail = head;
-        while (tail.getNext() != null){
-             tail = tail.getNext();
-        }
-        tail.setNext(head);
-        insertNum2(head, 1);
-    }
+
 
 
 
@@ -133,6 +125,56 @@ public class TheLastThreeLinkedNodeAlgorithm {
             return head;
         }
     }
+
+
+    public static LinkNode mergeLink(LinkNode head1, LinkNode head2){
+        if (head1 == null || head2 == null){
+            return head1 == null? head2 : head1;
+        }
+        LinkNode head = null;
+        LinkNode cur = null;
+        LinkNode cur1 = head1;
+        LinkNode cur2 = head2;
+        while (cur1 != null && cur2 != null){
+            LinkNode min = null;
+            if(cur1.getValue() <= cur2.getValue()){
+                min = cur1;
+                cur1 = cur1.getNext();
+            }else {
+                min = cur2;
+                cur2 = cur2.getNext();
+            }
+            if (head == null){
+                head = min;
+                cur = min;
+                continue;
+            }else {
+                cur.setNext(min);
+                min.setNext(null);
+                cur = min;
+            }
+        }
+        // 处理剩下的
+        cur.setNext(cur1 == null? cur2 : cur1);
+        return head;
+    }
+
+    public static void main(String[] args) {
+        LinkNode head = CommonUtils.getLinkNodeListByArr(new int[]{1, 3,7,9});
+        LinkNode head2 = CommonUtils.getLinkNodeListByArr(new int[]{2,4, 6});
+        LinkNode linkNode = mergeLink(head, head2);
+
+        CommonUtils.printLinkNode(linkNode);
+
+        //LinkNode tail = head;
+        //while (tail.getNext() != null){
+        //    tail = tail.getNext();
+        //}
+        //tail.setNext(head);
+        //insertNum2(head, 1);
+    }
+
+
 
     /**
      * 按照左右半区的方式重新组合单链表
