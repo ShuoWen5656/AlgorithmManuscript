@@ -4,6 +4,8 @@ import classespackage.CommonUtils;
 import com.sun.jmx.snmp.SnmpPduBulk;
 import dataConstruct.LinkNode;
 
+import java.lang.management.LockInfo;
+
 /**
  * @author swzhao
  * @date 2022/3/6 10:18 上午
@@ -159,25 +161,11 @@ public class TheLastThreeLinkedNodeAlgorithm {
         return head;
     }
 
-    public static void main(String[] args) {
-        LinkNode head = CommonUtils.getLinkNodeListByArr(new int[]{1, 3,7,9});
-        LinkNode head2 = CommonUtils.getLinkNodeListByArr(new int[]{2,4, 6});
-        LinkNode linkNode = mergeLink(head, head2);
-
-        CommonUtils.printLinkNode(linkNode);
-
-        //LinkNode tail = head;
-        //while (tail.getNext() != null){
-        //    tail = tail.getNext();
-        //}
-        //tail.setNext(head);
-        //insertNum2(head, 1);
-    }
 
 
 
     /**
-     * 按照左右半区的方式重新组合单链表
+     * 按照左右半区的方式重新组合单链表 错误
      * @param head
      */
     public static LinkNode reLocated(LinkNode head){
@@ -215,5 +203,65 @@ public class TheLastThreeLinkedNodeAlgorithm {
             return head;
         }
     }
+
+    public static LinkNode relocated1(LinkNode head){
+        if (head == null){
+            return head;
+        }
+
+        LinkNode cur = head;
+        int len = 0;
+        while (cur != null){
+            cur = cur.getNext();
+            len++;
+        }
+        if (len <= 3){
+            return head;
+        }
+        int mid = len/2;
+        LinkNode right = null;
+        cur = head;
+        int index = 1;
+        while (cur.getNext() != null){
+            cur = cur.getNext();
+            if (++index == mid){
+                break;
+            }
+        }
+        right = cur.getNext();
+        cur.setNext(null);
+        cur = head;
+        while (right != null){
+            LinkNode next = cur.getNext();
+            if (next == null){
+                cur.setNext(right);
+                break;
+            }
+            LinkNode next1 = right.getNext();
+            cur.setNext(right);
+            right.setNext(next);
+            right = next1;
+            cur = next;
+        }
+        return head;
+    }
+
+
+
+    public static void main(String[] args) {
+        LinkNode head = CommonUtils.getLinkNodeListByArr(new int[]{1, 2,3, 4, 5});
+        LinkNode linkNode = reLocated(head);
+
+        CommonUtils.printLinkNode(linkNode);
+
+        //LinkNode tail = head;
+        //while (tail.getNext() != null){
+        //    tail = tail.getNext();
+        //}
+        //tail.setNext(head);
+        //insertNum2(head, 1);
+    }
+
+
 
 }

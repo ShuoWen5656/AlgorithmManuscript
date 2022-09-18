@@ -236,7 +236,7 @@ public class TreeUtils {
             return;
         }
         printMidOrder(root.getLeft());
-        System.out.println(root.getData());
+        System.out.print(root.getData());
         printMidOrder(root.getRight());
     }
 
@@ -250,7 +250,7 @@ public class TreeUtils {
         }
         printPosOrder(root.getLeft());
         printPosOrder(root.getRight());
-        System.out.println(root.getData());
+        System.out.print(root.getData());
     }
 
 

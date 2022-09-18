@@ -1,8 +1,12 @@
 package classespackage.tree;
 
+import classespackage.CommonUtils;
+import classespackage.Constants;
+import dataConstruct.LinkNode;
 import dataConstruct.MyTreeNode;
 
 import java.util.List;
+import java.util.Stack;
 
 /**
  * @author swzhao
@@ -130,6 +134,119 @@ public class MorrisTree {
         // 因为节点打印的情况都是左子树的右边界，最后还剩下跟节点没有打印
         printEdge(root, nodeList);
     }
+
+
+
+    public static void myMorris(MyTreeNode root){
+        if (root == null){
+            return;
+        }
+        MyTreeNode cur = root;
+        while (cur != null){
+            MyTreeNode left = cur.getLeft();
+            if (left != null){
+                while (left.getRight() != null && left.getRight() != cur){
+                    left = left.getRight();
+                }
+                if (left.getRight() == null){
+                    System.out.print(cur.getData());
+                    left.setRight(cur);
+                    cur = cur.getLeft();
+                    continue;
+                }
+                // left == cur
+                left.setRight(null);
+                cur = cur.getRight();
+            }else {
+                System.out.print(cur.getData());
+                cur = cur.getRight();
+            }
+        }
+    }
+
+    public static void myMirrisMid(MyTreeNode root){
+        if (root == null){
+            return;
+        }
+        MyTreeNode cur = root;
+        while (cur != null){
+            MyTreeNode left = cur.getLeft();
+            if (left != null){
+                while (left.getRight() != null && left.getRight() != cur){
+                    left = left.getRight();
+                }
+                if (left.getRight() == null){
+                    left.setRight(cur);
+                    cur = cur.getLeft();
+                    continue;
+                }
+                System.out.print(cur.getData());
+                left.setRight(null);
+                cur = cur.getRight();
+            }else {
+                System.out.print(cur.getData());
+                cur = cur.getRight();
+            }
+        }
+    }
+
+    public static void myMirrisPos(MyTreeNode root){
+        if (root == null){
+            return;
+        }
+        MyTreeNode cur = root;
+        while (cur != null){
+            MyTreeNode left = cur.getLeft();
+            if (left != null){
+                // 辅助栈，这里不通过翻转降低空间复杂度了麻烦
+                Stack<MyTreeNode> stack = new Stack<>();
+                stack.push(left);
+                while (left.getRight() != null && left.getRight() != cur){
+                    left = left.getRight();
+                    stack.push(left);
+                }
+                if (left.getRight() == null){
+                    left.setRight(cur);
+                    cur = cur.getLeft();
+                    continue;
+                }
+                // 走到这里说明left到了回到上一层的地方
+                while (!stack.isEmpty()){
+                    System.out.print(stack.pop().getData());
+                }
+                cur = left.getRight();
+                left.setRight(null);
+                //if (cur.getLeft() != null && cur.getLeft() != left){
+                //    System.out.print(cur.getLeft().getData());
+                //}
+                cur = cur.getRight();
+            }else {
+                //System.out.print(cur.getData());
+                cur = cur.getRight();
+            }
+        }
+        cur = root;
+        Stack<MyTreeNode> helper = new Stack<>();
+        while (cur != null){
+            helper.push(cur);
+            cur = cur.getRight();
+        }
+        while (!helper.isEmpty()){
+            System.out.print(helper.pop().getData());
+        }
+    }
+
+
+
+    public static void main(String[] args) {
+        MyTreeNode head = CommonUtils.getSearchMyTreeNode();
+        PrintTreeDirect.myPrint(head);
+        TreeUtils.printPosOrder(head);
+        System.out.print("\n");
+        myMirrisPos(head);
+    }
+
+
 
     /**
      * 打印右边界
