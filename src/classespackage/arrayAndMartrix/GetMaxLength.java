@@ -1,6 +1,7 @@
 package classespackage.arrayAndMartrix;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 /**
@@ -12,7 +13,7 @@ public class GetMaxLength {
 
 
     /**
-     * 为排序正数数组中累加和为给定值的最长子数组长度
+     * 未排序正数数组中累加和为给定值的最长子数组长度
      * 1、滑动窗口或者队列的形式记录当前窗口中最大值和当前最长长度，遍历一次结束
      * @param array
      * @param num
@@ -190,6 +191,96 @@ public class GetMaxLength {
             return 0;
         }
     }
+
+    /**
+     * 求累加和为指定值的最长子数组长度
+     * @param arr
+     * @param num
+     * @return 1:起点index，2、终点index 3、最大长度
+     */
+    public static int[] myGetMaxLenth(int[] arr, int num){
+        if (arr == null || arr.length == 0){
+            return null;
+        }
+        int res = 0;
+        // 以某个数为底的和 -> 出现这个和的第一次出现的index
+        Map<Integer, Integer> map = new HashMap<>();
+        // 初始化需要添加一个以和为0的index为-1，也就是sum本身
+        map.put(0, -1);
+        int[] headAndTail = new int[3];
+        int sum = 0;
+        int maxLen = 0;
+        for (int i = 0; i < arr.length; i++){
+            sum += arr[i];
+            // 先检验0
+            for (Integer key : map.keySet()){
+                if (sum - key == num){
+                    if (i - map.get(key) > maxLen){
+                        headAndTail[0] = map.get(key);
+                        headAndTail[1] = i;
+                        maxLen = i - map.get(key);
+                        headAndTail[2] = maxLen;
+                    }
+                }
+            }
+            map.putIfAbsent(sum, i);
+        }
+        return headAndTail;
+    }
+
+
+    /**
+     * 获取数组中正负数数量相同的最长子数组长度
+     * @param arr
+     * @return
+     */
+    public static int[] myGetMaxLengthFromPG(int[] arr){
+        if (arr == null || arr.length == 0){
+            return null;
+        }
+        for (int i = 0; i < arr.length; i++){
+            if (arr[i] < 0){
+                arr[i] = -1;
+            }else if (arr[i] > 0){
+                arr[i] = 1;
+            }
+        }
+        return myGetMaxLenth(arr, 0);
+    }
+
+
+    /**
+     * 数组只有0和1，求0和1个数相同的最长子数组长度
+     * @param arr
+     * @return
+     */
+    public static int[] myGetMaxLengthFrom01(int[] arr){
+        if (arr == null || arr.length == 0){
+            return null;
+        }
+        for (int i = 0; i < arr.length; i++){
+            if (arr[i] == 0){
+                arr[i] = -1;
+            }
+        }
+        return myGetMaxLenth(arr, 0);
+    }
+
+
+
+    public static void main(String[] args) {
+        int[] ints = {1, 3, 2, 5, 4, 7, 8};
+        int[] ints1 = {-3, -1, -4, 6, 3, -3, 5, 6, 0};
+        int[] ints2 = {0, 1, 1, 0, 0, 0, 0, 1, 0};
+
+        System.out.println(myGetMaxLenth(ints, 8));
+        System.out.println(myGetMaxLengthFromPG(ints1));
+        System.out.println(myGetMaxLengthFrom01(ints2));
+
+    }
+
+
+
 
 
     /**
