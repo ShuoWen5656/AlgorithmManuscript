@@ -1,5 +1,7 @@
 package classespackage.arrayAndMartrix;
 
+import classespackage.stackAndQueue.catDogQueue.Pet;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -192,6 +194,127 @@ public class GetMaxLength {
         }
     }
 
+
+    /**
+     * 求和小于等于num的最长子数组长度
+     * 方法一：map
+     * @param arr
+     * @param num
+     * @return
+     */
+    public static int[] myGetMaxLenthLessNum(int[] arr, int num){
+        if (arr == null || arr.length == 0){
+            return null;
+        }
+        int[] ints = new int[3];
+        int maxLen = 0;
+        Map<Integer, Integer> map = new HashMap<>();
+        map.put(0, -1);
+        int sum = 0;
+        for (int i = 0; i < arr.length; i++){
+            sum += arr[i];
+            int sub = sum - num;
+            // map中的和应该大于等于sub，子数组和才能小于num
+            for (Integer key : map.keySet()){
+                if (key >= sub){
+                    if (i - map.get(key) > maxLen){
+                        maxLen = i - map.get(key);
+                        ints[0] = map.get(key);
+                        ints[1] = i;
+                        ints[2] = maxLen;
+                    }
+                }
+            }
+
+        }
+        return ints;
+    }
+    /**
+     * 求和小于等于num的最长子数组长度
+     * 方法二：二分法查找
+     * @param arr
+     * @param num
+     * @return
+     */
+    public static int[] myGetMaxLenthLessNum2(int[] arr, int num){
+        if (arr == null || arr.length == 0){
+            return null;
+        }
+        int[] ints = new int[3];
+        int maxLen = 0;
+        // 长度多一个1用来存（-1,0）
+        int[] helper = new int[arr.length + 1];
+        // 以0为底的和为0
+        helper[0] = 0;
+        int sum = 0;
+        // 将和处理一下放入arr中，比如原和arr[1,2,1,4,3] = [1,2,2,4,4]
+        for (int i = 0; i < arr.length; i++){
+            sum += arr[i];
+            helper[i+1] = sum > helper[i]? sum : helper[i];
+        }
+        sum = 0;
+        for (int i = 0; i < arr.length; i++){
+            sum += arr[i];
+            int sub = sum - num;
+            // 二分法找到一个大于等于sub的数字返回位置
+            int index = find(helper, sub, i);
+            if (index != -1){
+                while (index > 0 && helper[index] == helper[index-1]){
+                    index--;
+                }
+                if (i - index + 1 > maxLen){
+                    maxLen = i - index+1;
+                    ints[0] = index;
+                    ints[1] = i;
+                    ints[2] = maxLen;
+                }
+            }
+
+        }
+        return ints;
+    }
+
+
+    private static int find(int[] helper, int sub, int end) {
+        if (helper == null || helper.length == 0 || end < 0){
+            return -1;
+        }
+        if (end == 0){
+            if (helper[0] >= sub){
+                return 0;
+            }else {
+                return -1;
+            }
+        }
+        int left = 0;
+        int right = end;
+        while (left < right){
+            int mid = (left + right)/2;
+            if (helper[mid] >= sub){
+                right = mid;
+            }else {
+                left = mid+1;
+            }
+        }
+        return left;
+    }
+
+
+    public static void main(String[] args) {
+        int[] ints = {1, 3, 2, 5, 4, 7, 8};
+        int[] ints1 = {-3, -1, -4, 6, 3, -3, 5, 6, 0};
+        int[] ints2 = {0, 1, 1, 0, 0, 0, 0, 1, 0};
+
+        int[] ints3 = {3, -2, -4, 0, 6};
+
+        //System.out.println(myGetMaxLenth(ints, 8));
+        //System.out.println(myGetMaxLengthFromPG(ints1));
+        //System.out.println(myGetMaxLengthFrom01(ints2));
+        System.out.println(myGetMaxLenthLessNum2(ints3, -2));
+
+    }
+
+
     /**
      * 求累加和为指定值的最长子数组长度
      * @param arr
@@ -212,15 +335,14 @@ public class GetMaxLength {
         int maxLen = 0;
         for (int i = 0; i < arr.length; i++){
             sum += arr[i];
+            int key = sum - num;
             // 先检验0
-            for (Integer key : map.keySet()){
-                if (sum - key == num){
-                    if (i - map.get(key) > maxLen){
-                        headAndTail[0] = map.get(key);
-                        headAndTail[1] = i;
-                        maxLen = i - map.get(key);
-                        headAndTail[2] = maxLen;
-                    }
+            if (map.containsKey(key)){
+                if (i - map.get(key) > maxLen){
+                    headAndTail[0] = map.get(key);
+                    headAndTail[1] = i;
+                    maxLen = i - map.get(key);
+                    headAndTail[2] = maxLen;
                 }
             }
             map.putIfAbsent(sum, i);
@@ -268,16 +390,6 @@ public class GetMaxLength {
 
 
 
-    public static void main(String[] args) {
-        int[] ints = {1, 3, 2, 5, 4, 7, 8};
-        int[] ints1 = {-3, -1, -4, 6, 3, -3, 5, 6, 0};
-        int[] ints2 = {0, 1, 1, 0, 0, 0, 0, 1, 0};
-
-        System.out.println(myGetMaxLenth(ints, 8));
-        System.out.println(myGetMaxLengthFromPG(ints1));
-        System.out.println(myGetMaxLengthFrom01(ints2));
-
-    }
 
 
 
