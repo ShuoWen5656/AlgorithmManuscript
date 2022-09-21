@@ -1,5 +1,6 @@
 package classespackage.tree;
 
+import classespackage.CommonUtils;
 import dataConstruct.MyTreeNode;
 
 import java.util.HashMap;
@@ -8,9 +9,14 @@ import java.util.Map;
 /**
  * @author swzhao
  * @date 2022/3/26 1:27 下午
- * @Discreption <>二叉树中找到累加和为指定值的最长路径长度
+ * @Discreption <>在二叉树中找到累加和为指定值的最长路径长度
  */
 public class getTreeMaxLength {
+
+
+
+
+
 
     /**
      * 获取指定值最长路径长度
@@ -63,6 +69,48 @@ public class getTreeMaxLength {
             sumFirstIndex.remove(curSum);
         }
         return Math.max(resL, resR);
+    }
+
+
+
+
+
+
+    public static int myGetMax(MyTreeNode root, int target){
+
+        int level = 0;
+        int sum = 0;
+        // 辅助
+        Map<Integer, Integer> map = new HashMap<>();
+        map.put(0, -1);
+        return preOrderRecur1(root, level, map, sum,target);
+    }
+
+    private static int preOrderRecur1(MyTreeNode root, int level, Map<Integer, Integer> map, int sum, int target) {
+        if (root == null){
+            return 0;
+        }
+        sum += root.getData();
+        int sub = sum - target;
+        int curMax = 0;
+        if (map.containsKey(sub)){
+            Integer uplevel = map.get(sub);
+            curMax = level - uplevel;
+        }
+        map.putIfAbsent(sum, level);
+        int leftMax = preOrderRecur1(root.getLeft(), level + 1, map, sum, target);
+        int rightMax = preOrderRecur1(root.getRight(), level + 1, map, sum, target);
+        // 返回前需要把自己的足迹抹掉
+        if (map.get(sum) == level){
+            map.remove(sum);
+        }
+        return Math.max(Math.max(leftMax, rightMax), curMax);
+    }
+
+
+    public static void main(String[] args) {
+        MyTreeNode head = CommonUtils.getTreeForSum();
+        myGetMax(head, 6);
     }
 
 }

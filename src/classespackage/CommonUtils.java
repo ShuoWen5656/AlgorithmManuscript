@@ -221,7 +221,33 @@ public class CommonUtils<T> {
 
         return myTreeNode6;
     }
+    /**
+     * 获取一个有负数的二叉树
+     * @return
+     */
+    public static MyTreeNode getTreeForSum(){
+        MyTreeNode myTreeNode_3 = new MyTreeNode(-3);
+        MyTreeNode myTreeNode3 = new MyTreeNode(3);
+        MyTreeNode myTreeNode_9 = new MyTreeNode(-9);
+        MyTreeNode myTreeNode1 = new MyTreeNode(1);
+        MyTreeNode myTreeNode0 = new MyTreeNode(0);
+        MyTreeNode myTreeNode2 = new MyTreeNode(2);
+        MyTreeNode myTreeNode11 = new MyTreeNode(1);
+        MyTreeNode myTreeNode111 = new MyTreeNode(1);
+        MyTreeNode myTreeNode6 = new MyTreeNode(6);
 
+        myTreeNode_3.setLeft(myTreeNode3);
+        myTreeNode_3.setRight(myTreeNode_9);
+
+        myTreeNode3.setLeft(myTreeNode1);
+        myTreeNode3.setRight(myTreeNode0);
+
+        myTreeNode_9.setLeft(myTreeNode2);
+        myTreeNode_9.setRight(myTreeNode11);
+        myTreeNode0.setLeft(myTreeNode111);
+        myTreeNode0.setRight(myTreeNode6);
+        return myTreeNode_3;
+    }
 
     public static void main(String[] args) {
         MyTreeNode searchMyTreeNode = getSearchMyTreeNode();
