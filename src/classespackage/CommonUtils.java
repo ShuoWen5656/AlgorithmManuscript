@@ -1,5 +1,6 @@
 package classespackage;
 
+import classespackage.tree.PrintTreeDirect;
 import dataConstruct.DoubleNode;
 import dataConstruct.LinkNode;
 import dataConstruct.MyTreeNode;
@@ -256,6 +257,13 @@ public class CommonUtils<T> {
         //int linkNodeLenth = getLinkNodeLenth(linkNodeListByArr, null);
     }
 
+    /**
+     * 可视化二叉树
+     * @param root
+     */
+    public static void printTree(MyTreeNode root){
+        PrintTreeDirect.myPrint(root);
+    }
 
 
 }

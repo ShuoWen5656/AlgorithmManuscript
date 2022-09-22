@@ -1,5 +1,6 @@
 package classespackage.tree;
 
+import classespackage.CommonUtils;
 import dataConstruct.MyTreeNode;
 
 /**
@@ -90,6 +91,76 @@ public class GetMaxSearchTree {
             }
         }
     }
+
+
+    public static MyTreeNode getBST(MyTreeNode root){
+        if (root == null){
+            return null;
+        }
+        int[] record = new int[3];
+        return process(root, record);
+    }
+
+
+    /**
+     * 每一个节点遍历都要返回四个数据：
+     * 1、以该节点为root的最大搜索二叉树节点的root节点
+     * 2、搜索二叉子树节点数量
+     * 3、搜索二叉子树的最大值
+     * 4、搜索二叉子树的最小值
+     * @param root
+     * @param record
+     * @return
+     */
+    private static MyTreeNode process(MyTreeNode root, int[] record) {
+        if (root == null){
+            record[0] = 0;
+            record[1] = Integer.MIN_VALUE;
+            record[2] = Integer.MAX_VALUE;
+            return null;
+        }
+        MyTreeNode leftMaxRoot = process(root.getLeft(), record);
+        int leftSize = record[0];
+        int leftMax = record[1];
+        int leftMin = record[2];
+        MyTreeNode rightMaxRoot = process(root.getRight(), record);
+        int rightSize = record[0];
+        int rightMax = record[1];
+        int rightMin = record[2];
+        if (leftMaxRoot == root.getLeft() && rightMaxRoot == root.getRight()
+                && leftMax < root.getData() && rightMin > root.getData()){
+            // 自己就是一颗二叉树
+            record[0] = leftSize + rightSize + 1;
+            record[1] = rightMax == Integer.MIN_VALUE ? root.getData() : rightMax;
+            record[2] = leftMin == Integer.MAX_VALUE ? root.getData() : leftMin;
+            return root;
+        }else {
+            // 比较左边和右边哪个大
+            if (leftSize >= rightSize){
+                record[0] = leftSize;
+                record[1] = leftMax;
+                record[2] = leftMin;
+                return leftMaxRoot;
+            }else{
+                record[0] = rightSize;
+                record[1] = rightMax;
+                record[2] = rightMin;
+                return rightMaxRoot;
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        MyTreeNode root = CommonUtils.getSearchMyTreeNode();
+        MyTreeNode node1 = new MyTreeNode(1);
+        MyTreeNode node9 = new MyTreeNode(9);
+        node1.setRight(root);
+        node1.setLeft(node9);
+        PrintTreeDirect.myPrint(node1);
+        System.out.print("\n\n\n\n\n\n\n\n\n");
+        PrintTreeDirect.myPrint(getBST(node1));
+    }
+
 
 
 }
