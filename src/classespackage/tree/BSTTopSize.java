@@ -1,5 +1,6 @@
 package classespackage.tree;
 
+import classespackage.CommonUtils;
 import dataConstruct.MyTreeNode;
 import dataConstruct.Record;
 
@@ -73,6 +74,73 @@ public class BSTTopSize {
         }
         return count;
     }
+
+    public static int myMax(MyTreeNode root){
+        if (root == null){
+            return 0;
+        }
+
+        return myPosOrder(root);
+
+    }
+
+    private static int myPosOrder(MyTreeNode root) {
+        if (root == null){
+            return 0;
+        }
+        int leftMax = myPosOrder(root.getLeft());
+        int rightMax = myPosOrder(root.getRight());
+
+        // 计算当前
+        int cur = getMaxByRoot(root);
+        return Math.max(cur, Math.max(leftMax, rightMax));
+    }
+
+    private static int getMaxByRoot(MyTreeNode root) {
+        if (root == null){
+            return 0;
+        }
+        // 层序遍历
+        Queue<MyTreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        int count = 0;
+        while (!queue.isEmpty()){
+            MyTreeNode cur = queue.poll();
+            // 从root开始
+            MyTreeNode tem = root;
+            while (tem != null){
+                if (cur.getData().equals(tem.getData())){
+                    // 找到了
+                    count++;
+                    break;
+                }else if (cur.getData() > tem.getData()){
+                    tem = tem.getRight();
+                }else {
+                    tem = tem.getLeft();
+                }
+            }
+            if (cur.getLeft() != null){
+                queue.offer(cur.getLeft());
+            }
+            if (cur.getRight() != null){
+                queue.offer(cur.getRight());
+            }
+        }
+        return count;
+    }
+
+    public static void main(String[] args) {
+        MyTreeNode root = CommonUtils.getSearchMyTreeNode();
+        MyTreeNode node10 = new MyTreeNode(97);
+        MyTreeNode node9 = new MyTreeNode(99);
+        node10.setRight(root);
+        node10.setLeft(node9);
+        PrintTreeDirect.myPrint(node10);
+        System.out.print("\n\n\n\n\n\n\n\n\n");
+        System.out.println(myMax(node10));
+    }
+
+
 
     /**
      * 判断是否能够找到目标值
