@@ -1,5 +1,7 @@
 package classespackage.tree;
 
+import classespackage.CommonUtils;
+import classespackage.Constants;
 import dataConstruct.MyTreeNode;
 
 import java.util.Deque;
@@ -117,6 +119,65 @@ public class ZigZagPrint {
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 方法二
+     * @param root
+     */
+    public static void myZigZag(MyTreeNode root){
+        if (root == null){
+            return;
+        }
+        Deque<MyTreeNode> deque = new LinkedList<>();
+        deque.offer(root);
+        // 从对尾进，从队头出 (<-<-)
+        boolean flag = true;
+        // 临时存储当前层的最后一个节点,用来切换flag
+        MyTreeNode last = root;
+        int level = 1;
+        System.out.printf("the %d level : ", level);
+        while (!deque.isEmpty()){
+            MyTreeNode cur = flag ? deque.pollFirst() : deque.pollLast();
+            // 先输出
+            System.out.print(" " + cur.getData());
+            if (flag){
+                // 先进左再进右(进队尾)
+                if (cur.getLeft() != null){
+                    deque.offerLast(cur.getLeft());
+                }
+                if (cur.getRight() != null){
+                    deque.offerLast(cur.getRight());
+                }
+            }else {
+                // 先进右再进左(进队头)
+                if (cur.getRight() != null){
+                    deque.offerFirst(cur.getRight());
+                }
+                if (cur.getLeft() != null){
+                    deque.offerFirst(cur.getLeft());
+                }
+            }
+            if (!deque.isEmpty() && cur == last){
+                // 遍历到最后一个了
+                // 1、层数增加
+                level++;
+                // 2、打印下一层开头
+                System.out.printf("\nthe %d level : ", level);
+                // last 给下一层最后一个
+                last = flag ? deque.peekFirst() : deque.peekLast();
+                // 调换dq弹出方向
+                flag = !flag;
+            }
+        }
+        System.out.println("");
+    }
+
+
+    public static void main(String[] args) {
+        MyTreeNode root = CommonUtils.getSearchMyTreeNode();
+        CommonUtils.printTree(root);
+        myZigZag(root);
     }
 
 

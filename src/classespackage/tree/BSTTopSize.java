@@ -75,6 +75,11 @@ public class BSTTopSize {
         return count;
     }
 
+    /**
+     * 方案一
+     * @param root
+     * @return
+     */
     public static int myMax(MyTreeNode root){
         if (root == null){
             return 0;
@@ -129,15 +134,82 @@ public class BSTTopSize {
         return count;
     }
 
+
+    /**
+     * 方法二
+     * @param root
+     * @return
+     */
+    public static int myMax2(MyTreeNode root){
+        if (root == null){
+            return 0;
+        }
+        HashMap<MyTreeNode, Record> map = new HashMap<>();
+        return posOrderBTS2(root, map);
+    }
+
+
+    private static int posOrderBTS2(MyTreeNode root, HashMap<MyTreeNode, Record> map) {
+        if (root == null){
+            return 0;
+        }
+        // 左边最大搜索值
+        int leftMax = posOrderBTS2(root.getLeft(), map);
+        // 右边最大搜索值
+        int rightMax = posOrderBTS2(root.getRight(), map);
+        // map更新,依据当前值
+        modifyMap2(root.getLeft(), root.getData(), map, true);
+        modifyMap2(root.getRight(), root.getData(), map, false);
+        // 更新完毕
+        Record leftR = map.get(root.getLeft());
+        Record rightR = map.get(root.getRight());
+        int leftNum = leftR == null? 0 : leftR.getLv() + leftR.getRv() + 1;
+        int rightNum = rightR == null? 0 : rightR.getLv() + rightR.getRv() + 1;
+        map.put(root, new Record(leftNum, rightNum));
+        return Math.max(leftNum + rightNum + 1, Math.max(leftMax, rightMax));
+    }
+
+    /**
+     * 更新树贡献值
+     * @param child
+     * @param rootData
+     * @param map
+     * @param isLeft
+     * @return
+     */
+    private static int modifyMap2(MyTreeNode child, Integer rootData, HashMap<MyTreeNode, Record> map, boolean isLeft) {
+        if (child == null || !map.containsKey(child)){
+            return 0;
+        }
+        Record record = map.get(child);
+        if ((isLeft && child.getData() > rootData)
+                || (!isLeft && child.getData() < rootData)){
+            // 发现当前节点不满足搜索二叉树条件时，返回当前节点的全部贡献作为要减掉的值,并在map中删掉当前节点
+            map.remove(child);
+            return 1 + record.getLv() + record.getRv();
+        }else {
+            // 左孩子一直往右边遍历，右孩子一直往左边遍历，只要一个不符合整个树就咔嚓掉，并把自己咔嚓掉的数量返回到上层也减掉
+            int sub = modifyMap2(isLeft ? child.getRight() : child.getLeft(), rootData, map, isLeft);
+            if (isLeft){
+                record.setRv(record.getRv() - sub);
+            }else {
+                record.setLv(record.getLv() - sub);
+            }
+            return sub;
+        }
+    }
+
+
     public static void main(String[] args) {
         MyTreeNode root = CommonUtils.getSearchMyTreeNode();
         MyTreeNode node10 = new MyTreeNode(97);
         MyTreeNode node9 = new MyTreeNode(99);
+        root.getRight().setData(100);
         node10.setRight(root);
         node10.setLeft(node9);
         PrintTreeDirect.myPrint(node10);
         System.out.print("\n\n\n\n\n\n\n\n\n");
-        System.out.println(myMax(node10));
+        System.out.println(myMax2(node10));
     }
 
 
