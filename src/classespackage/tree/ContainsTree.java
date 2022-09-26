@@ -1,5 +1,6 @@
 package classespackage.tree;
 
+import classespackage.CommonUtils;
 import dataConstruct.MyTreeNode;
 
 /**
@@ -91,10 +92,57 @@ public class ContainsTree {
             return false;
         }
         //  考虑到str很长时，contains算法的场景性能没有KMP好，所以使用KMP算法判断
-
-
-
     }
 
+
+    /**
+     * mycheck1 是判断r1是否包含r2的
+     * @param root1
+     * @param root2
+     * @return
+     */
+    public static boolean myCheck(MyTreeNode root1, MyTreeNode root2){
+        if (root2 == null){
+            return true;
+        }else if (root1 == null){
+            return false;
+        }
+        // 首先判断当前节点为头同步遍历是否包含root2，如果不是，则判断左边是否包含，再判断右边是否包含
+        return myCheck2(root1, root2) || myCheck(root1.getLeft(), root2) || myCheck(root1.getRight(), root2);
+    }
+
+    /**
+     * mycheck2 是判断root1和root2同步遍历时是否相同
+     * @param root1
+     * @param root2
+     * @return
+     */
+    private static boolean myCheck2(MyTreeNode root1, MyTreeNode root2) {
+        if (root2 == null){
+            return true;
+        }else if (root1 == null){
+            return false;
+        }
+        return root1.getData().equals(root2.getData())
+                && myCheck2(root1.getLeft(), root2.getLeft())
+                && myCheck2(root1.getRight(), root2.getRight());
+    }
+
+
+
+    public static void main(String[] args) {
+        MyTreeNode node6 = CommonUtils.getSearchMyTreeNode();
+        MyTreeNode root2 = CommonUtils.getSearchMyTreeNode();
+
+        MyTreeNode root1 = new MyTreeNode(97);
+        MyTreeNode node9 = new MyTreeNode(99);
+        root1.setRight(node6);
+        root1.setLeft(node9);
+        PrintTreeDirect.myPrint(root1);
+        System.out.print("\n\n\n\n\n\n\n\n\n");
+        PrintTreeDirect.myPrint(root2);
+
+        System.out.println(myCheck(root1, root2));
+    }
 
 }
