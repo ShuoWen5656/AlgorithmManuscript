@@ -177,7 +177,7 @@ public class ZigZagPrint {
     public static void main(String[] args) {
         MyTreeNode root = CommonUtils.getSearchMyTreeNode();
         CommonUtils.printTree(root);
-        myZigZag(root);
+        zigZagPrint(root);
     }
 
 

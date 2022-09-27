@@ -1,5 +1,6 @@
 package classespackage.tree;
 
+import classespackage.CommonUtils;
 import dataConstruct.MyTreeNode;
 
 /**
@@ -76,6 +77,31 @@ public class ContainsTree {
     }
 
 
+
+    public static boolean isContain(MyTreeNode r1, MyTreeNode r2){
+        if (r1 == null && r2 == null){
+            return true;
+        }else if (r2 == null || r1 == null){
+            return false;
+        }
+        return isContain2(r1, r2)
+                || isContain(r1.getLeft(), r2)
+                || isContain(r1.getRight(), r2);
+
+    }
+
+    private static boolean isContain2(MyTreeNode r1, MyTreeNode r2) {
+        if (r1 == null && r2 == null){
+            return true;
+        }else if (r2 == null || r1 == null){
+            return false;
+        }
+        return r1.getData().equals(r2.getData())
+                && isContain2(r1.getLeft(), r2.getLeft())
+                && isContain2(r1.getRight(), r2.getRight());
+    }
+
+
     /**
      * **进阶解法：
      * 1、将t1和t2进行序列化后，判断t1是否存在t2的子串即可
@@ -91,10 +117,28 @@ public class ContainsTree {
             return false;
         }
         //  考虑到str很长时，contains算法的场景性能没有KMP好，所以使用KMP算法判断
+    }
 
+    public static void main(String[] args) {
+        MyTreeNode root = CommonUtils.getSearchMyTreeNode();
+
+        MyTreeNode node123 = new MyTreeNode(123);
+        MyTreeNode node345 = new MyTreeNode(345);
+
+        node123.setRight(root);
+        node123.setLeft(node345);
+
+        CommonUtils.printTree(node123);
+        System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n");
+        CommonUtils.printTree(root);
+        boolean contain = contains3(node123, root);
+        System.out.println(contain);
 
 
     }
+
+
+
 
 
 }
