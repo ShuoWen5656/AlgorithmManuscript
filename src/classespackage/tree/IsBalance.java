@@ -1,5 +1,6 @@
 package classespackage.tree;
 
+import classespackage.CommonUtils;
 import dataConstruct.MyTreeNode;
 
 /**
@@ -60,4 +61,54 @@ public class IsBalance {
         return Math.max(leftH, rightH);
     }
 
+
+
+
+    public static boolean isBST(MyTreeNode root){
+        if (root == null){
+            return true;
+        }
+        //用来存储每一个子树的最大高度
+        int[] record = new int[1];
+        return process(root, record);
+
+    }
+
+    private static boolean process(MyTreeNode root, int[] record) {
+        if (root == null){
+            record[0] = 0;
+            return true;
+        }
+        boolean leftR = process(root.getLeft(), record);
+        int leftHeight = record[0];
+        boolean rightR = process(root.getRight(), record);
+        int rightHeight = record[0];
+        boolean isBST = false;
+        if (Math.abs(leftHeight - rightHeight) <= 1){
+            isBST = true;
+        }
+        // 更新record
+        record[0] = leftHeight > rightHeight ? leftHeight + 1 : rightHeight + 1;
+        return leftR && rightR && isBST;
+    }
+
+
+    public static void main(String[] args) {
+        MyTreeNode root = CommonUtils.getSearchMyTreeNode();
+
+        MyTreeNode node123 = new MyTreeNode(123);
+        MyTreeNode node345 = new MyTreeNode(345);
+
+
+        node123.setRight(root);
+        node123.setLeft(node345);
+
+        CommonUtils.printTree(node123);
+
+        System.out.print("\n\n\n\n\n\n\n");
+
+        System.out.println(isBST(node123));
+
+
+    }
 }
