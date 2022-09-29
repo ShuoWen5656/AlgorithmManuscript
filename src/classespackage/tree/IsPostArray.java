@@ -195,6 +195,42 @@ public class IsPostArray {
     }
 
 
+    public static MyTreeNode buildTree(int[] arr){
+        if (arr == null || !isSearch(arr)){
+            return null;
+        }
+        return processForBuild(arr, 0, arr.length);
+    }
+
+    private static MyTreeNode processForBuild(int[] arr, int start, int end) {
+        if (arr == null){
+            return null;
+        }
+        int rootV = arr[end];
+        // 当前节点
+        MyTreeNode root = new MyTreeNode(rootV);
+
+        // 计算分界点
+        int minIndex = -1;
+        int index = 0;
+        while (arr[index] < rootV){
+            minIndex = index;
+            index ++;
+        }
+        MyTreeNode left = null;
+        MyTreeNode right = null;
+        if (minIndex == -1){
+            // 都比rootV大
+            right = processForBuild(arr, start, end-1);
+        }else {
+            left = processForBuild(arr, start, minIndex);
+            right = processForBuild(arr, minIndex + 1, end-1);
+        }
+        root.setLeft(left);
+        root.setLeft(right);
+        return root;
+    }
+
     public static void main(String[] args) {
         MyTreeNode root = CommonUtils.getSearchMyTreeNode();
         TreeUtils.printPosOrder(root);
