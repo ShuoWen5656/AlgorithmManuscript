@@ -1,6 +1,10 @@
 package classespackage.tree;
 
+import classespackage.CommonUtils;
 import dataConstruct.MyTreeNode;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * @author swzhao
@@ -110,4 +114,88 @@ public class IsPostArray {
         head.setRight(post2BST(array, more, end - 1));
         return head;
     }
+
+
+    /**
+     * 判断是否能够成为搜索二叉树的后续遍历
+     * @param arr
+     * @return
+     */
+    public static boolean isSearch(int[] arr){
+        if (arr == null){
+            return false;
+        }
+        // 判断从0到length-1是否是二叉树
+        return process(arr, 0, arr.length-1);
+    }
+
+    private static boolean process(int[] arr, int start, int end) {
+        int head = arr[end];
+        // 最后一个小值
+        int lastMin = -1;
+        // 第一个大值
+        int firstMax = -1;
+        int index = start;
+        while (index < end){
+            if (arr[index] < head){
+                lastMin = index;
+            }else {
+                firstMax = firstMax == -1? index : firstMax;
+            }
+            index ++;
+        }
+        if (lastMin == -1 && firstMax == -1){
+            return true;
+        }
+        // 到这里至少存在一个不是-1的
+        // 默认能够形成搜索二叉树
+        boolean left = true;
+        boolean right = true;
+        if (firstMax == -1){
+            // 全都小于head
+            left = process(arr, start, lastMin);
+        }else if (lastMin == -1){
+            right = process(arr, firstMax, end - 1);
+        }else {
+            // 两个都存在
+            if (firstMax < lastMin){
+                return false;
+            }
+            left = process(arr, start, lastMin);
+            right = process(arr, firstMax, end - 1);
+        }
+        return left && right;
+    }
+
+
+    public static int[] savePosOrder2Arr(MyTreeNode root){
+        ArrayList<Integer> integers = new ArrayList<>();
+
+        process2(root, integers);
+
+        int[] ints = new int[integers.size()];
+        for (int i = 0; i < ints.length; i++){
+            ints[i] = integers.get(i);
+        }
+        return ints;
+    }
+
+    private static void process2(MyTreeNode root, ArrayList<Integer> integers) {
+        if (root == null){
+            return;
+        }
+        process2(root.getLeft(), integers);
+        process2(root.getRight(), integers);
+        integers.add(root.getData());
+    }
+
+
+    public static void main(String[] args) {
+        MyTreeNode root = CommonUtils.getSearchMyTreeNode();
+        TreeUtils.printPosOrder(root);
+        CommonUtils.printTree(root);
+        int[] ints = savePosOrder2Arr(root);
+        System.out.println(isSearch(ints));
+    }
+
 }
