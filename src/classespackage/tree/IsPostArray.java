@@ -168,6 +168,11 @@ public class IsPostArray {
     }
 
 
+    /**
+     * 将二叉树后续遍历结果存储到arr数组中
+     * @param root
+     * @return
+     */
     public static int[] savePosOrder2Arr(MyTreeNode root){
         ArrayList<Integer> integers = new ArrayList<>();
 
