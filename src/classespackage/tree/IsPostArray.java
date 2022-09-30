@@ -195,16 +195,21 @@ public class IsPostArray {
     }
 
 
+    /**
+     * 重建搜索二叉树
+     * @param arr
+     * @return
+     */
     public static MyTreeNode buildTree(int[] arr){
         if (arr == null || !isSearch(arr)){
             return null;
         }
-        return processForBuild(arr, 0, arr.length);
+        return processForBuild(arr, 0, arr.length-1);
     }
 
     private static MyTreeNode processForBuild(int[] arr, int start, int end) {
-        if (arr == null){
-            return null;
+        if (start == end){
+            return new MyTreeNode(arr[start]);
         }
         int rootV = arr[end];
         // 当前节点
@@ -212,7 +217,7 @@ public class IsPostArray {
 
         // 计算分界点
         int minIndex = -1;
-        int index = 0;
+        int index = start;
         while (arr[index] < rootV){
             minIndex = index;
             index ++;
@@ -222,21 +227,33 @@ public class IsPostArray {
         if (minIndex == -1){
             // 都比rootV大
             right = processForBuild(arr, start, end-1);
-        }else {
+        } else if (minIndex + 1 == end){
+            // 说明全比end大
             left = processForBuild(arr, start, minIndex);
-            right = processForBuild(arr, minIndex + 1, end-1);
+        }
+        else {
+            left = processForBuild(arr, start, minIndex);
+            right = processForBuild(arr, minIndex+1, end-1);
         }
         root.setLeft(left);
-        root.setLeft(right);
+        root.setRight(right);
         return root;
     }
 
     public static void main(String[] args) {
         MyTreeNode root = CommonUtils.getSearchMyTreeNode();
         TreeUtils.printPosOrder(root);
+        System.out.print("\n\n");
+
         CommonUtils.printTree(root);
         int[] ints = savePosOrder2Arr(root);
         System.out.println(isSearch(ints));
+
+        MyTreeNode rootNew = buildTree(ints);
+        System.out.print("\n\n\n\n\n\n\n\n\n");
+        CommonUtils.printTree(rootNew);
+
+
     }
 
 }
