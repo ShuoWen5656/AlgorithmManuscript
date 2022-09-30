@@ -1,5 +1,6 @@
 package classespackage.tree;
 
+import classespackage.CommonUtils;
 import dataConstruct.MyTreeNode;
 
 import java.util.LinkedList;
@@ -91,4 +92,103 @@ public class IsBST {
         }
         return true;
     }
+
+
+    /**
+     * 判断是否是搜索二叉树
+     * @param root
+     * @return
+     */
+    public static boolean myIsBST(MyTreeNode root){
+        if (root == null){
+            return true;
+        }
+        MyTreeNode cur = root;
+        int last = Integer.MIN_VALUE;
+        while (cur != null){
+            MyTreeNode left = cur.getLeft();
+            if (left != null){
+                while (left.getRight() != null && left.getRight() != cur){
+                    left = left.getRight();
+                }
+                if (left.getRight() == null){
+                    left.setRight(cur);
+                    cur = cur.getLeft();
+                    continue;
+                }
+                if (cur.getData() < last){
+                    return false;
+                }else {
+                    last = cur.getData();
+                }
+                System.out.println(cur.getData());
+                cur = cur.getRight();
+                left.setRight(null);
+            }else{
+                if (cur.getData() < last){
+                    return false;
+                }else {
+                    last = cur.getData();
+                }
+                System.out.println(cur.getData());
+                cur = cur.getRight();
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 判断是否是完全二叉树
+     * @param root
+     * @return
+     */
+    public static boolean myIsCBT(MyTreeNode root){
+        if (root == null){
+            return true;
+        }
+        boolean isLeft = false;
+        Queue<MyTreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        while (!queue.isEmpty()){
+            MyTreeNode poll = queue.poll();
+            if (poll.getLeft() == null && poll.getRight() != null){
+                // 没有左孩子但是有右孩子的直接返回false
+                return false;
+            }
+            if (isLeft){
+                // 当前节点只能是叶子节点
+                if (poll.getLeft() != null || poll.getRight() != null){
+                    return false;
+                }
+            }else {
+                if (poll.getLeft() == null || poll.getRight() == null){
+                    isLeft = true;
+                }
+            }
+            if (poll.getLeft() != null){
+                queue.offer(poll.getLeft());
+            }
+            if (poll.getRight() != null){
+                queue.offer(poll.getRight());
+            }
+        }
+        return true;
+    }
+
+
+
+
+
+
+    public static void main(String[] args) {
+        MyTreeNode root = CommonUtils.getTreeForEdge();
+
+        CommonUtils.printTree(root);
+
+
+        System.out.println(myIsBST(root));
+
+    }
+
+
 }
