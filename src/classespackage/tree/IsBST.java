@@ -181,12 +181,22 @@ public class IsBST {
 
 
     public static void main(String[] args) {
-        MyTreeNode root = CommonUtils.getTreeForEdge();
+        //MyTreeNode root = CommonUtils.getTreeForEdge();
+        //
+        //CommonUtils.printTree(root);
+        //
+        //
+        //System.out.println(myIsBST(root));
+
+
+        MyTreeNode root = CommonUtils.getCompleteBinaryTree(new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9});
+
 
         CommonUtils.printTree(root);
 
+        System.out.println(isCBT(root));
 
-        System.out.println(myIsBST(root));
+
 
     }
 

@@ -6,6 +6,9 @@ import dataConstruct.LinkNode;
 import dataConstruct.MyTreeNode;
 import dataConstruct.MyTreeNodePlus;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @Author swzhao
  * @Date 2022/2/13 21:02
@@ -179,6 +182,37 @@ public class CommonUtils<T> {
     }
 
 
+    /**
+     *  按照arr的顺序形成一个完全二叉树
+     * @return
+     */
+    public static MyTreeNode getCompleteBinaryTree(int[] arr){
+        if (arr == null){
+            return null;
+        }
+        List<MyTreeNode> treeList = new ArrayList<>();
+        for (int i = 0; i < arr.length; i++){
+            treeList.add(new MyTreeNode(arr[i]));
+        }
+        MyTreeNode head = null;
+        for (int i = 0; i < treeList.size(); i++){
+            MyTreeNode cur = treeList.get(i);
+            if (i == 0){
+                head = cur;
+            }
+            int leftIndex = 2*i + 1;
+            int rightIndex = 2*i + 2;
+            if (leftIndex < treeList.size()){
+                MyTreeNode left = treeList.get(leftIndex);
+                cur.setLeft(left);
+            }
+            if (rightIndex < treeList.size()){
+                MyTreeNode right = treeList.get(rightIndex);
+                cur.setRight(right);
+            }
+        }
+        return head;
+    }
 
     /**
      * 获取树当前节点所在高度
