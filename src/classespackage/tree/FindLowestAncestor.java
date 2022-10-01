@@ -1,11 +1,14 @@
 package classespackage.tree;
 
+import classespackage.CommonUtils;
+import dataConstruct.LowestTreeNodeHelper;
 import dataConstruct.MyTreeNode;
 import dataConstruct.Query;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author swzhao
@@ -219,7 +222,124 @@ public class FindLowestAncestor {
     }
 
 
+    /**
+     * 判断公共祖先
+     * @param root
+     * @param o1
+     * @param o2
+     * @return
+     */
+    public static MyTreeNode publicAncestors(MyTreeNode root, MyTreeNode o1, MyTreeNode o2){
+        if (root == null || o1 == null || o2 == null){
+            return null;
+        }
+        // 存储公祖先
+        MyTreeNode[] record = new MyTreeNode[1];
+        myProcess(root, o1, o2, record);
+        return record[0];
+    }
 
+    /**
+     * 每一层递归返回值包含：
+     * 1、boolean数组长度为2， 0：是否包含5， 1是否包含8
+     * 2、record长度为1，判断是否已经出现了公共祖先
+     * @param root
+     * @param o1
+     * @param o2
+     * @param record
+     * @return
+     */
+    private static boolean[] myProcess(MyTreeNode root, MyTreeNode o1, MyTreeNode o2, MyTreeNode[] record) {
+        if (root == null){
+            return new boolean[]{false, false};
+        }
+
+        boolean[] leftR = myProcess(root.getLeft(), o1, o2, record);
+        boolean[] rightR = myProcess(root.getRight(), o1, o2, record);
+        // 首先判断是否已经存在公共祖先
+        if (record[0] != null){
+            // 已经出现公共祖先了，就直接返回
+            return new boolean[]{true, true};
+        }else {
+            // 说明还没有出现公共祖先
+            boolean[] curR = new boolean[2];
+            curR[0] = leftR[0] || rightR[0];
+            curR[1] = leftR[1] || rightR[1];
+            if (curR[0] && curR[1]){
+                record[0] = root;
+            }else {
+                // 判断一下自己
+                if (root == o1){
+                    curR[0] = true;
+                }else if (root == o2){
+                    curR[1] = true;
+                }
+            }
+            return curR;
+        }
+    }
+
+
+    /**
+     * 方法二：
+     * 制作map，向上寻找公共祖先
+     * @param root
+     * @param r1
+     * @param r2
+     * @return
+     */
+    public static MyTreeNode publicAncestors2(MyTreeNode root, MyTreeNode r1, MyTreeNode r2){
+        if (root == null || r1 == null || r2 == null){
+            return null;
+        }
+        Map<MyTreeNode, MyTreeNode> map = CommonUtils.convertTree2Map(root);
+        Set<MyTreeNode> r1Set = new HashSet<>();
+
+        MyTreeNode cur = r1;
+        while (map.containsKey(cur)){
+            r1Set.add(cur);
+            cur = map.get(cur);
+        }
+        cur = r2;
+        while (map.containsKey(cur)){
+            if (r1Set.contains(cur)){
+                return cur;
+            }
+            cur = map.get(cur);
+        }
+        return null;
+    }
+
+
+    /**
+     * 方法三
+     * 时间和空间都是n^2 但是可以计算出所有节点之间的最短公共祖先
+     * @param root
+     * @param r1
+     * @param r2
+     * @return
+     */
+    public static MyTreeNode publicAncestors3(MyTreeNode root, MyTreeNode r1, MyTreeNode r2){
+        LowestTreeNodeHelper helper = new LowestTreeNodeHelper(root);
+        return helper.getLowestAncestor(r1, r2);
+    }
+
+
+
+    public static void main(String[] args) {
+        MyTreeNode root = CommonUtils.getCompleteBinaryTree(new int[]{1, 2, 3, 4, 5, 6, 7, 8});
+
+        CommonUtils.printTree(root);
+
+
+        MyTreeNode target8 = CommonUtils.findFromTree(root, 8);
+        MyTreeNode target7 = CommonUtils.findFromTree(root, 5);
+
+
+        System.out.println(publicAncestors3(root, target8, target7));
+
+
+    }
 
 
 }

@@ -7,7 +7,9 @@ import dataConstruct.MyTreeNode;
 import dataConstruct.MyTreeNodePlus;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author swzhao
@@ -285,11 +287,90 @@ public class CommonUtils<T> {
     }
 
     public static void main(String[] args) {
-        MyTreeNode searchMyTreeNode = getSearchMyTreeNode();
-        int treeHeight = getTreeHeight(searchMyTreeNode, 0);
+        MyTreeNode root = getSearchMyTreeNode();
+        //MyTreeNode target = findFromTree(root, 9);
+
+
+        Map<MyTreeNode, MyTreeNode> myTreeNodeMap = convertTree2Map(root);
+        System.out.println(myTreeNodeMap);
+
+
+        //MyTreeNode searchMyTreeNode = getSearchMyTreeNode();
+        //int treeHeight = getTreeHeight(searchMyTreeNode, 0);
         //LinkNode linkNodeListByArr = getLinkNodeListByArr(new int[]{2, 4, 6, 8});
         //int linkNodeLenth = getLinkNodeLenth(linkNodeListByArr, null);
     }
+
+
+    /**
+     * 找到target并返回引用
+     * 先序遍历
+     * @param root
+     * @param target
+     * @return
+     */
+    public static MyTreeNode findFromTree(MyTreeNode root, int target){
+        if (root == null){
+            return null;
+        }
+        MyTreeNode cur = root;
+        MyTreeNode targetT = null;
+        while (cur != null){
+            MyTreeNode left = cur.getLeft();
+            if (left != null){
+                while (left.getRight() != null && left.getRight() != cur){
+                    left = left.getRight();
+                }
+                if (left.getRight() == null){
+                    // 1
+                    // 输出
+                    if (cur.getData().equals(target)){
+                        targetT = cur;
+                    }
+                    left.setRight(cur);
+                    cur = cur.getLeft();
+                    continue;
+                }
+                //3
+                cur = left.getRight();
+                left.setRight(null);
+            }
+            //2
+            // 输出
+            if (cur.getData().equals(target)){
+                targetT = cur;
+            }
+            cur = cur.getRight();
+        }
+        return targetT;
+    }
+
+
+    /**
+     * 将树转化为map
+     * key为当前节点，value为当前节点的父节点
+     * @param root
+     * @return
+     */
+    public static Map<MyTreeNode, MyTreeNode> convertTree2Map(MyTreeNode root){
+        if (root == null){
+            return null;
+        }
+
+        Map<MyTreeNode, MyTreeNode> map = new HashMap<>();
+        processForConvert(root, null, map);
+        return map;
+    }
+
+    private static void processForConvert(MyTreeNode cur, MyTreeNode parent, Map<MyTreeNode, MyTreeNode> map) {
+        if (cur == null){
+            return;
+        }
+        map.putIfAbsent(cur, parent);
+        processForConvert(cur.getLeft(), cur, map);
+        processForConvert(cur.getRight(), cur, map);
+    }
+
 
     /**
      * 可视化二叉树
