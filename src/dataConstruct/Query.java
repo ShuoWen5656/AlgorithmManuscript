@@ -4,6 +4,7 @@ package dataConstruct;
  * @author swzhao
  * @date 2022/4/12 9:59 上午
  * @Discreption <>查询类，包含两个树节点
+ * 一个query的实例表示o1和o2的最近祖先的查询
  */
 public class Query {
 

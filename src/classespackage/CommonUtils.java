@@ -373,6 +373,26 @@ public class CommonUtils<T> {
 
 
     /**
+     * tarjan并查集结合算法所用树（后期通过先序和中序遍历形成树）
+     * @return
+     */
+    public static MyTreeNode getTreeForTarjan(){
+        //首先做一个12345
+        MyTreeNode root = getCompleteBinaryTree(new int[]{1, 2, 3, 4, 5});
+        // 3->6
+        MyTreeNode node3 = root.getRight();
+        node3.setRight(new MyTreeNode(6));
+        MyTreeNode node6 = node3.getRight();
+        node6.setLeft(new MyTreeNode(9));
+        MyTreeNode node5 = root.getLeft().getRight();
+        node5.setLeft(new MyTreeNode(7));
+        node5.setRight(new MyTreeNode(8));
+
+        return root;
+    }
+
+
+    /**
      * 可视化二叉树
      * @param root
      */
