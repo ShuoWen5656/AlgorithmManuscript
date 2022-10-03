@@ -336,6 +336,9 @@ public class FindLowestAncestor {
         MyTreeNode target7 = CommonUtils.findFromTree(root, 5);
 
 
+        System.out.println("\n\n\n\n\n");
+
+
         System.out.println(publicAncestors3(root, target8, target7));
 
 

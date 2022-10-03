@@ -1,4 +1,4 @@
-package classespackage.tree;
+package dataConstruct;
 
 import dataConstruct.MyTreeNode;
 

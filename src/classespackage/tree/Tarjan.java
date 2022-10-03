@@ -1,10 +1,10 @@
 package classespackage.tree;
 
-import com.sun.org.apache.xml.internal.security.keys.content.MgmtData;
+import classespackage.CommonUtils;
+import dataConstruct.DisJointSets;
 import dataConstruct.MyTreeNode;
 import dataConstruct.Query;
 
-import javax.swing.plaf.synth.SynthTextAreaUI;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -137,5 +137,25 @@ public class Tarjan {
         }
         return null;
     }
+
+
+
+
+
+
+    public static void main(String[] args) {
+        MyTreeNode root = CommonUtils.getTreeForTarjan();
+        MyTreeNode node8 = CommonUtils.findFromTree(root, 8);
+        MyTreeNode node9 = CommonUtils.findFromTree(root, 9);
+        MyTreeNode node3 = CommonUtils.findFromTree(root, 3);
+
+        TarjanCP tarjanCP = new TarjanCP();
+        Query[] queries = {new Query(node8, node9), new Query(node9, node3), new Query(node9, null)};
+        MyTreeNode[] ans = tarjanCP.queryAns(root, queries);
+
+        System.out.println(ans);
+
+    }
+
 
 }

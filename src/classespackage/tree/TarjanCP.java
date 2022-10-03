@@ -1,6 +1,7 @@
 package classespackage.tree;
 
 import classespackage.CommonUtils;
+import dataConstruct.DisJointSetCP;
 import dataConstruct.MyTreeNode;
 import dataConstruct.Query;
 
