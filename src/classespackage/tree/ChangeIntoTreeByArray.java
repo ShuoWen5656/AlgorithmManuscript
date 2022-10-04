@@ -1,5 +1,6 @@
 package classespackage.tree;
 
+import classespackage.CommonUtils;
 import dataConstruct.MyTreeNode;
 
 import java.util.Arrays;
@@ -155,4 +156,144 @@ public class ChangeIntoTreeByArray {
         return 0;
     }
 
+
+    /**
+     * 根据先序遍历和中序遍历还原二叉树
+     * @param arrPre
+     * @param arrMid
+     * @return
+     */
+    public static MyTreeNode convert2TreeFromPreAndMid(int[] arrPre, int[] arrMid) {
+        if (arrPre == null || arrMid == null
+                || arrPre.length != arrMid.length) {
+            throw new RuntimeException("入参数组不合法");
+        }
+        return processForPreAndMid(arrPre, arrMid, 0, arrPre.length-1, 0, arrMid.length-1);
+    }
+
+    /**
+     * 先序和中序的递归方法
+     * @param arrPre
+     * @param arrMid
+     * @param preStart
+     * @param preEnd
+     * @param midStart
+     * @param midEnd
+     * @return
+     */
+    private static MyTreeNode processForPreAndMid(int[] arrPre, int[] arrMid,
+                                                  int preStart, int preEnd, int midStart, int midEnd) {
+        if (preStart > preEnd || midStart > midEnd){
+            return null;
+        }
+        if (preStart == preEnd || midStart == midEnd){
+            return new MyTreeNode(arrPre[preStart]);
+        }
+        // 当前根节点value
+        int curValue = arrPre[preStart];
+        MyTreeNode root = new MyTreeNode(curValue);
+        // 当前层在中序遍历的index
+        int curIndexInMid = findIndex(curValue, arrMid);
+        // 右边子树最后一个节点，这里为了好区分就多了一个变量
+        int lastRightIndexInPre = curIndexInMid - midStart + preStart;
+        MyTreeNode left = processForPreAndMid(arrPre, arrMid, preStart + 1, lastRightIndexInPre, midStart, curIndexInMid-1);
+        MyTreeNode right = processForPreAndMid(arrPre, arrMid, lastRightIndexInPre + 1, preEnd, curIndexInMid + 1, midEnd);
+        root.setLeft(left);
+        root.setRight(right);
+        return root;
+    }
+    /**
+     * 根据中序和后序遍历还原二叉树
+     * @param arrPos
+     * @param arrMid
+     * @return
+     */
+    public static MyTreeNode convert2TreeFromMidAndPos(int[] arrMid, int[] arrPos) {
+        if (arrMid == null || arrPos == null
+                || arrPos.length != arrMid.length) {
+            throw new RuntimeException("入参数组不合法");
+        }
+        return processForMidAndPos(arrPos, arrMid, 0, arrPos.length-1, 0, arrMid.length-1);
+    }
+
+    /**
+     * 中序和后序结合的递归方法
+     * @param arrPos
+     * @param arrMid
+     * @param posStart
+     * @param posEnd
+     * @param midStart
+     * @param midEnd
+     * @return
+     */
+    private static MyTreeNode processForMidAndPos(int[] arrPos, int[] arrMid, int posStart, int posEnd, int midStart, int midEnd) {
+        if (posStart > posEnd || midStart > midEnd){
+            return null;
+        }
+        if (posStart == posEnd || midStart == midEnd){
+            return new MyTreeNode(arrPos[posStart]);
+        }
+        int curValue = arrPos[posEnd];
+        MyTreeNode root = new MyTreeNode(curValue);
+        int curValueInMid = findIndex(curValue, arrMid);
+        int rightStartInPos = posEnd - (midEnd - curValueInMid);
+        MyTreeNode left = processForMidAndPos(arrPos, arrMid, posStart, rightStartInPos - 1, midStart, curValueInMid - 1);
+        MyTreeNode right = processForMidAndPos(arrPos, arrMid, rightStartInPos, posEnd - 1, curValueInMid + 1, midEnd);
+        root.setLeft(left);
+        root.setRight(right);
+        return root;
+    }
+
+    /**
+     * 根据先序和后序遍历重构二叉树
+     * @param arrPos
+     * @param arrPre
+     * @return
+     */
+    public static MyTreeNode convert2TreeFromPreAndPos(int[] arrPre, int[] arrPos) {
+
+        if (arrPre == null || arrPos == null
+                || arrPos.length != arrPre.length) {
+            throw new RuntimeException("入参数组不合法");
+        }
+        return processForPreAndPos(arrPre, arrPos, 0, arrPre.length-1, 0, arrPos.length-1);
+    }
+
+    /**
+     * 中序和后序结合的递归方法
+     * 要求树必须是除了叶子节点以外，其他节点左右节点都存在的树
+     * 否则就会出现歧义
+     * @param preStart
+     * @param preEnd
+     * @param posStart
+     * @param posEnd
+     * @return
+     */
+    private static MyTreeNode processForPreAndPos(int[] arrPre, int[] arrPos, int preStart, int preEnd, int posStart, int posEnd) {
+        if (posStart > posEnd || preStart > preEnd){
+            return null;
+        }
+        if (posStart == posEnd || preStart == preEnd){
+            return new MyTreeNode(arrPos[posStart]);
+        }
+        int curValue = arrPre[preStart];
+        MyTreeNode root = new MyTreeNode(curValue);
+        // 左子树的根节点
+        int leftRootValue = arrPre[preStart + 1];
+        int leftRootIndexInPos = findIndex(leftRootValue, arrPos);
+        int leftRangeIndexInPre = preStart + 1 + (leftRootIndexInPos - posStart);
+        MyTreeNode left = processForPreAndPos(arrPre, arrPos,preStart + 1, leftRangeIndexInPre, posStart, leftRootIndexInPos);
+        MyTreeNode right = processForPreAndPos(arrPre, arrPos, leftRangeIndexInPre + 1, preEnd, leftRootIndexInPos + 1, posEnd - 1);
+        root.setLeft(left);
+        root.setRight(right);
+        return root;
+    }
+
+
+
+
+    public static void main(String[] args) {
+        MyTreeNode root = convert2TreeFromPreAndPos(new int[]{1, 2, 4, 8, 5,3,6,7}, new int[]{8,4,5,2,6,7,3,1});
+        CommonUtils.printTree(root);
+    }
 }

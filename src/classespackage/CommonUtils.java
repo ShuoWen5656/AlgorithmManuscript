@@ -401,4 +401,61 @@ public class CommonUtils<T> {
     }
 
 
+
+    public static MyTreeNode buildTreeFromArr(int[] arrPre, int[] arrMid){
+        if (arrPre == null || arrMid == null
+                || arrPre.length != arrMid.length) {
+            throw new RuntimeException("入参数组不合法");
+        }
+        return processForPreAndMid(arrPre, arrMid, 0, arrPre.length-1, 0, arrMid.length-1);
+    }
+
+    /**
+     * 先序和中序的递归方法(创建树的工具通用工具方法)
+     * @param arrPre
+     * @param arrMid
+     * @param preStart
+     * @param preEnd
+     * @param midStart
+     * @param midEnd
+     * @return
+     */
+    private static MyTreeNode processForPreAndMid(int[] arrPre, int[] arrMid,
+                                                  int preStart, int preEnd, int midStart, int midEnd) {
+        if (preStart > preEnd || midStart > midEnd){
+            return null;
+        }
+        if (preStart == preEnd || midStart == midEnd){
+            return new MyTreeNode(arrPre[preStart]);
+        }
+        // 当前根节点value
+        int curValue = arrPre[preStart];
+        MyTreeNode root = new MyTreeNode(curValue);
+        // 当前层在中序遍历的index
+        int curIndexInMid = findIndex(curValue, arrMid);
+        // 右边子树最后一个节点，这里为了好区分就多了一个变量
+        int lastRightIndexInPre = curIndexInMid - midStart + preStart;
+        MyTreeNode left = processForPreAndMid(arrPre, arrMid, preStart + 1, lastRightIndexInPre, midStart, curIndexInMid-1);
+        MyTreeNode right = processForPreAndMid(arrPre, arrMid, lastRightIndexInPre + 1, preEnd, curIndexInMid + 1, midEnd);
+        root.setLeft(left);
+        root.setRight(right);
+        return root;
+    }
+
+
+    /**
+     * 找到内容所在index
+     * @param value
+     * @param array
+     * @return
+     */
+    public static int findIndex(int value, int[] array){
+        for (int i = 0; i < array.length ; i++){
+            if(array[i] == value){
+                return i;
+            }
+        }
+        return 0;
+    }
+
 }
