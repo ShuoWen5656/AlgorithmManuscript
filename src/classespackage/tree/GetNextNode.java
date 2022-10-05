@@ -98,7 +98,10 @@ public class GetNextNode {
 
     public static void main(String[] args) {
         MyTreeNode root = CommonUtils.getTreeForNextNode();
-        MyTreeNode node5 = CommonUtils.findFromTree(root, 10);
+        MyTreeNode node5 = CommonUtils.findFromTree(root, 5);
+
+        CommonUtils.printTree(root);
+
         MyTreeNode nextNodeCP = getNextNodeCP(node5);
         System.out.println(nextNodeCP.getData());
 
