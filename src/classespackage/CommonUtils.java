@@ -40,7 +40,13 @@ public class CommonUtils<T> {
     }
 
 
-
+    /**
+     * 交换两个元素
+     * @param array
+     * @param index1
+     * @param index2
+     * @param <T>
+     */
     public static <T> void swapPlus(T[] array, int index1, int index2){
         T temp = array[index1];
         array[index1] = array[index2];
@@ -285,6 +291,47 @@ public class CommonUtils<T> {
         myTreeNode0.setRight(myTreeNode6);
         return myTreeNode_3;
     }
+
+
+    /**
+     * 获取一个有负数的二叉树
+     * @return
+     */
+    public static MyTreeNode getTreeForNextNode(){
+        MyTreeNode myTreeNode6 = new MyTreeNode(6);
+        MyTreeNode myTreeNode4 = new MyTreeNode(4);
+        MyTreeNode myTreeNode7 = new MyTreeNode(7);
+        MyTreeNode myTreeNode2 = new MyTreeNode(2);
+        MyTreeNode myTreeNode5 = new MyTreeNode(5);
+        MyTreeNode myTreeNode9 = new MyTreeNode(9);
+        MyTreeNode myTreeNode1 = new MyTreeNode(1);
+        MyTreeNode myTreeNode3 = new MyTreeNode(3);
+        MyTreeNode myTreeNode8 = new MyTreeNode(8);
+        MyTreeNode myTreeNode10 = new MyTreeNode(10);
+
+        myTreeNode6.setLeft(myTreeNode3);
+        myTreeNode3.setParent(myTreeNode6);
+        myTreeNode6.setRight(myTreeNode9);
+        myTreeNode9.setParent(myTreeNode6);
+        myTreeNode3.setLeft(myTreeNode1);
+        myTreeNode1.setParent(myTreeNode3);
+        myTreeNode3.setRight(myTreeNode4);
+        myTreeNode4.setParent(myTreeNode3);
+        myTreeNode1.setRight(myTreeNode2);
+        myTreeNode2.setParent(myTreeNode1);
+        myTreeNode4.setRight(myTreeNode5);
+        myTreeNode5.setParent(myTreeNode4);
+        myTreeNode9.setLeft(myTreeNode8);
+        myTreeNode8.setParent(myTreeNode9);
+        myTreeNode9.setRight(myTreeNode10);
+        myTreeNode10.setParent(myTreeNode9);
+        myTreeNode8.setLeft(myTreeNode7);
+        myTreeNode7.setParent(myTreeNode8);
+
+
+        return myTreeNode6;
+    }
+
 
     public static void main(String[] args) {
         MyTreeNode root = getSearchMyTreeNode();

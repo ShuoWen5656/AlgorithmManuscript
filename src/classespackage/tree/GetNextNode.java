@@ -1,5 +1,6 @@
 package classespackage.tree;
 
+import classespackage.CommonUtils;
 import dataConstruct.MyTreeNode;
 
 
@@ -49,6 +50,58 @@ public class GetNextNode {
             e.printStackTrace();
             return null;
         }
+    }
+
+
+    /**
+     * 获取后继节点
+     * @param node
+     * @return
+     */
+    public static MyTreeNode getNextNodeCP(MyTreeNode node) {
+        if (node == null) {
+            return null;
+        }
+        if (node.getRight() != null) {
+            // 有右子树的情况,找到右子树的最左节点
+            MyTreeNode right = node.getRight();
+            while (right.getLeft() != null) {
+                right = right.getLeft();
+            }
+            return right;
+        } else {
+            // 无右子树情况
+            MyTreeNode parent = node.getParent();
+            if (parent == null) {
+                // node 为根节点
+                return null;
+            } else {
+                if (node == parent.getLeft()) {
+                    // 自己是左子树
+                    return parent;
+                } else {
+                    // 自己是右子树,找到第一个左子树parent或者找到根节点
+                    while (parent != null) {
+                        MyTreeNode parent1 = parent.getParent();
+                        if (parent1 != null && parent == parent1.getLeft()){
+                            return parent1;
+                        }else {
+                            parent = parent1;
+                        }
+                    }
+                    return null;
+                }
+            }
+        }
+    }
+
+
+    public static void main(String[] args) {
+        MyTreeNode root = CommonUtils.getTreeForNextNode();
+        MyTreeNode node5 = CommonUtils.findFromTree(root, 10);
+        MyTreeNode nextNodeCP = getNextNodeCP(node5);
+        System.out.println(nextNodeCP.getData());
+
     }
 
 
