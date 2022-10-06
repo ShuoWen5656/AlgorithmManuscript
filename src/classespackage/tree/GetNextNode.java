@@ -66,6 +66,8 @@ public class GetNextNode {
             // 有右子树的情况,找到右子树的最左节点
             MyTreeNode right = node.getRight();
             while (right.getLeft() != null) {
+
+
                 right = right.getLeft();
             }
             return right;

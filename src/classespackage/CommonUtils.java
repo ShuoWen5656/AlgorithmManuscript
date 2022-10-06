@@ -448,13 +448,19 @@ public class CommonUtils<T> {
     }
 
 
-
-    public static MyTreeNode buildTreeFromArr(int[] arrPre, int[] arrMid){
+    /**
+     * 通过先序遍历和中序遍历构建二叉树（可以满足子节点指向父节点的需求）
+     * @param arrPre
+     * @param arrMid
+     * @param hasParent
+     * @return
+     */
+    public static MyTreeNode buildTreeFromArr(int[] arrPre, int[] arrMid, boolean hasParent){
         if (arrPre == null || arrMid == null
                 || arrPre.length != arrMid.length) {
             throw new RuntimeException("入参数组不合法");
         }
-        return processForPreAndMid(arrPre, arrMid, 0, arrPre.length-1, 0, arrMid.length-1);
+        return processForPreAndMid(arrPre, arrMid, 0, arrPre.length-1, 0, arrMid.length-1, hasParent);
     }
 
     /**
@@ -468,7 +474,7 @@ public class CommonUtils<T> {
      * @return
      */
     private static MyTreeNode processForPreAndMid(int[] arrPre, int[] arrMid,
-                                                  int preStart, int preEnd, int midStart, int midEnd) {
+                                                  int preStart, int preEnd, int midStart, int midEnd,  boolean hasParent) {
         if (preStart > preEnd || midStart > midEnd){
             return null;
         }
@@ -482,12 +488,39 @@ public class CommonUtils<T> {
         int curIndexInMid = findIndex(curValue, arrMid);
         // 右边子树最后一个节点，这里为了好区分就多了一个变量
         int lastRightIndexInPre = curIndexInMid - midStart + preStart;
-        MyTreeNode left = processForPreAndMid(arrPre, arrMid, preStart + 1, lastRightIndexInPre, midStart, curIndexInMid-1);
-        MyTreeNode right = processForPreAndMid(arrPre, arrMid, lastRightIndexInPre + 1, preEnd, curIndexInMid + 1, midEnd);
+        MyTreeNode left = processForPreAndMid(arrPre, arrMid, preStart + 1, lastRightIndexInPre, midStart, curIndexInMid-1, hasParent);
+        MyTreeNode right = processForPreAndMid(arrPre, arrMid, lastRightIndexInPre + 1, preEnd, curIndexInMid + 1, midEnd, hasParent);
         root.setLeft(left);
         root.setRight(right);
+        if (hasParent){
+            // 子节点需要指向父母（特殊需求）
+            if (left != null){
+                left.setParent(root);
+            }
+            if (right != null){
+                right.setParent(right);
+            }
+        }
+
         return root;
     }
+
+    /**
+     * 克隆一份树
+     * @param root
+     * @return
+     */
+    public static MyTreeNode cloneTree(MyTreeNode root){
+        if (root == null){
+            return null;
+        }
+        MyTreeNode newRoot = new MyTreeNode(root.getData());
+        // 将左右子树clone一下
+        newRoot.setLeft(cloneTree(root.getLeft()));
+        newRoot.setRight(cloneTree(root.getRight()));
+        return newRoot;
+    }
+
 
 
     /**

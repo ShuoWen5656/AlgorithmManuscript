@@ -1,7 +1,10 @@
 package classespackage.tree;
 
+import classespackage.CommonUtils;
+import dataConstruct.LinkNode;
 import dataConstruct.MyTreeNode;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -114,5 +117,100 @@ public class GetNumByN {
         res.setRight(cloneTree(root.getRight()));
         return res;
     }
+
+
+    /**
+     * 获取1 .. num的arr中所有的可能二叉树数量
+     * @param num
+     * @return
+     */
+    public static int getNumFromArr(int num){
+        if (num == 0 || num == 1){
+            // 没有元素和只有一个元素都算只有一种情况
+            return 1;
+        }
+        // 初始化当前层结果
+        int res = 0;
+        // 左边0个一直到左边n-1个
+        for (int i = 0; i < num; i++){
+            // 两边一边是i个元素，另一边num-1-i个元素形成的数量相乘
+            res += getNumFromArr(i) * getNumFromArr(num - i - 1);
+        }
+        return res;
+    }
+
+    /**
+     * 获取1 .. num的arr中所有的可能二叉树数量
+     * 动态规划
+     * @param num
+     * @return
+     */
+    public static int getNumFromArrDP(int num){
+        if (num == 0 || num == 1){
+            // 没有元素和只有一个元素都算只有一种情况
+            return 1;
+        }
+        int[] dp = new int[num + 1];
+        dp[0] = 1;
+        dp[1] = 1;
+        for (int i = 2; i <= num; i++){
+            int res = 0;
+            for (int j = 0; j < i ; j++){
+                // j表示左子树的元素个数
+                res += dp[j] * dp[i-j-1];
+            }
+            dp[i] = res;
+        }
+        return dp[num];
+    }
+
+
+    /**
+     * 通过[1...num]作为中序遍历结果，生成所有可能的二叉树，并返回所有可能二叉树的头结点
+     * @param num
+     * @return
+     */
+    public static List<MyTreeNode> generateAllTree(int num){
+
+        return generateFromNum(1, num);
+    }
+
+    /**
+     * 递归生成
+     * @param start
+     * @param end
+     * @return
+     */
+    private static List<MyTreeNode> generateFromNum(int start, int end) {
+        LinkedList<MyTreeNode> curList = new LinkedList<>();
+        if (start > end) {
+            curList.add(null);
+            return curList;
+        }
+
+        for (int i = start; i <= end; i++){
+            // 当前头
+            MyTreeNode root = new MyTreeNode(i);
+            // 左边start ... i-1, 右边 i + 1 到 end
+            List<MyTreeNode> leftList = generateFromNum(start, i - 1);
+            List<MyTreeNode> rightList = generateFromNum(i + 1, end);
+            for (MyTreeNode left : leftList){
+                for (MyTreeNode right : rightList){
+                    root.setLeft(left);
+                    root.setRight(right);
+                    curList.add(CommonUtils.cloneTree(root));
+                }
+            }
+        }
+        return curList;
+    }
+
+
+    public static void main(String[] args) {
+        List<MyTreeNode> myTreeNodes = generateAllTree(3);
+        System.out.println(myTreeNodes);
+    }
+
+
 
 }
