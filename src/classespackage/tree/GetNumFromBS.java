@@ -1,5 +1,6 @@
 package classespackage.tree;
 
+import classespackage.CommonUtils;
 import dataConstruct.MyTreeNode;
 
 /**
@@ -73,5 +74,44 @@ public class GetNumFromBS {
         int right = getHeight(root.getRight());
         return Math.max(left, right) + 1;
     }
+
+
+
+    public static int myGetNum(MyTreeNode root){
+        if (root == null){
+            return 0;
+        }
+        return process(root, 0, getHeight(root));
+    }
+
+    private static int process(MyTreeNode root, int level, int height) {
+        if (root == null){
+            // 当前子树有0个节点
+            return 0;
+        }
+        // 判断左子树中的最右边是否能够达到最底层
+        MyTreeNode left = root.getLeft();
+        int levelCp = level + 1;
+        while (left != null){
+            levelCp ++;
+            left = left.getRight();
+        }
+        if (levelCp == height){
+            // 左子树是满二叉树
+            return (1 << (height - level - 1)) - 1 + process(root.getRight(), level + 1, height) + 1;
+        }else {
+            // 右子树是满二叉树
+            return process(root.getLeft(), level + 1, height) + (1 << (height - level - 2)) - 1 + 1;
+        }
+    }
+
+    public static void main(String[] args) {
+        MyTreeNode root = CommonUtils.getCompleteBinaryTree(new int[]{1, 2, 3, 4, 5, 6, 7, 8});
+        int num = myGetNum(root);
+        System.out.println(num);
+
+
+    }
+
 
 }
