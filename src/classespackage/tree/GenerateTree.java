@@ -1,5 +1,6 @@
 package classespackage.tree;
 
+import classespackage.CommonUtils;
 import dataConstruct.MyTreeNode;
 
 /**
@@ -44,6 +45,34 @@ public class GenerateTree {
 
 
 
+    public static MyTreeNode generate(int[] arr){
+        if (arr == null){
+            return null;
+        }
+        return process(arr, 0, arr.length-1);
+    }
 
+    private static MyTreeNode process(int[] arr, int start, int end) {
+        if (start > end){
+            return null;
+        }
+        if (start == end){
+            return new MyTreeNode(arr[start]);
+        }
+        int midIndex = (start + end)/2;
+        int midValue = arr[midIndex];
+
+        MyTreeNode root = new MyTreeNode(midValue);
+
+        root.setLeft(process(arr, start, midIndex - 1));
+        root.setRight(process(arr, midIndex + 1, end));
+        return root;
+    }
+
+
+    public static void main(String[] args) {
+        MyTreeNode root = generate(new int[]{1, 3, 5, 6, 7, 8});
+        CommonUtils.printTree(root);
+    }
 
 }
