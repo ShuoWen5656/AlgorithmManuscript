@@ -74,11 +74,13 @@ public class MaxDistance {
         }
         // 先获取左右子树的最大距离和深度
         int[] leftR = myProcess(root.getLeft(), level + 1);
+        int leftMax = leftR[0];
         int leftH = leftR[1];
         int[] rightR = myProcess(root.getRight(), level + 1);
+        int rightMax = rightR[0];
         int rightH = rightR[1];
         // 开始计算当前节点的最大距离
-        int curMax = leftH + rightH + 1;
+        int curMax = Math.max(Math.max(leftMax, rightMax), leftH + rightH + 1);
         // 计算当前层深度
         int curH = Math.max(leftH, rightH) + 1;
         return new int[]{curMax, curH};
@@ -86,7 +88,10 @@ public class MaxDistance {
 
 
     public static void main(String[] args) {
-        MyTreeNode root = CommonUtils.getCompleteBinaryTree(new int[]{1, 2, 3, 4, 5, 6, 7});
+        MyTreeNode root = CommonUtils.getCompleteBinaryTree(new int[]{1, 2, 3, 4, 5, 6, 7, 8});
+        CommonUtils.printTree(root);
+
+        System.out.print("\n\n\n\n\n\n\n\n\n\n");
         int maxPath = getMaxPath(root);
         System.out.println(maxPath);
     }
