@@ -289,11 +289,43 @@ public class ChangeIntoTreeByArray {
         return root;
     }
 
+    /**
+     * 通过先序和中序获取后序遍历数组，不能重构二叉树
+     * @return
+     */
+    public static int[] generateArrByPreAndMid(int[] preArr, int[] midArr){
 
+        if (preArr == null || midArr == null
+                || preArr.length != midArr.length){
+            return null;
+        }
+        int[] posArr = new int[preArr.length];
+        processForGenerateArrByPreAndMid(preArr, midArr, 0, preArr.length - 1, 0, midArr.length - 1, posArr, preArr.length - 1);
+        return posArr;
+    }
+
+    private static void processForGenerateArrByPreAndMid(int[] preArr, int[] midArr, int preStart, int preEnd, int midStart, int midEnd,
+                                                         int[] posArr, int nextEnd) {
+        if (preStart > preEnd || midStart > midEnd){
+            return;
+        }
+        if (preStart == preEnd){
+            posArr[nextEnd] = preArr[preStart];
+        }
+        int cur = preArr[preStart];
+        // 将pre的第一个值放入pos的最后一个地方
+        posArr[nextEnd] = cur;
+
+        int midIndex = findIndex(cur, midArr);
+        int preNewEnd = preStart + midIndex - midStart;
+        processForGenerateArrByPreAndMid(preArr, midArr, preStart + 1, preNewEnd, midStart, midIndex-1, posArr, nextEnd - (preEnd - preNewEnd + 1));
+        processForGenerateArrByPreAndMid(preArr, midArr, preNewEnd + 1, preEnd, midIndex + 1, midEnd, posArr, nextEnd-1);
+    }
 
 
     public static void main(String[] args) {
-        MyTreeNode root = convert2TreeFromPreAndPos(new int[]{1, 2, 4, 8, 5,3,6,7}, new int[]{8,4,5,2,6,7,3,1});
-        CommonUtils.printTree(root);
+        int[] ints = generateArrByPreAndMid(new int[]{1, 2, 4, 8, 5, 3, 6, 7}, new int[]{8, 4, 2, 5, 1, 6, 3, 7});
+
+        System.out.println(ints);
     }
 }
