@@ -45,6 +45,31 @@ public class SortAlgorithm {
 
 
     /**
+     * 选择排序
+     * @param arr
+     * @return
+     */
+    public static int[] selectSortCP(int[] arr){
+        if (arr == null || arr.length == 1){
+            return arr;
+        }
+        for (int i = 0; i < arr.length; i++){
+            // 默认当前最大
+            int maxIndex = i;
+            for (int j = i; j < arr.length; j++){
+                if (arr[j] > arr[maxIndex]){
+                    maxIndex = j;
+                }
+            }
+            // 交换maxIndex和i
+            CommonUtils.swap(arr, i, maxIndex);
+        }
+        return arr;
+    }
+
+
+
+    /**
      * 插入排序:时间O(n²) 空间O(1) 、稳定排序、原地排序
      * 插入和冒泡排序不同的地方就是，插入排序往上插，一定有插入动作，不是交换，冒泡往下“沉”，一定有交换动作
      * @param array
@@ -243,6 +268,95 @@ public class SortAlgorithm {
             array[q] = tem[q - left];
         }
     }
+
+
+
+    public static int[] mergeSortCP(int[] arr) {
+        if (arr == null || arr.length == 1) {
+            return arr;
+        }
+        mergeReduceMemory(arr, 0, arr.length - 1);
+        return arr;
+
+        //return merge1(arr, 0, arr.length - 1);
+    }
+
+    private static int[] merge1(int[] arr, int left, int right) {
+        if (left == right){
+            return new int[]{arr[left]};
+        }
+        int mid = (left + right)/2;
+
+        int[] leftArr = merge1(arr, left, mid);
+        int[] rightArr = merge1(arr, mid + 1, right);
+        int[] res = new int[right - left + 1];
+        int index = 0;
+        int leftIndex = 0;
+        int rightIndex = 0;
+        while (leftIndex < leftArr.length && rightIndex < rightArr.length){
+            res[index++] = leftArr[leftIndex] <= rightArr[rightIndex] ? leftArr[leftIndex++] : rightArr[rightIndex++];
+        }
+        if (leftIndex == leftArr.length){
+            // 右边还有
+            while (rightIndex < rightArr.length){
+                res[index++] = rightArr[rightIndex++];
+            }
+        }else {
+            // 左边还有
+            while (leftIndex < leftArr.length){
+                res[index++] = leftArr[leftIndex++];
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 节省内存的版本，也没有节省多少
+     * @param arr
+     * @param left
+     * @param right
+     */
+    private static void mergeReduceMemory(int[] arr, int left, int right) {
+        if (left == right){
+            return;
+        }
+        int mid = (left + right)/2;
+
+        int[] tem = new int[right - left + 1];
+
+        mergeReduceMemory(arr, left, mid);
+        mergeReduceMemory(arr, mid + 1, right);
+        int index = 0;
+        int leftIndex = left;
+        int rightIndex = mid+1;
+        while (leftIndex <= mid && rightIndex <= right){
+            tem[index++] = arr[leftIndex] <= arr[rightIndex] ? arr[leftIndex++] : arr[rightIndex++];
+        }
+        if (leftIndex > mid){
+            // 右边还有
+            while (rightIndex <= right){
+                tem[index++] = arr[rightIndex++];
+            }
+        }else {
+            // 左边还有
+            while (leftIndex <= mid){
+                tem[index++] = arr[leftIndex++];
+            }
+        }
+        leftIndex = left;
+        for (int v : tem){
+            arr[leftIndex++] = v;
+        }
+    }
+
+
+
+    public static void main(String[] args) {
+        int[] arr = {3, 4, 1, 5, 6, 8, 9};
+        int[] ints = mergeSortCP(arr);
+        CommonUtils.printArr(ints);
+    }
+
 
 
     /**
@@ -493,4 +607,11 @@ public class SortAlgorithm {
         }
         return array;
     }
+
+
+
+
+
+
+
 }

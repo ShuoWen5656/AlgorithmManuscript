@@ -538,4 +538,14 @@ public class CommonUtils<T> {
         return 0;
     }
 
+    /**
+     * 打印arr
+     * @param arr
+     */
+    public static void printArr(int[] arr) {
+        for (int a : arr){
+            System.out.print(a);
+        }
+        System.out.println();
+    }
 }
