@@ -109,6 +109,41 @@ public class SortAlgorithm {
 
 
     /**
+     * 插入排序
+     * @param arr
+     * @return
+     */
+    public static int[] insertSortCP(int[] arr){
+        if (arr == null || arr.length == 1){
+            return arr;
+        }
+        for (int i = 1; i < arr.length; i++){
+            // 查询i应该放在哪？
+            int index = i;
+            int value = arr[i];
+            // 往前找到第一个小于index的坐标
+            while (index >= 0 && arr[index] >= arr[i]){
+                index--;
+            }
+            // index可能是-1
+            index++;
+            int temIndex = i;
+            while (temIndex > index){
+                arr[temIndex] = arr[temIndex-1];
+                temIndex--;
+            }
+            arr[index] = value;
+        }
+        return arr;
+    }
+
+    public static void main(String[] args) {
+        int[] arr = {3, 4, 1, 5, 6, 8, 9};
+        int[] ints = InsertSort(arr, (byte) 0);
+        CommonUtils.printArr(ints);
+    }
+
+    /**
      * 冒泡排序：时间O(n²)、空间O(1), 稳定，原地
      * 优化，如果中间某一次一次交换都没有，则该序列已经有顺序了，直接返回即可
      * @param array
@@ -351,11 +386,7 @@ public class SortAlgorithm {
 
 
 
-    public static void main(String[] args) {
-        int[] arr = {3, 4, 1, 5, 6, 8, 9};
-        int[] ints = mergeSortCP(arr);
-        CommonUtils.printArr(ints);
-    }
+
 
 
 
@@ -415,6 +446,55 @@ public class SortAlgorithm {
         return j;
     }
 
+
+    /**
+     * 快速排序（二轮） 非稳定排序，非原地排序
+     * @param arr
+     * @return
+     */
+    public static int[] quickSortCP(int[] arr){
+        if (arr == null || arr.length == 1){
+            return arr;
+        }
+        quickSortCP1(arr, 0, arr.length - 1);
+        return arr;
+    }
+
+    private static void quickSortCP1(int[] arr, int left, int right) {
+        if (left >= right){
+            return;
+        }
+        int midIndex = getMidIndexForQuickSort(arr, left, right);
+        quickSortCP1(arr, left, midIndex - 1);
+        quickSortCP1(arr, midIndex+1, right);
+    }
+
+    private static int getMidIndexForQuickSort(int[] arr, int left, int right) {
+        // 正常默认取第一个值
+        int mid = arr[left];
+        int leftIndex = left+1;
+        int rightIndex = right;
+        while (true){
+
+            // 找到左边第一个大于等于mid的
+            while (leftIndex <= rightIndex && arr[leftIndex] < mid){
+                leftIndex++;
+            }
+            // 找到右边第一个小于mid的
+            while (leftIndex <= rightIndex && arr[rightIndex] > mid){
+                rightIndex--;
+            }
+
+            if (leftIndex > rightIndex){
+                break;
+            }
+            CommonUtils.swap(arr, leftIndex, rightIndex);
+            leftIndex++;
+            rightIndex--;
+        }
+        CommonUtils.swap(arr, rightIndex, left);
+        return rightIndex;
+    }
 
     /**
      * 堆排序 时间 O(nlogn) 空间 O(1) 非稳定排序 原地排序
