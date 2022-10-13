@@ -137,11 +137,6 @@ public class SortAlgorithm {
         return arr;
     }
 
-    public static void main(String[] args) {
-        int[] arr = {3, 4, 1, 5, 6, 8, 9};
-        int[] ints = InsertSort(arr, (byte) 0);
-        CommonUtils.printArr(ints);
-    }
 
     /**
      * 冒泡排序：时间O(n²)、空间O(1), 稳定，原地
@@ -178,6 +173,39 @@ public class SortAlgorithm {
         }
         return array;
     }
+
+
+    /**
+     * 冒泡排序(极简)
+     * 1、跟插入整体逻辑非常像
+     * 2、冒泡是一种交换排序，插入没有交换，是通过覆盖达到的部分数组后移
+     * @param arr
+     * @return
+     */
+    public static int[] BubbleSortCP(int[] arr){
+        if (arr == null || arr.length == 1){
+            return arr;
+        }
+        for (int i = 0; i < arr.length; i++){
+            for (int j = i; j >= 1; j--){
+                if (arr[j] < arr[j-1]){
+                    CommonUtils.swap(arr, j, j-1);
+                }else{
+                    break;
+                }
+            }
+        }
+        return arr;
+    }
+
+
+
+    public static void main(String[] args) {
+        int[] arr = {3, 4, 1, 5, 2, 8, 6, 9};
+        int[] ints = BubbleSortCP(arr);
+        CommonUtils.printArr(ints);
+    }
+
 
     /**
      * 希尔排序：时间O(nlogn) 空间 O（1），不稳定、原地
