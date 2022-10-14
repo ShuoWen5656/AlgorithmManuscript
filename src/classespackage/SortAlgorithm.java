@@ -200,11 +200,7 @@ public class SortAlgorithm {
 
 
 
-    public static void main(String[] args) {
-        int[] arr = {3, 4, 1, 5, 2, 8, 6, 9};
-        int[] ints = BubbleSortCP(arr);
-        CommonUtils.printArr(ints);
-    }
+
 
 
     /**
@@ -257,6 +253,63 @@ public class SortAlgorithm {
         array[k + h] = temp;
     }
 
+
+    /**
+     * 希尔排序
+     * @param arr
+     */
+    public static int[] shellSortCP(int[] arr) {
+        if (arr == null || arr.length == 1){
+            return arr;
+        }
+        int len = arr.length;
+        for (int i = len/2; i > 0; i /= 2) {
+            // 这里的i其实是offset，也就是偏移量
+            for (int j = 0; j < i; j++){
+                insertSortForOffset(arr, j, i);
+            }
+
+        }
+        return arr;
+    }
+
+    /**
+     * 间隔元素之间的插入排序
+     * @param arr
+     * @param start
+     * @param offset
+     */
+    private static void insertSortForOffset(int[] arr, int start, int offset) {
+        if (arr == null || arr.length <= start){
+            return;
+        }
+        // 从第二个元素开始，插入排序的要求
+        for (int i = start+offset; i < arr.length; i += offset) {
+            // 保存当前状态
+            int index = i;
+            int curValue = arr[i];
+            // 找到第一个比自己小的
+            while (index >= 0 && arr[i] <= arr[index]){
+                index-=offset;
+            }
+            // 找到刚好不小于自己的
+            index += offset;
+            int move = i;
+            while (move > index){
+                arr[move] = arr[move - offset];
+                move -= offset;
+            }
+            arr[move] = curValue;
+        }
+    }
+
+
+
+    public static void main(String[] args) {
+        int[] arr = {3, 4, 1, 5, 2, 8, 6, 9};
+        int[] ints = shellSortCP(arr);
+        CommonUtils.printArr(ints);
+    }
 
     /**
      * 归并排序：递归归并，将数据二分若干份，合并排序
