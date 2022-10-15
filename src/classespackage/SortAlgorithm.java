@@ -13,6 +13,11 @@ import java.util.*;
 public class SortAlgorithm {
 
 
+    /********************************************************************************************************
+     *                                   选择排序                                                            *
+     ********************************************************************************************************/
+
+
     /**
      * 选择排序算法：目前最通用的排序想法，时间O（n²），空间O(1),非稳定排序，原地排序
      * @param array
@@ -66,7 +71,9 @@ public class SortAlgorithm {
         }
         return arr;
     }
-
+    /********************************************************************************************************
+     *                                   插入排序                                                            *
+     ********************************************************************************************************/
 
 
     /**
@@ -137,6 +144,41 @@ public class SortAlgorithm {
         return arr;
     }
 
+    /**
+     * 插入排序（稳定版本）
+     * @param arr
+     * @return
+     */
+    public static int[] insertSortStable(int[] arr){
+        if (arr == null || arr.length == 1){
+            return arr;
+        }
+        for (int i = 1; i < arr.length; i++){
+            // 查询i应该放在哪？
+            int index = i;
+            int value = arr[i];
+            // 往前找到第一个小于index的坐标
+            while (index-1 >= 0 && value < arr[index-1]){
+                arr[index] = arr[index - 1];
+                index--;
+            }
+            arr[index] = value;
+        }
+        return arr;
+    }
+
+    public static void main(String[] args) {
+        int[] arr = {3, 4, 1, 5, 2, 8, 6, 9};
+        int[] ints = insertSortStable(arr);
+        CommonUtils.printArr(ints);
+    }
+
+
+    /********************************************************************************************************
+     *                                   冒泡排序                                                            *
+     ********************************************************************************************************/
+
+
 
     /**
      * 冒泡排序：时间O(n²)、空间O(1), 稳定，原地
@@ -200,7 +242,9 @@ public class SortAlgorithm {
 
 
 
-
+    /********************************************************************************************************
+     *                                   希尔排序                                                            *
+     ********************************************************************************************************/
 
 
     /**
@@ -305,11 +349,12 @@ public class SortAlgorithm {
 
 
 
-    public static void main(String[] args) {
-        int[] arr = {3, 4, 1, 5, 2, 8, 6, 9};
-        int[] ints = shellSortCP(arr);
-        CommonUtils.printArr(ints);
-    }
+
+
+    /********************************************************************************************************
+     *                                   归并排序                                                            *
+     ********************************************************************************************************/
+
 
     /**
      * 归并排序：递归归并，将数据二分若干份，合并排序
@@ -386,7 +431,11 @@ public class SortAlgorithm {
     }
 
 
-
+    /**
+     * 归并排序
+     * @param arr
+     * @return
+     */
     public static int[] mergeSortCP(int[] arr) {
         if (arr == null || arr.length == 1) {
             return arr;
@@ -397,6 +446,13 @@ public class SortAlgorithm {
         //return merge1(arr, 0, arr.length - 1);
     }
 
+    /**
+     * 不省内存版本
+     * @param arr
+     * @param left
+     * @param right
+     * @return
+     */
     private static int[] merge1(int[] arr, int left, int right) {
         if (left == right){
             return new int[]{arr[left]};
@@ -467,7 +523,9 @@ public class SortAlgorithm {
 
 
 
-
+    /********************************************************************************************************
+     *                                   快速排序                                                            *
+     ********************************************************************************************************/
 
 
 
@@ -576,7 +634,9 @@ public class SortAlgorithm {
         CommonUtils.swap(arr, rightIndex, left);
         return rightIndex;
     }
-
+    /********************************************************************************************************
+     *                                   堆排序                                                              *
+     ********************************************************************************************************/
     /**
      * 堆排序 时间 O(nlogn) 空间 O(1) 非稳定排序 原地排序
      * @param array
@@ -630,6 +690,97 @@ public class SortAlgorithm {
         array[parent] = temp;
     }
 
+
+    /**
+     * 堆排序（二轮）
+     * @param arr
+     * @return
+     */
+    public static int[] headSortCP(int[] arr){
+        if (arr == null || arr.length <= 1){
+            return arr;
+        }
+        int len = arr.length;
+        // 先做一个整体的堆调整
+        for (int i = len/2-1; i >= 0; i--){
+            // 从倒数第一个非叶子节点开始下沉
+            headSinkASC(arr, i, len);
+        }
+        // 开始弹出数据,其实这里如果只需要top5就只弹出5个值即可
+        for (int i = arr.length-1; i >= 0; i--){
+            // 交换顶元素和尾巴元素
+            CommonUtils.swap(arr, 0, i);
+            // 只对顶元素进行一次堆调整,注意长度需要减1，相当于去掉了一个尾巴
+            headSinkASC(arr, 0, --len);
+        }
+        return arr;
+    }
+
+    /**
+     * 堆下沉操作，从parentIndex开始
+     * 从大到小的引擎
+     * @param arr
+     * @param parentIndex
+     * @param len 指定数组长度边界,超出的部分不做比较
+     */
+    private static void headSinkDESC(int[] arr, int parentIndex, int len) {
+        int parent = parentIndex;
+        int leftIndex = parent*2+1;
+        while (leftIndex < len){
+            int rightIndex = parent*2+2;
+            // 找到parent和left中较小的那个
+            int minIndex = arr[parent] < arr[leftIndex] ? parent : leftIndex;
+            if (rightIndex < len && arr[rightIndex] < arr[minIndex]) {
+                // 判断右边是否是三者中最小的
+                minIndex = rightIndex;
+            }
+            if (minIndex == parent){
+                // 小丑竟是我自己
+                break;
+            }
+            // 说明需要交换
+            CommonUtils.swap(arr, minIndex, parent);
+            // 滑动角标
+            parent = minIndex;
+            leftIndex = parent*2+1;
+        }
+    }
+
+    /**
+     * 堆下沉操作，从parentIndex开始
+     * 从小到大的引擎
+     * @param arr
+     * @param parentIndex
+     * @param len 指定数组长度边界,超出的部分不做比较
+     */
+    private static void headSinkASC(int[] arr, int parentIndex, int len) {
+        int parent = parentIndex;
+        int leftIndex = parent*2+1;
+        while (leftIndex < len){
+            int rightIndex = parent*2+2;
+            // 找到parent和left中较大的那个
+            int maxIndex = arr[parent] > arr[leftIndex] ? parent : leftIndex;
+            if (rightIndex < len && arr[rightIndex] > arr[maxIndex]) {
+                // 判断右边是否是三者中最大的
+                maxIndex = rightIndex;
+            }
+            if (maxIndex == parent){
+                // 小丑竟是我自己
+                break;
+            }
+            // 说明需要交换
+            CommonUtils.swap(arr, maxIndex, parent);
+            // 滑动角标
+            parent = maxIndex;
+            leftIndex = parent*2+1;
+        }
+    }
+
+
+    /********************************************************************************************************
+     *                                   计数排序                                                            *
+     ********************************************************************************************************/
+
     /**
      * 计数排序,将所有的元素出现次数保存下来重新排序 O（n+k）O（k), 稳定排序，非原地排序
      * @param array
@@ -673,7 +824,9 @@ public class SortAlgorithm {
         }
     }
 
-
+    /********************************************************************************************************
+     *                                   桶排序                                                              *
+     ********************************************************************************************************/
     /**
      * 桶排序：通过定义若干桶，桶范围连续，将数据分到桶内，通过桶内排序再合并
      * O(n+k) O(n+k) 稳定排序，非原地排序
@@ -723,6 +876,9 @@ public class SortAlgorithm {
         return result;
     }
 
+    /********************************************************************************************************
+     *                                  基数排序                                                            *
+     ********************************************************************************************************/
     /**
      * 基数排序
      * 1、时间复杂度：O(kn)  2、空间复杂度：O(n+k)  3、稳定排序  4、非原地排序
