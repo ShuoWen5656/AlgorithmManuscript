@@ -548,4 +548,27 @@ public class CommonUtils<T> {
         }
         System.out.println();
     }
+
+    /**
+     * 获取arr的两个边界值
+     * [0]最小值、[1]最大值
+     * @param arr
+     * @return
+     */
+    public static int[] getBoundary(int[] arr) {
+        if (arr == null){
+            return arr;
+        }
+        int max = Integer.MIN_VALUE;
+        int min = Integer.MAX_VALUE;
+        for (int v : arr){
+            if (v >= max){
+                max = v;
+            }
+            if (v <= min){
+                min  = v;
+            }
+        }
+        return new int[]{min, max};
+    }
 }

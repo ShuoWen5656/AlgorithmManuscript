@@ -167,11 +167,6 @@ public class SortAlgorithm {
         return arr;
     }
 
-    public static void main(String[] args) {
-        int[] arr = {3, 4, 1, 5, 2, 8, 6, 9};
-        int[] ints = insertSortStable(arr);
-        CommonUtils.printArr(ints);
-    }
 
 
     /********************************************************************************************************
@@ -824,6 +819,44 @@ public class SortAlgorithm {
         }
     }
 
+
+    /**
+     * 计数排序
+     * @param arr
+     * @return
+     */
+    public static int[] countSoutCP(int[] arr) {
+        if (arr == null || arr.length < 2){
+            return arr;
+        }
+        int[] boundary = CommonUtils.getBoundary(arr);
+        int min = boundary[0];
+        int max = boundary[1];
+        int[] helper = new int[max - min + 1];
+        // 计数
+        for (int i = 0; i < arr.length; i++){
+            helper[arr[i] - min]++;
+        }
+        int index = 0;
+        for (int i = 0; i < helper.length; i++) {
+            int value = helper[i];
+            if (value > 0){
+                while (value-- > 0){
+                    arr[index++] = i + min;
+                }
+            }
+        }
+        return arr;
+    }
+
+    public static void main(String[] args) {
+        //int[] arr = {3, 4, 1, 5, 2, 8, 6, 9};
+        int[] arr = {1000000000,10000000};
+
+        int[] ints = countSoutCP(arr);
+        CommonUtils.printArr(ints);
+    }
+
     /********************************************************************************************************
      *                                   桶排序                                                              *
      ********************************************************************************************************/
@@ -838,16 +871,9 @@ public class SortAlgorithm {
         if(array == null || array.length < 2) return array;
         // 获取最值
         // 取最大值和最小值
-        int min = Integer.MAX_VALUE;
-        int max = Integer.MIN_VALUE;
-        for (int i = 0; i < array.length; i++){
-            if (array[i] > max){
-                max  = array[i];
-            }
-            if (array[i] < min){
-                min = array[i];
-            }
-        }
+        int[] boundary = CommonUtils.getBoundary(array);
+        int min = boundary[0];
+        int max = boundary[1];
         // 计算应该需要多少个桶，当前定义每个桶的范围是5
         int range = 5;
         int arrayRange = max - min;
@@ -875,6 +901,56 @@ public class SortAlgorithm {
         }
         return result;
     }
+
+
+    /**
+     * 桶排序
+     * 如果是极端情况，比如{1，100000}会浪费很多桶
+     * 所以当前方法对桶排序做一个优化，根据出现过的元素才会安排桶，否则不安排桶
+     * @param arr
+     * @return
+     */
+    public static int[] bucketSortCP(int[] arr) {
+        if (arr == null || arr.length < 2){
+            return arr;
+        }
+        Map<String, List<Integer>> map = new HashMap<>();
+        for (int v : arr) {
+            // 0 -> 5
+            String key = String.format("%d->%d", ((v+5)/5) * 5 - 5, ((v+5)/5) * 5);
+            if (!map.containsKey(key)){
+                map.put(key, new ArrayList<>());
+            }
+            map.get(key).add(v);
+        }
+        List<Map.Entry<String, List<Integer>>> entryList = new ArrayList<>(map.entrySet());
+        // 排序
+        Collections.sort(entryList, (o1, o2) -> {
+            if (o1.getValue().get(0) < o2.getValue().get(0)){
+                return -1;
+            }else {
+                return 1;
+            }
+        });
+        int index = 0;
+        // 复原
+        for (Map.Entry<String, List<Integer>> entry : entryList) {
+            List<Integer> values = entry.getValue();
+            Collections.sort(values);
+            for (int v : values){
+                arr[index++] = v;
+            }
+        }
+        return arr;
+    }
+
+    //public static void main(String[] args) {
+    //    //int[] arr = {3, 4, 1, 5, 2, 8, 6, 9};
+    //    int[] arr = {1000000000,10000000};
+    //
+    //    int[] ints = bucketSortCP(arr);
+    //    CommonUtils.printArr(ints);
+    //}
 
     /********************************************************************************************************
      *                                  基数排序                                                            *
