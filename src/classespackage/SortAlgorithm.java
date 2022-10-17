@@ -1,5 +1,7 @@
 package classespackage;
 
+import dataConstruct.LinkNode;
+
 import javax.swing.*;
 import java.util.*;
 
@@ -849,13 +851,6 @@ public class SortAlgorithm {
         return arr;
     }
 
-    public static void main(String[] args) {
-        //int[] arr = {3, 4, 1, 5, 2, 8, 6, 9};
-        int[] arr = {1000000000,10000000};
-
-        int[] ints = countSoutCP(arr);
-        CommonUtils.printArr(ints);
-    }
 
     /********************************************************************************************************
      *                                   桶排序                                                              *
@@ -984,8 +979,8 @@ public class SortAlgorithm {
             // 将数组按照某位数，进行装桶
             for (int j = 0; j < array.length; j++){
                 // 取出当前的某一位
-                int tem = (int)(array[i]/Math.pow(10, i))%10;
-                bucket.get(tem).add(array[i]);
+                int tem = (int)(array[j]/Math.pow(10, i))%10;
+                bucket.get(tem).add(array[j]);
             }
             int index = 0;
             // 将桶中的数据重新放入array
@@ -1002,9 +997,61 @@ public class SortAlgorithm {
     }
 
 
+    /**
+     * 基数排序
+     * @param arr
+     * @return
+     */
+    public static int[] radioSortCP(int[] arr) {
+        if (arr == null || arr.length < 2) {
+            return arr;
+        }
+        int len = arr.length;
+        // 10个桶代表着10进制，0->9
+        List<LinkedList<Integer>> buckets = new ArrayList<>(10);
+        for (int i = 0; i < 10; i++) {
+             buckets.add(new LinkedList<>());
+        }
+        // 找到最大值的位数
+        int max = Integer.MIN_VALUE;
+        // 最少也有一位
+        int maxVNum = 1;
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] > max) {
+                max = arr[i];
+            }
+        }
+        while ((max = max/10) != 0){
+            maxVNum++;
+        }
+        for (int i = 0; i < maxVNum; i++) {
+            // i代表要按照第几位进行装桶
+            for (int j = 0; j < arr.length; j++) {
+                // 取第i位
+                int num = (int) (arr[j]/(Math.pow(10, i)))%10;
+                buckets.get(num).offer(arr[j]);
+            }
+            // 按照个位进行重新排序
+            int index = 0;
+            for (int k = 0; k < 10; k++) {
+                LinkedList<Integer> bucket = buckets.get(k);
+                while (bucket != null && !bucket.isEmpty()) {
+                    arr[index++] = bucket.poll();
+                }
+            }
+        }
+        return arr;
+    }
 
 
 
+    public static void main(String[] args) {
+        int[] arr = {3, 4, 1, 5, 2, 8, 6, 9};
+        //int[] arr = {1000000000,10000000};
+
+        int[] ints = radioSortCP(arr);
+        CommonUtils.printArr(ints);
+    }
 
 
 }
