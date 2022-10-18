@@ -181,4 +181,161 @@ public class Fibonacci {
         return 3 * res[0][0] + 2 * res[1][0] + res[2][0];
     }
 
+
+    /**
+     * 阶梯问题：递归解法
+     * O(2^n)
+     * @param num
+     */
+    public static int process1(int num){
+        if (num == 1) {
+            return 1;
+        }else if (num == 2){
+            return 2;
+        }else if (num == 0){
+            return 0;
+        }
+        else {
+            return process1(num-1) + process1(num - 2);
+        }
+    }
+
+
+    /**
+     * 阶梯问题：dp解法
+     * 比递归快非常多
+     * O(n)
+     * @param num
+     */
+    public static int dp1(int num){
+        int[] dp = new int[num+1];
+        dp[0] = 0;
+        dp[1] = 1;
+        dp[2] = 2;
+        for (int i = 3; i <= num; i++) {
+            dp[i] = dp[i-1] + dp[i-2];
+        }
+        return dp[num];
+    }
+
+
+    /**
+     * logn解法
+     * 状态矩阵相乘
+     * @param num
+     * @return
+     */
+    public static int superFunc1(int num) {
+        // 构造一个初始矩阵[func(2), func(1)]
+        int[][] arr = {{2, 1}};
+        arr =  multiMartrix(arr, powMartrixPro(new int[][]{
+                        {1,1},
+                        {1,0}
+                },
+                num - 2));
+        return arr[0][0];
+    }
+
+    /**
+     * 母牛问题
+     * 求第years年时有多少牛
+     * @param years
+     * @return
+     */
+    public static int cowPro(int years) {
+        if (years <= 3){
+            return years;
+        }
+        int[][] arr = {{3,2,1}};
+        arr = multiMartrix(arr, powMartrixPro(new int[][]{
+                {1,1,0},
+                {0,0,1},
+                {1,0,0}
+        }, years-3));
+        return arr[0][0];
+    }
+
+
+
+    /**
+     * arr的n次方
+     * @param arr
+     * @param n
+     * @return
+     */
+    public static int[][] powMartrix(int[][] arr, int n) {
+        if (arr == null || arr.length == 0 || arr[0].length == 0 ) {
+            return arr;
+        }
+        int[][] res = new int[arr.length][arr[0].length];
+        // 单位举证
+        for (int i = 0; i < res.length; i++) {
+            res[i][i] = 1;
+        }
+        for (int i = 0; i < n; i++) {
+            res = multiMartrix(res, arr);
+        }
+        return res;
+    }
+
+    /**
+     * arr的n次方
+     * 优化版本
+     * @param arr
+     * @param n
+     * @return
+     */
+    public static int[][] powMartrixPro(int[][] arr, int n) {
+        if (arr == null || arr.length == 0 || arr[0].length == 0 ) {
+            return arr;
+        }
+        int[][] res = new int[arr.length][arr[0].length];
+        // 单位举证
+        for (int i = 0; i < res.length; i++) {
+            res[i][i] = 1;
+        }
+        int[][] tem = arr;
+        for (; n > 0; n >>= 1) {
+            if ((n & 1) != 0){
+                // 这波res需要乘
+                res = multiMartrix(res, tem);
+            }
+            // 准备下一波的乘数，虽然可能不乘
+            tem = multiMartrix(tem, tem);
+        }
+        return res;
+    }
+
+    /**
+     * 矩阵相乘
+     * @param arr1
+     * @param arr2
+     * @return
+     */
+    public static int[][] multiMartrix(int[][] arr1, int[][] arr2) {
+        if (arr1 == null || arr1.length == 0 || arr1[0].length == 0
+                || arr2 == null || arr2.length == 0 || arr2[0].length == 0) {
+            return null;
+        }
+        // 相乘结果：行 = arr1的行 列 = arr2的列数
+        int[][] res = new int[arr1.length][arr2[0].length];
+        // 一行一行来
+        for (int i = 0; i < arr1.length; i++) {
+            for (int j = 0; j < arr2[0].length; j++){
+                int sum = 0;
+                for (int k = 0; k < arr1[0].length; k++) {
+                    // 这里的k是arr1的列，arr2 的行
+                    sum += arr1[i][k]*arr2[k][j];
+                }
+                res[i][j] = sum;
+            }
+        }
+        return res;
+    }
+
+
+    public static void main(String[] args) {
+        System.out.println(cowPro(7));
+    }
+
 }
