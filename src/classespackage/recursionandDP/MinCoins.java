@@ -163,4 +163,125 @@ public class MinCoins {
         }
     }
 
+
+    /**
+     * 方法一：暴力递归
+     * @param arr
+     * @param aim
+     * @return
+     */
+    public static int minCoinCP1(int[] arr, int aim) {
+        if (aim < 0 || arr == null || arr.length == 0) {
+            return 0;
+        }
+        return process1(arr, 0, aim);
+    }
+
+    private static int process1(int[] arr, int start, int aim) {
+        if (aim == 0) {
+            return 0;
+        }
+        if (start >= arr.length) {
+            return Integer.MAX_VALUE;
+        }
+        int min = Integer.MAX_VALUE;
+        for (int j = 0; j <= aim/arr[start]; j++) {
+            int res = process1(arr, start + 1, aim - (j * arr[start]));
+            if (res != Integer.MAX_VALUE){
+                // 说明凑的齐
+                min = Math.min(min, j + res);
+            }
+
+        }
+        return min == Integer.MAX_VALUE ? -1 : min;
+    }
+
+
+    /**
+     * 方法二：动态规划
+     * @param arr
+     * @param aim
+     * @return
+     */
+    public static int minCoinCP2(int[] arr, int aim) {
+        if (aim < 0 || arr == null || arr.length == 0) {
+            return 0;
+        }
+        int[][] dp = new int[arr.length][aim+1];
+        for (int i = 0; i < arr.length; i++) {
+            dp[i][0] = 0;
+        }
+        for (int i = 0; i <= aim; i++) {
+            dp[0][i] = i%arr[0] == 0 ? i/arr[0] : -1;
+        }
+        for (int i = 1; i < arr.length; i++) {
+            for (int j = 1; j <= aim; j++) {
+                int min = Integer.MAX_VALUE;
+                for (int k = 0; k <= j/arr[i]; k++) {
+                    // k代表几个arr[i]
+                    if (j-k*arr[i] > 0 && dp[i-1][j-k*arr[i]] != -1) {
+                        min = Math.min(min, k + dp[i-1][j-k*arr[i]]);
+                    }
+                }
+                dp[i][j] = min == Integer.MAX_VALUE ? -1 : min;
+            }
+        }
+        return dp[arr.length-1][aim];
+    }
+
+
+    ///**
+    // * 方法三：动态规划空间压缩法
+    // * @param arr
+    // * @param aim
+    // * @return
+    // */
+    //public static int minCoinCP3(int[] arr, int aim) {
+    //    if (aim < 0 || arr == null || arr.length == 0) {
+    //        return 0;
+    //    }
+    //    int[] dp = new int[aim+1];
+    //}
+
+
+    /**
+     * 进阶问题：动态规划
+     * @param arr
+     * @param aim
+     * @return
+     */
+    public static int minCoinCP2Only(int[] arr, int aim) {
+        if (aim < 0 || arr == null || arr.length == 0) {
+            return 0;
+        }
+        int[][] dp = new int[arr.length][aim+1];
+        for (int i = 0; i < arr.length; i++) {
+            dp[i][0] = 0;
+        }
+        for (int i = 0; i <= aim; i++) {
+            dp[0][i] = arr[0] == i ? 1 : -1;
+        }
+        for (int i = 1; i < arr.length; i++) {
+            for (int j = 1; j <= aim; j++) {
+                int min = Integer.MAX_VALUE;
+                for (int k = 0; k <= 1; k++) {
+                    // k只能是0和1个
+                    if (j-k*arr[i] > 0 && dp[i-1][j-k*arr[i]] != -1) {
+                        min = Math.min(min, k + dp[i-1][j-k*arr[i]]);
+                    }
+                }
+                dp[i][j] = min == Integer.MAX_VALUE ? -1 : min;
+            }
+        }
+        return dp[arr.length-1][aim];
+    }
+
+
+
+    public static void main(String[] args) {
+        int i = minCoinCP2Only(new int[]{5, 2, 3}, 20);
+        System.out.println(i);
+    }
+
+
 }
