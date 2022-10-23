@@ -230,18 +230,55 @@ public class MinCoins {
     }
 
 
-    ///**
-    // * 方法三：动态规划空间压缩法
-    // * @param arr
-    // * @param aim
-    // * @return
-    // */
-    //public static int minCoinCP3(int[] arr, int aim) {
-    //    if (aim < 0 || arr == null || arr.length == 0) {
-    //        return 0;
-    //    }
-    //    int[] dp = new int[aim+1];
-    //}
+    /**
+     * 方法三：动态规划空间压缩法
+     * @param arr
+     * @param aim
+     * @return
+     */
+    public static int minCoinCP3ReduceMem(int[] arr, int aim) {
+        if (aim < 0 || arr == null || arr.length == 0) {
+            return 0;
+        }
+        // 上波的结果是否存在dp中
+        boolean isFirst = true;
+        int[] dp = new int[aim+1];
+//        辅助
+        int[] dp2 = new int[aim + 1];
+        // 初始化
+        for (int i = 0; i <= aim; i++) {
+            dp[i] = i % arr[0] == 0 ? i / arr[0] : -1;
+        }
+        for (int i = 0; i < arr.length; i++) {
+            for (int j = 0; j <= aim; j++) {
+                int min = Integer.MAX_VALUE;
+                for (int k = 0; k <= j/arr[i]; k++) {
+                    if (isFirst) {
+                        if (dp[j - k * arr[i]] != -1) {
+                            min = Math.min(min, k + dp[j - k * arr[i]]);
+                        }
+                    }else {
+                        if (dp2[j - k * arr[i]] != -1) {
+                            min = Math.min(min, k + dp2[j - k * arr[i]]);
+                        }
+                    }
+                }
+                if (isFirst) {
+                    dp2[j] = min == Integer.MAX_VALUE ? -1 : min;
+//                    isFirst = !isFirst;
+                }else {
+                    dp[j] = min == Integer.MAX_VALUE ? -1 : min;
+//                    isFirst = !isFirst;
+                }
+            }
+            isFirst = !isFirst;
+        }
+        if (isFirst) {
+            return dp2[aim] == -1 ? -1 : dp2[aim];
+        }else {
+            return dp[aim] == -1 ? -1 : dp[aim];
+        }
+    }
 
 
     /**
@@ -276,10 +313,58 @@ public class MinCoins {
         return dp[arr.length-1][aim];
     }
 
-
+    /**
+     * 方法三：动态规划空间压缩法
+     * @param arr
+     * @param aim
+     * @return
+     */
+    public static int minCoinCPOnlyReduceMem(int[] arr, int aim) {
+        if (aim < 0 || arr == null || arr.length == 0) {
+            return 0;
+        }
+        // 上波的结果是否存在dp中
+        boolean isFirst = true;
+        int[] dp = new int[aim+1];
+//        辅助
+        int[] dp2 = new int[aim + 1];
+        // 初始化
+        for (int i = 0; i <= aim; i++) {
+            dp[i] = i == arr[0] ? 1 : -1;
+        }
+        for (int i = 0; i < arr.length; i++) {
+            for (int j = 0; j <= aim; j++) {
+                int min = Integer.MAX_VALUE;
+                for (int k = 0; k <= 1; k++) {
+                    if (isFirst) {
+                        if (j - k * arr[i] >= 0 && dp[j - k * arr[i]] != -1) {
+                            min = Math.min(min, k + dp[j - k * arr[i]]);
+                        }
+                    }else {
+                        if (j - k * arr[i] >= 0 &&dp2[j - k * arr[i]] != -1) {
+                            min = Math.min(min, k + dp2[j - k * arr[i]]);
+                        }
+                    }
+                }
+                if (isFirst) {
+                    dp2[j] = min == Integer.MAX_VALUE ? -1 : min;
+//                    isFirst = !isFirst;
+                }else {
+                    dp[j] = min == Integer.MAX_VALUE ? -1 : min;
+//                    isFirst = !isFirst;
+                }
+            }
+            isFirst = !isFirst;
+        }
+        if (isFirst) {
+            return dp2[aim] == -1 ? -1 : dp2[aim];
+        }else {
+            return dp[aim] == -1 ? -1 : dp[aim];
+        }
+    }
 
     public static void main(String[] args) {
-        int i = minCoinCP2Only(new int[]{5, 2, 3}, 20);
+        int i = minCoinCPOnlyReduceMem(new int[]{5, 2, 3}, 20);
         System.out.println(i);
     }
 
