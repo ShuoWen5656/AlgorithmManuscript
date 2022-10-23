@@ -190,4 +190,157 @@ public class CoinsChange {
         }
     }
 
+
+    /**
+     * 二轮 - 递归方法
+     */
+    public static int coinsCP1(int[] arr, int aim) {
+        if (arr == null || arr.length == 0
+                || aim < 0){
+            return 0;
+        }
+        return processCoinsCP1(arr, 0, aim);
+    }
+
+    private static int processCoinsCP1(int[] arr, int start, int aim) {
+        if (aim == 0) {
+            // 剩下的组成0的方法数为1
+            return 1;
+        }
+        if (start == arr.length) {
+            // 越界
+            return 0;
+        }
+        int res = 0;
+        for (int i = 0; i <= aim/arr[start]; i++) {
+            res += processCoinsCP1(arr, start + 1, aim - (i * arr[start]));
+        }
+        return res;
+    }
+
+    /**
+     * 经典动态规划
+     * @param arr
+     * @param aim
+     * @return
+     */
+    public static int coinsCP2(int[] arr, int aim) {
+        if (arr == null || arr.length == 0
+                || aim < 0){
+            return 0;
+        }
+        int[][] dp = new int[arr.length][aim+1];
+        // 初始化行
+        for (int i = 0; i <= aim; i++) {
+            dp[0][i] = i%arr[0] == 0? 1 : 0;
+        }
+        // 初始化列
+        for (int i = 0; i < arr.length; i++) {
+            dp[i][0] = 1;
+        }
+        for (int i = 1; i < arr.length; i++) {
+            for (int j = 1; j <= aim; j++) {
+                int res = 0;
+                for (int k = 0; k <= j/arr[i]; k++) {
+                    res += dp[i-1][j- k * arr[i]];
+                }
+                dp[i][j] = res;
+            }
+        }
+        return dp[arr.length - 1][aim];
+    }
+
+    /**
+     * 节省空间版本
+     * @param arr
+     * @param aim
+     * @return
+     */
+    public static int coinsCP2ReduceMem(int[] arr, int aim) {
+        if (arr == null || arr.length == 0
+                || aim < 0){
+            return 0;
+        }
+        int[] dp = new int[aim+1];
+        // 初始化行
+        for (int i = 0; i <= aim; i++) {
+            dp[i] = i%arr[0] == 0? 1 : 0;
+        }
+        for (int i = 1; i < arr.length; i++) {
+            // 缓存
+            int[] dpCp = new int[aim+1];
+            // 0初始化为1，后面不会被计算到
+            dpCp[0] = 1;
+            for (int j = 1; j <= aim; j++) {
+                int res = 0;
+                for (int k = 0; k <= j/arr[i]; k++) {
+                    res += dp[j- k * arr[i]];
+                }
+                dpCp[j] = res;
+            }
+            dp = dpCp;
+        }
+        return dp[aim];
+    }
+
+    /**
+     * 动态规划最优解 aim*N复杂度
+     * @param arr
+     * @param aim
+     * @return
+     */
+    public static int coinsCP3(int[] arr, int aim) {
+        if (arr == null || arr.length == 0
+                || aim < 0){
+            return 0;
+        }
+        int[][] dp = new int[arr.length][aim+1];
+        // 初始化行
+        for (int i = 0; i <= aim; i++) {
+            dp[0][i] = i%arr[0] == 0? 1 : 0;
+        }
+        // 初始化列
+        for (int i = 0; i < arr.length; i++) {
+            dp[i][0] = 1;
+        }
+        for (int i = 1; i < arr.length; i++) {
+            for (int j = 1; j <= aim; j++) {
+                dp[i][j] = dp[i-1][j] + (j-arr[i] >= 0? dp[i][j-arr[i]] : 0);
+            }
+        }
+        return dp[arr.length - 1][aim];
+    }
+
+    /**
+     * 动态规划最优解 aim*N复杂度,空间复杂度O(aim)
+     * @param arr
+     * @param aim
+     * @return
+     */
+    public static int coinsCP3ReduceMem(int[] arr, int aim) {
+        if (arr == null || arr.length == 0
+                || aim < 0){
+            return 0;
+        }
+        int[] dp = new int[aim+1];
+        // 初始化行
+        for (int i = 0; i <= aim; i++) {
+            dp[i] = i%arr[0] == 0? 1 : 0;
+        }
+        for (int i = 1; i < arr.length; i++) {
+            for (int j = 1; j <= aim; j++) {
+                dp[j] = dp[j] + (j-arr[i] >= 0 ? dp[j-arr[i]] : 0);
+            }
+        }
+        return dp[aim];
+    }
+
+
+
+
+    public static void main(String[] args) {
+        System.out.println(coinsCP3ReduceMem(new int[]{5,10,25,1}, 15));
+    }
+
+
 }
