@@ -43,6 +43,37 @@ public class HanoiDP {
 
 
     /**
+     *
+     * @param num
+     */
+    public static void hanoiCP1(int num) {
+        if (num == 0) {
+            return;
+        }
+        processForhanoiCp1(num, Constants.HANOI_LEFT, Constants.HANOI_MID, Constants.HANOI_RIGHT);
+    }
+
+    /**
+     * 汉诺塔这里只有起点、目标、其他个柱子，递归不认左中右，只认起点和中点
+     * @param num
+     * @param from
+     * @param other
+     * @param to
+     */
+    private static void processForhanoiCp1(int num, String from, String other, String to) {
+        if (num == 1) {
+            // 最后一个圆盘
+            System.out.println(String.format("move form %s to %s", from, to));
+        }else {
+            processForhanoiCp1(num-1, from, to, other);
+            processForhanoiCp1(1, from, other, to);
+            processForhanoiCp1(num-1, other, from, to);
+        }
+    }
+
+
+
+    /**
      * 进阶问题：如果给定array，index为从小到大的第几个圆盘，value为1：左，2：中：3右三个位置，用来表示当前中间状态，求到达当前中间状态的步数需要多少步
      * 方法一：递归方式
      * 判断最大的盘，
@@ -88,6 +119,43 @@ public class HanoiDP {
             }
             return (1 << index) + res;
         }
+    }
+
+
+    /**
+     * 进阶问题
+     * @param arr
+     */
+    public static int hanoiCPPlus(int[] arr) {
+        if (arr == null || arr.length == 0) {
+            return -1;
+        }
+        return processForhanoiCpPlus(arr, arr.length-1, 1,3,2);
+    }
+
+    private static int processForhanoiCpPlus(int[] arr, int maxIndex, int from, int to, int other) {
+        if (maxIndex < 0) {
+            return 0;
+        }
+        int maxPos = arr[maxIndex];
+        if (maxPos == other){
+            // 不是最优解
+            return -1;
+        }else if (maxPos == from) {
+            // 最大的盘在左边,说明目前在前半段
+            return processForhanoiCpPlus(arr, maxIndex-1, from, other, to);
+        }else {
+            int rest = processForhanoiCpPlus(arr, maxIndex - 1, other, to, from);
+            if (rest == -1) {
+                return -1;
+            }
+            // 在后半段,这里递推公式留着
+            return (1<<(maxIndex)) -1 + 1 + rest;
+        }
+    }
+
+    public static void main(String[] args) {
+        hanoiCPPlus(new int[]{3,3});
     }
 
     /**
