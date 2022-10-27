@@ -149,13 +149,13 @@ public class HanoiDP {
             if (rest == -1) {
                 return -1;
             }
-            // 在后半段,这里递推公式留着
+            // 在后半段,这里递推公式留着好理解
             return (1<<(maxIndex)) -1 + 1 + rest;
         }
     }
 
     public static void main(String[] args) {
-        hanoiCPPlus(new int[]{3,3});
+        hanioCPPlusNoRes(new int[]{3,3});
     }
 
     /**
@@ -194,5 +194,44 @@ public class HanoiDP {
         }
         return res;
     }
+
+
+    /**
+     * 非递归方式的进阶问题解答
+     * @param arr
+     */
+    public static int hanioCPPlusNoRes(int[] arr) {
+        if (arr == null || arr.length == 0) {
+            return -1;
+        }
+        // 从头开始的三个柱子
+        int from = 1;
+        int other = 2;
+        int to = 3;
+        int index = arr.length - 1;
+        int res = 0;
+        while (index >= 0) {
+            // 当前的圆盘
+            int cur = arr[index];
+            if (cur == other) {
+                // 非最优解
+                return -1;
+            } else if (cur == from) {
+                // 前半段,不需要加,上面的圆盘正在 从左到中的过程
+                index--;
+                other = 3;
+                to = 2;
+            }else if (cur == to){
+                // 后半段
+                res += (1<<(index));
+                // 变换柱子, 剩下的正在从中到右的过程
+                from = 2;
+                other = 1;
+                index--;
+            }
+        }
+        return res;
+    }
+
 
 }
