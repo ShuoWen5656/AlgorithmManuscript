@@ -1,5 +1,7 @@
 package classespackage.recursionandDP;
 
+import classespackage.CommonUtils;
+
 /**
  * @author swzhao
  * @date 2022/4/23 3:53 下午
@@ -90,5 +92,81 @@ public class MaxSubSeq {
         return String.valueOf(res);
     }
 
+
+    /**
+     * 获取dp矩阵
+     * @return
+     */
+    public static int[][] getDpCP(String str1, String str2) {
+        if (str1 == null || str1.length() == 0
+                || str2 == null || str2.length() == 0) {
+            return null;
+        }
+        char[] chars1 = str1.toCharArray();
+        char[] chars2 = str2.toCharArray();
+        int[][] dp = new int[chars1.length][chars2.length];
+        dp[0][0] = chars1[0] == chars2[0] ? 1 : 0;
+        // 初始化
+        for (int i = 1; i < dp.length; i++) {
+            dp[i][0] = dp[i-1][0] == 1 || chars2[0] == chars1[i] ? 1 : 0;
+        }
+        for (int i = 1; i < dp[0].length; i++) {
+            dp[0][i] = dp[0][i-1] == 1 || chars1[0] == chars2[i] ? 1 : 0;
+        }
+        for (int i = 1; i < dp.length; i++) {
+            for (int j = 1; j < dp[0].length; j++) {
+                if (dp[i-1][j] == dp[i][j-1]) {
+                    dp[i][j] = chars1[i] == chars2[j] ? dp[i-1][j] + 1 : dp[i-1][j];
+                }else {
+                    dp[i][j] = dp[i-1][j] > dp[i][j-1] ? dp[i-1][j] : dp[i][j-1];
+                }
+            }
+        }
+        return dp;
+    }
+
+
+    /**
+     * 根据dp获取序列
+     * @param str1
+     * @param str2
+     * @return
+     */
+    public static String getSeqCP(String str1, String str2) {
+        if (str1 == null || str1.length() == 0
+                || str2 == null || str2.length() == 0) {
+            return null;
+        }
+        char[] chars1 = str1.toCharArray();
+        char[] chars2 = str2.toCharArray();
+        int[][] dpCP = getDpCP(str1, str2);
+        int maxLen = chars1.length > chars2.length ? chars1.length : chars2.length;
+        char[] charRes = new char[maxLen];
+        int index = 0;
+        int i = dpCP.length-1;
+        int j = dpCP[0].length-1;
+        while (i != 0 && j != 0) {
+            if (dpCP[i-1][j] == dpCP[i][j-1] && dpCP[i-1][j] == dpCP[i][j] - 1) {
+                // 添加当前值
+                charRes[index++] = chars1[i];
+                i--;
+            }else if (dpCP[i-1][j] >= dpCP[i][j-1]){
+                i--;
+            }else {
+                j--;
+            }
+        }
+        if (dpCP[i][j] == 1) {
+            charRes[index++] = i == 0 ? chars1[i] : chars2[j];
+        }
+        // 翻转
+        CommonUtils.reverseChar(charRes, 0, index);
+        return String.valueOf(charRes, 0, index);
+    }
+
+
+    public static void main(String[] args) {
+        System.out.println(getSeqCP("1A2C3D4B56", "B1D23CA45B6A"));
+    }
 
 }

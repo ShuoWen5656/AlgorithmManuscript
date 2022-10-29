@@ -43,7 +43,7 @@ public class HanoiDP {
 
 
     /**
-     *
+     * 原问题：
      * @param num
      */
     public static void hanoiCP1(int num) {

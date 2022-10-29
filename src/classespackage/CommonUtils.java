@@ -571,4 +571,20 @@ public class CommonUtils<T> {
         }
         return new int[]{min, max};
     }
+
+    /**
+     * 翻转字符串
+     * @param charRes
+     */
+    public static void reverseChar(char[] charRes, int offset, int count) {
+        int left = offset;
+        int right = offset+count-1;
+        while (left <= right) {
+            char tem = charRes[left];
+            charRes[left] = charRes[right];
+            charRes[right] = tem;
+            left++;
+            right--;
+        }
+    }
 }
