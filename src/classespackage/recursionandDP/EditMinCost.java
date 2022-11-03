@@ -143,22 +143,54 @@ public class EditMinCost {
         }
         for (int i = 1; i < dp.length; i++) {
             for (int j = 1; j <  dp[0].length; j++) {
-                if (chars1[i] == chars2[j]) {
-                    // 相等时,直接继承dp[i-1][j-1]
-                    dp[i][j] = dp[i-1][j-1];
-                }else {
-                    // 不相等的时候，可以替换、先删除后增加，单增加
-                    // 替换情况
-                    int upMin = dp[i][j] + up;
-                    // 先删除后增加
-                    int delMin = dp[i-1][j] + del;
-                    int insMin = dp[i][j-1] + ins;
-                    dp[i][j] = Math.min(upMin, Math.min(del, insMin));
-                }
+                // 不相等的时候，可以替换、先删除后增加，单增加
+                // 替换情况,相等的时候不用替换
+                int upMin = dp[i-1][j-1] + (chars1[i] == chars2[j] ? 0 : up);
+                // 先删除后增加
+                int delMin = dp[i-1][j] + del;
+                int insMin = dp[i][j-1] + ins;
+                dp[i][j] = Math.min(upMin, Math.min(delMin, insMin));
+
             }
         }
         return dp[chars1.length-1][chars2.length-1];
     }
+
+
+
+    public static int minEditCPReduceMem(String str1, String str2, int ins, int del, int up) {
+        if (str1 == null || str2 == null
+                || str1.length() == 0 || str2.length() == 0) {
+            return 0;
+        }
+        char[] chars1 = str1.toCharArray();
+        char[] chars2 = str2.toCharArray();
+        int[] dp = new int[chars2.length];
+        dp[0] = 0;
+        for (int i = 1; i < dp.length; i++) {
+            dp[i] = dp[i-1] + ins;
+        }
+        for (int i = 1; i < chars1.length; i++) {
+            int tem = dp[0];
+            dp[0] += del;
+            for (int j = 1; j < dp.length; j++) {
+                int upMin = tem + (chars1[i] == chars2[j] ? 0 : up);
+                int insMin = dp[j-1] + ins;
+                int delMin = dp[j] + del;
+                // 更新前将老值给tem
+                tem = dp[j];
+                dp[j] = Math.min(upMin, Math.min(delMin, insMin));
+            }
+        }
+        return dp[chars2.length-1];
+    }
+
+    public static void main(String[] args) {
+        System.out.println(minEditCPReduceMem("adc", "abc", 5, 3 , 2));
+
+
+    }
+
 
 
 
