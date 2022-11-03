@@ -1,5 +1,7 @@
 package classespackage.recursionandDP;
 
+import sun.applet.Main;
+
 /**
  * @author swzhao
  * @date 2022/4/25 10:24 上午
@@ -112,4 +114,52 @@ public class EditMinCost {
             return 0;
         }
     }
+
+    /**
+     * 经典动态规划方法
+     * 计算str1到str2的最小代价
+     * @param str1 字符串1
+     * @param str2 字符串2
+     * @param ins 插入操作的代价
+     * @param del 删除操作的代价
+     * @param up 更新操作的代价
+     * @return
+     */
+    public static int minEditCP1(String str1, String str2, int ins, int del, int up) {
+        if (str1 == null || str2 == null
+                || str1.length() == 0 || str2.length() == 0) {
+            return 0;
+        }
+        char[] chars1 = str1.toCharArray();
+        char[] chars2 = str2.toCharArray();
+        int[][] dp = new int[chars1.length][chars2.length];
+        // 如果相等，代价为0，如果不相等，一种是替换，一种是先删除后增加
+        dp[0][0] = chars1[0] == chars2[0] ? 0 : Math.min(up, ins+del);
+        for (int i = 1; i < dp.length; i++) {
+            dp[i][0] = dp[i-1][0] + del;
+        }
+        for (int j = 1; j < dp[0].length; j++) {
+            dp[0][j] = dp[0][j-1] + ins;
+        }
+        for (int i = 1; i < dp.length; i++) {
+            for (int j = 1; j <  dp[0].length; j++) {
+                if (chars1[i] == chars2[j]) {
+                    // 相等时,直接继承dp[i-1][j-1]
+                    dp[i][j] = dp[i-1][j-1];
+                }else {
+                    // 不相等的时候，可以替换、先删除后增加，单增加
+                    // 替换情况
+                    int upMin = dp[i][j] + up;
+                    // 先删除后增加
+                    int delMin = dp[i-1][j] + del;
+                    int insMin = dp[i][j-1] + ins;
+                    dp[i][j] = Math.min(upMin, Math.min(del, insMin));
+                }
+            }
+        }
+        return dp[chars1.length-1][chars2.length-1];
+    }
+
+
+
 }
