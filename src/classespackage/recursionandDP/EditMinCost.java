@@ -187,8 +187,6 @@ public class EditMinCost {
 
     public static void main(String[] args) {
         System.out.println(minEditCPReduceMem("adc", "abc", 5, 3 , 2));
-
-
     }
 
 

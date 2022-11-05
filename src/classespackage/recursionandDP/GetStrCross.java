@@ -96,4 +96,120 @@ public class GetStrCross {
         return dp[shortChars.length];
     }
 
+
+    /**
+     * 递归方法
+     * @param str1
+     * @param str2
+     * @param aim
+     * @return
+     */
+    public static boolean getCrossStrCP(String str1, String str2, String aim) {
+        if (str1 == null || str2 == null || aim == null
+                || str1.length() + str2.length() != aim.length()) {
+            return false;
+        }
+        char[] chars1 = str1.toCharArray();
+        char[] chars2 = str2.toCharArray();
+        char[] chars3 = aim.toCharArray();
+        return processForCrossStrCP(chars1, 0, chars2, 0, chars3, 0);
+    }
+
+
+    /**
+     * 求从str1的start1开始，str2的start2开始判断是否为aim的start3之后的交叉序列
+     * @param chars1
+     * @param start1
+     * @param chars2
+     * @param start2
+     * @param chars3
+     * @param start3
+     * @return
+     */
+    private static boolean processForCrossStrCP(char[] chars1, int start1, char[] chars2, int start2, char[] chars3, int start3) {
+        if (start3 >= chars3.length)
+        {
+            // 结束
+            return true;
+        }
+        // 三个数组游标
+        int s1 = start1;
+        int s2 = start2;
+        int s3 = start3;
+         while (s3 <= chars3.length-1 && s1 <= chars1.length-1 && s2 <= chars2.length-1) {
+            if (chars3[s3] == chars1[s1] && chars3[s3] == chars2[s2]){
+                // 都相等说明两个可能性,有一个过去就行
+                return processForCrossStrCP(chars1, start1+1, chars2, start2, chars3, start3+1)
+                        ||processForCrossStrCP(chars1, start1, chars2, start2+1, chars3, start3+1);
+            }else if (chars3[s3] == chars1[s1]) {
+                s1++;
+            }else if (chars3[s3] == chars2[s2]) {
+                s2++;
+            }else {
+                // 两个都不等于说明顺序不对
+                return false;
+            }
+            s3++;
+        }
+        if (s3 >= chars3.length) {
+            // 说明验证结束了
+            return true;
+        }else {
+            int indexReamin = s1 > chars1.length ? s2 : s1;
+            char[] remainChar = s1 > chars1.length?  chars2 : chars1;
+            while (s3 < chars3.length) {
+                if (chars3[s3++] != remainChar[indexReamin++]) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+
+    /**
+     * 动态规划方法
+     * @param str1
+     * @param str2
+     * @param aim
+     * @return
+     */
+    public static boolean getFCrossStrDPCP(String str1, String str2, String aim) {
+        if (str1 == null || str2 == null || aim == null
+                || str1.length() + str2.length() != aim.length()) {
+            return false;
+        }
+        char[] chars1 = str1.toCharArray();
+        char[] chars2 = str2.toCharArray();
+        char[] chars3 = aim.toCharArray();
+        boolean[][] dp = new boolean[chars1.length+1][chars2.length+1];
+        dp[0][0] = true;
+        for (int i = 1; i < dp.length; i++) {
+            dp[i][0] = dp[i-1][0] && chars1[i-1] == chars3[i-1];
+        }
+        for (int j = 1; j < dp[0].length; j++) {
+            dp[0][j] = dp[0][j-1] && chars2[j-1] == chars3[j-1];
+        }
+        for (int i = 1; i < dp.length; i++) {
+            for (int j = 1; j < dp[0].length; j++) {
+                if (!dp[i-1][j] && !dp[i][j-1]) {
+                    dp[i][j] = false;
+                }else if (dp[i-1][j] && dp[i][j-1]){
+                    dp[i][j] = true;
+                }else if (dp[i-1][j]){
+                    dp[i][j] = chars1[i-1] == chars3[i+j-1];
+                }else {
+                    dp[i][j] = chars2[j-1] == chars3[i+j-1];
+                }
+            }
+        }
+        return dp[chars1.length][chars2.length];
+    }
+
+
+
+    public static void main(String[] args) {
+        System.out.println(getFCrossStrDPCP("AB", "123", "1A233"));
+    }
+
 }
