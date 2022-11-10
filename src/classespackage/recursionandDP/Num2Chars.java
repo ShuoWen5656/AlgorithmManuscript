@@ -88,5 +88,82 @@ public class Num2Chars {
     }
 
 
+    /**
+     * 二轮：dp方法
+     * @param str
+     * @return
+     */
+    public static int dpCp1(String str) {
+        if (str == null || str.length() == 0 || !checkIntegerStr(str)) {
+            return 0;
+        }
+        char[] chars = str.toCharArray();
+        int[] dp = new int[chars.length];
+        dp[chars.length-1] = chars[chars.length - 1] == '0' ? 0 : 1;
+        for (int i = chars.length - 2; i >= 0; i--) {
+            if (chars[i] == '0') {
+                dp[i] = 0;
+                continue;
+            }else {
+                dp[i] = dp[i+1];
+            }
+            if (i+2 < chars.length && (chars[i] - '0') * 10 + (chars[i+1] - '0') < 27) {
+                dp[i] += dp[i+2];
+            }else if (i+2 == chars.length) {
+                dp[i] += 1;
+            }
+        }
+        return dp[0];
+    }
+
+
+    /**
+     * 二轮：递归方法
+     * @param str
+     * @return
+     */
+    public static int resCp1(String str) {
+        if (str == null || str.length() == 0 || !checkIntegerStr(str)) {
+            return 0;
+        }
+        char[] chars = str.toCharArray();
+        return process1Cp(chars, 0);
+    }
+
+    private static int process1Cp(char[] chars, int i) {
+        if (i == chars.length) {
+            return 1;
+        }
+        if (chars[i] == '0') {
+            // 以0开头的
+            return 0;
+        }
+        int res = process1Cp(chars, i + 1);
+        if (i+1 < chars.length && (chars[i] - '0') * 10 + (chars[i+1] - '0') < 27) {
+            res += process1Cp(chars, i+2);
+        }
+        return res;
+    }
+
+
+    public static void main(String[] args) {
+        System.out.println(resCp1("1111"));
+    }
+
+    /**
+     * 判断字符串为数字字符串
+     * @param str
+     * @return
+     */
+    private static boolean checkIntegerStr(String str) {
+        char[] chars = str.toCharArray();
+        for (char c : chars) {
+            if (c - '0' < 0 || c - '0' > 9) {
+                 return false;
+            }
+        }
+        return true;
+    }
+
 
 }
