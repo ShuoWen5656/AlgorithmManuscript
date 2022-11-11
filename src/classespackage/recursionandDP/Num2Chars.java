@@ -89,7 +89,7 @@ public class Num2Chars {
 
 
     /**
-     * 二轮：dp方法
+     * 二轮：dp方法（反向）
      * @param str
      * @return
      */
@@ -115,6 +115,47 @@ public class Num2Chars {
         }
         return dp[0];
     }
+
+    /**
+     * 二轮：dp方法（正向）
+     * @param str
+     * @return
+     */
+    public static int dpCp1ASC(String str) {
+        if (str == null || str.length() == 0 || !checkIntegerStr(str)) {
+            return 0;
+        }
+        char[] chars = str.toCharArray();
+        int[] dp = new int[chars.length];
+        dp[0] = chars[0] == '0' ? 0 : 1;
+        for (int i = 1; i < chars.length; i++) {
+            dp[i] = 0;
+            // 首先去掉chars[i]前面是否能够形成
+            if (dp[i-1] != 0) {
+                // 前面的i-1个元素可以自成字母
+                if (chars[i] != '0') {
+                    dp[i] = dp[i-1];
+                }
+            }
+            // 去掉i和i-1 两个数字剩下的是否能够组成？
+            if (i-2 >= 0 && dp[i-2] != 0) {
+                // 前面的能组成，那么现在只需要判断chars[i-1...i]是否能够组成字母即可
+                if ((chars[i-1] - '0') * 10 + (chars[i] - '0') < 27) {
+                    // 可以组成
+                    dp[i] += dp[i-2];
+                }
+            }else if (i == 1 && chars[i-1] != '0') {
+                // 这里要注意一下溢出情况需要考虑到第二个字符的特殊情况
+                if ((chars[i-1] - '0') * 10 + (chars[i] - '0') < 27) {
+                    // 可以组成
+                    dp[i] += 1;
+                }
+            }
+        }
+        return dp[chars.length-1];
+    }
+
+
 
 
     /**
@@ -147,7 +188,7 @@ public class Num2Chars {
 
 
     public static void main(String[] args) {
-        System.out.println(resCp1("1111"));
+        System.out.println(resCp1("0101"));
     }
 
     /**
