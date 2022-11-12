@@ -1,5 +1,7 @@
 package classespackage.recursionandDP;
 
+import classespackage.stackAndQueue.catDogQueue.Pet;
+
 import java.util.Arrays;
 
 /**
@@ -167,9 +169,139 @@ public class ExpressNum {
     }
 
 
+    /**
+     * 二轮测试：暴力递归
+     * @param str
+     * @return
+     */
+    public static int getNumCp1(String str, boolean aim) {
+        if (str == null || str.length() == 0) {
+            return 0;
+        }
+        char[] chars = str.toCharArray();
+        if (!isValid(chars)) {
+            return 0;
+        }
+        return processForCp1(chars, 0, chars.length-1, aim ? '1' : '0');
+    }
+
+    /**
+     * 递归主体
+     * @param chars
+     * @param start
+     * @param end
+     * @return
+     */
+    private static int processForCp1(char[] chars, int start, int end, char aim) {
+        if (start > end) {
+            System.out.println(start + ", " + end);
+        }
+        if (start == end) {
+            // 只有一个元素
+            return chars[start] == aim ? 1 : 0;
+        }
+        int res = 0;
+        for (int i = start + 1; i <= end-1; i +=2) {
+            // aim影响了符号两边的判断
+            if (aim == '1') {
+                // 目标是true
+                if (chars[i] == '&') {
+                    // 两边必须是1
+                    res += processForCp1(chars, start, i-1, '1') * processForCp1(chars, i+1, end, '1');
+                }else if (chars[i] == '|') {
+                    // 有一边是1即可
+                    res += processForCp1(chars, start, i-1, '1') * processForCp1(chars, i+1, end, '1');
+                    res += processForCp1(chars, start, i-1, '1') * processForCp1(chars, i+1, end, '0');
+                    res += processForCp1(chars, start, i-1, '0') * processForCp1(chars, i+1, end, '1');
+                }else if (chars[i] == '^') {
+                    // 两边不一样就行
+                    res += processForCp1(chars, start, i-1, '1') * processForCp1(chars, i+1, end, '0');
+                    res += processForCp1(chars, start, i-1, '0') * processForCp1(chars, i+1, end, '1');
+                }
+            }else {
+                // 目标是false
+                if (chars[i] == '&') {
+                    // 两边不一样即可
+                    res += processForCp1(chars, start, i-1, '1') * processForCp1(chars, i+1, end, '0');
+                    res += processForCp1(chars, start, i-1, '0') * processForCp1(chars, i+1, end, '1');
+                }else if (chars[i] == '|') {
+                    // 都是0才行
+                    res += processForCp1(chars, start, i-1, '0') * processForCp1(chars, i+1, end, '0');
+                }else if (chars[i] == '^') {
+                    // 两边一样
+                    res += processForCp1(chars, start, i-1, '1') * processForCp1(chars, i+1, end, '1');
+                    res += processForCp1(chars, start, i-1, '0') * processForCp1(chars, i+1, end, '0');
+                }
+            }
+        }
+        return res;
+    }
+
+
+    /**
+     * 动态规划方法
+     * @param str
+     * @param aim
+     * @return
+     */
+    public static int dpCp1(String str, boolean aim) {
+        if (str == null || str.length() == 0) {
+            return 0;
+        }
+        char aimC = aim ? '1' : '0';
+        char[] chars = str.toCharArray();
+        if (!isValid(chars)) {
+            return 0;
+        }
+        // 创建两张表，一张为结果为true种数表，另一个是结果为false种数表
+        int[][] trueDp = new int[chars.length][chars.length];
+        int[][] falseDp = new int[chars.length][chars.length];
+        // 填空斜对角
+        for (int i = 0; i < chars.length; i+=2) {
+            trueDp[i][i] = chars[i] == '1' ? 1 : 0;
+            falseDp[i][i] = chars[i] == '0' ? 1 : 0;
+        }
+        for (int j = 2; j < chars.length; j+=2) {
+            for (int i = j-2; i >= 0; i-=2) {
+                trueDp[i][j] = 0;
+                falseDp[i][j] = 0;
+                for (int k = i+1; k <= j-1; k +=2) {
+                    // k代表当前范围内的符号索引
+                    if (chars[k] == '&') {
+                        trueDp[i][j] += trueDp[i][k-1] * trueDp[k+1][j];
+
+                        falseDp[i][j] += falseDp[i][k-1] * trueDp[k+1][j];
+                        falseDp[i][j] += trueDp[i][k-1] * falseDp[k+1][j];
+                    }else if (chars[k] == '|') {
+                        trueDp[i][j] += falseDp[i][k-1] * trueDp[k+1][j];
+                        trueDp[i][j] += trueDp[i][k-1] * falseDp[k+1][j];
+
+                        falseDp[i][j] += falseDp[i][k-1] * falseDp[k+1][j];
+                    }else if (chars[k] == '^') {
+                        trueDp[i][j] += falseDp[i][k-1] * trueDp[k+1][j];
+                        trueDp[i][j] += trueDp[i][k-1] * falseDp[k+1][j];
+
+                        falseDp[i][j] += falseDp[i][k-1] * falseDp[k+1][j];
+                        falseDp[i][j] += trueDp[i][k-1] * trueDp[k+1][j];
+                    }
+                }
+            }
+        }
+        // 这里好理解些就不写节省空间的版本了，dp可以减小一半
+        if (aimC == '1') {
+            return trueDp[0][chars.length-1];
+        }else {
+            return falseDp[0][chars.length-1];
+        }
+    }
 
 
 
+    public static void main(String[] args) {
+        System.out.println(dpCp1("1^0|0|1", false));
+
+
+    }
 
 
 }
