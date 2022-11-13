@@ -1,5 +1,7 @@
 package classespackage.recursionandDP;
 
+import java.util.Map;
+
 /**
  * @author swzhao
  * @date 2022/4/30 9:34 上午
@@ -83,6 +85,81 @@ public class CardWiner {
             e.printStackTrace();
             return 0;
         }
+    }
+
+
+    /**
+     * 二轮测试：递归方法
+     * @param arr
+     * @return
+     */
+    public static int winCp1(int[] arr) {
+        if (arr == null || arr.length == 0) {
+            return 0;
+        }
+        // 对a来说是先走，对b来说是后走,取最大的
+        return Math.max(first(arr, 0, arr.length-1), second(arr, 0, arr.length - 1)) ;
+    }
+
+    /**
+     * 先选的人最终获得的分数
+     * @param arr
+     * @param left
+     * @param right
+     * @return
+     */
+    private static int first(int[] arr, int left, int right) {
+        if (left == right) {
+            return arr[left];
+        }
+        return Math.max(arr[left] + second(arr, left+1, right), arr[right] + second(arr, left, right-1));
+    }
+
+    /**
+     * 后选的人最终获得的分数
+     * @param arr
+     * @param left
+     * @param right
+     * @return
+     */
+    private static int second(int[] arr, int left, int right) {
+        if (left == right) {
+            // 第二个选就么得选
+            return 0;
+        }
+        return Math.min(first(arr, left+1, right), first(arr, left, right-1));
+    }
+
+
+    /**
+     * 二轮测试：动态规划方法
+     * @param arr
+     * @return
+     */
+    public static int dpCp1(int[] arr) {
+        if (arr == null || arr.length == 0) {
+            return 0;
+        }
+        // 先选dp
+        int[][] firstDp = new int[arr.length][arr.length];
+        // 后选dp
+        int[][] secondDp = new int[arr.length][arr.length];
+        // 初始化
+        for (int i = 0; i < arr.length; i++) {
+            firstDp[i][i] = arr[i];
+            secondDp[i][i] = 0;
+        }
+        for (int j = 1; j < arr.length; j++) {
+            for (int i = j-1; i >= 0; i--) {
+                firstDp[i][j] = Math.max(arr[i] + secondDp[i+1][j], arr[j] + secondDp[i][j-1]);
+                secondDp[i][j] = Math.min(firstDp[i+1][j], firstDp[i][j-1]);
+            }
+        }
+        return Math.max(firstDp[0][arr.length-1], secondDp[0][arr.length-1]);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(dpCp1(new int[]{1,100,2}));
     }
 
 
