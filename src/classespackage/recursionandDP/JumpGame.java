@@ -82,4 +82,87 @@ public class JumpGame {
         }
     }
 
+
+    /**
+     * 二轮测试：递归方法
+     * @return
+     */
+    public static int jumpCp1(int[] arr) {
+        if (arr == null || arr.length == 0) {
+            return 0;
+        }
+        return processCp1(arr, 0);
+    }
+
+    private static int processCp1(int[] arr, int i) {
+        // -1表示跳不过去
+        int res = Integer.MAX_VALUE;
+        if (i >= arr.length) {
+            // 超出去了，无法达到，直接返回最大值
+            return Integer.MAX_VALUE;
+        }
+        if (i == arr.length-1) {
+            // 已经到了,返回0步即可
+            return 0;
+        }
+        int step = arr[i];
+        for (int j = 1; j <= step; j++) {
+            res = Math.min(res, processCp1(arr, i+j));
+        }
+        return res == Integer.MAX_VALUE ? -1 : res + 1;
+    }
+
+    /**
+     * 二轮测试：动态规划
+     * @return
+     */
+    public static int dpCp1(int[] arr) {
+        if (arr == null || arr.length == 0) {
+            return 0;
+        }
+        int[] dp = new int[arr.length];
+        dp[arr.length-1] = 0;
+        for (int i = arr.length-2; i >= 0; i--) {
+            int step = arr[i];
+            int min = Integer.MAX_VALUE;
+            for (int j = 1; j <= step; j++) {
+                min = Math.min(min, dp[i+j]);
+            }
+            dp[i] = min + 1;
+        }
+        return dp[0];
+    }
+
+
+    /**
+     * 最优解
+     * 时间 o（n) 空间 O(1)
+     * @param arr
+     * @return
+     */
+    public static int superCp1(int[] arr) {
+        if (arr == null || arr.length == 0) {
+            return 0;
+        }
+        int jump = 0;
+        // 当前所在位置能够跳的最远距离
+        int cur = 0;
+        // 下一跳的位置的最大范围
+        int next = 0;
+        for (int i = 0; i < arr.length; i++) {
+            if (cur < i) {
+                // 说明当前位置到不了了
+                jump ++;
+                // 跳到下一跳
+                cur = next;
+            }
+            next = Math.max(next, i + arr[i]);
+        }
+        return jump;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(superCp1(new int[]{3,2,3,1,1,4}));
+    }
+
 }
