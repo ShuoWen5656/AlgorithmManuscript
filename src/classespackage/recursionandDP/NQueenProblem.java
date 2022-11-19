@@ -129,4 +129,113 @@ public class NQueenProblem {
     }
 
 
+    public static int nQCp1(int n) {
+        if (n == 1) {
+            return 1;
+        }else if (n == 2 || n == 3) {
+            return 0;
+        }
+        // record[i] 表示第i行的皇后在第几列
+        int[] record = new int[n];
+        return processCp1(record, 0);
+    }
+
+    private static int processCp1(int[] record, int row) {
+        if (row == record.length) {
+            // 遍历完成，返回一种情况
+            return 1;
+        }
+        int res = 0;
+        // 遍历当前行的每一个列，判断是否能放，如果能放入，则继续递归
+        for (int i = 0; i < record.length; i ++) {
+            if (canPut(record, i, row)) {
+                // 继续递归
+                record[row] = i;
+                res += processCp1(record, row + 1);
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 判断是否i位置能够放置皇后
+     * @param record
+     * @param i
+     * @param row
+     * @return
+     */
+    private static boolean canPut(int[] record, int i, int row) {
+        for (int j = 0; j < row; j++) {
+            // 获取j行皇后的位置
+            int rRow = j;
+            int rCol = record[j];
+            if (rCol == i) {
+                // 同列
+                return false;
+            }else if (Math.abs(row - rRow) == Math.abs(i - rCol)) {
+                // 同斜线
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    /**
+     * 位运算版本
+     *
+     * @param n
+     * @return
+     */
+    public static int nQCp2(int n) {
+        if (n == 1) {
+            return 1;
+        }else if (n == 2 || n == 3) {
+            return 0;
+        }else if (n < 1 || n > 32) {
+            return 0;
+        }
+        // 总地图长度
+        int map = n == 32 ? -1 : (1 << n) - 1;
+        return processCp2(map, 0, 0, 0);
+    }
+
+    /**
+     * 递归主体
+     * @param map 总地图，位中1表示可以放皇后的位置。0表示不能
+     * @param record 当前记录，1表示已经放皇后了，0表示没有放皇后
+     * @param leftRecord 当前记录，1表示通过前面的计算传承下来的左斜线中不能放的位置
+     * @param rightRecord 当前记录，1表示通过前面计算传承下来的右斜线中不能放的位置
+     * @return
+     */
+    private static int processCp2(int map, int record, int leftRecord, int rightRecord) {
+        if (record == map) {
+            // 说明已经放满了
+            return 1;
+        }
+        // 已经有皇后枪线的地方全部是1，然后取反，枪线变0，与操作后，pos中0的地方都是枪线 没法放皇后
+        int pos = map & (~(record | leftRecord | rightRecord));
+        int res = 0;
+        int thrMostRight = 0;
+        while (pos != 0) {
+            // 最右边的1，整体是从右往左遍历的
+            thrMostRight = pos & (~pos + 1);
+            pos -= thrMostRight;
+            res += processCp2(map,
+                    // record添加当前位置
+                    record | thrMostRight,
+                    // 左边的加上当前位置整体左一位
+                    (leftRecord | thrMostRight) << 1,
+                    // 右边的加上当前位置整体右一位，记得无符号移位
+                    (rightRecord | thrMostRight) >>> 1);
+        }
+        return res;
+    }
+
+
+    public static void main(String[] args) {
+        System.out.println(nQCp2(16));
+    }
+
+
 }
