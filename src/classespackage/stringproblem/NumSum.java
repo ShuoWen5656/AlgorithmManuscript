@@ -53,4 +53,47 @@ public class NumSum {
     }
 
 
+    /**
+     * 二轮测试
+     * @param str
+     * @return
+     */
+    public static int getSumCp1(String str){
+        if (str == null || str.length() == 0) {
+            return 0;
+        }
+        char[] chars = str.toCharArray();
+        int res = 0;
+        int cur = 0;
+        // true为正数
+        boolean pos = true;
+        for (int i = 0; i < chars.length; ) {
+            if (i < chars.length && chars[i] != '-' && (chars[i] - '0' < 0 || chars[i] - '0' > 9)) {
+                // 不是‘-’并且也不是数字的直接略过
+                i++;
+                continue;
+            }
+            // 定符号
+            while (i < chars.length && chars[i] == '-') {
+                pos = !pos;
+                i++;
+            }
+            // 到这里只取数字
+            while (i < chars.length && chars[i] - '0' > 0 && chars[i] - '0' < 9) {
+                cur = cur * 10 + (chars[i] - '0');
+                i++;
+            }
+            res += pos ? cur : -cur;
+            // 复位
+            cur = 0;
+            pos = true;
+        }
+        return res;
+    }
+
+
+    public static void main(String[] args) {
+        System.out.println(getSumCp1("A1DC2E33-1F--12"));
+    }
+
 }
