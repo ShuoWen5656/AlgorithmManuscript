@@ -44,4 +44,47 @@ public class RemoveKZeros {
     }
 
 
+    /**
+     * 二轮测试：删除字符串中k个零
+     * @param str
+     * @return
+     */
+    public static String removeK0CP1(String str, int k) {
+        if (str == null || str.length() == 0) {
+            return null;
+        }
+        int count = 0;
+        int start = -1;
+        char[] chars = str.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            if (chars[i] == '0') {
+                // 当前是0
+                start = start == -1 ? i : start;
+                count ++;
+            }else {
+                // 不是0的时候需要判断是否结尾还是中间
+                if (count != 0 && count == k) {
+                    // 将start到i部分全部变成0
+                    while (start < i) {
+                        chars[start++] = 0;
+                    }
+                }
+                count = 0;
+                start = -1;
+            }
+        }
+        // 处理000没有结尾的情况
+        if (count != 0 && count == k){
+            while (count-- > 0) {
+                chars[start++] = 0;
+            }
+        }
+        return String.valueOf(chars).replace("\u0000", "");
+    }
+
+
+    public static void main(String[] args) {
+        System.out.println(removeK0CP1("A0000B000", 3));
+    }
+
 }
