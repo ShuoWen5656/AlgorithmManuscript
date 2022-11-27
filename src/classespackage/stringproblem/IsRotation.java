@@ -27,4 +27,20 @@ public class IsRotation {
     }
 
 
+    /**
+     * 二轮测试： 判断是否互为旋转词
+     * @param str1
+     * @param str2
+     * @return
+     */
+    public static boolean isRotationCp1(String str1, String str2) {
+        if (str1 == null || str2 == null || str1.length() != str2.length()) {
+            return false;
+        }
+        String str3 = str1 + str1;
+        return str3.contains(str2);
+    }
+
+
+
 }
