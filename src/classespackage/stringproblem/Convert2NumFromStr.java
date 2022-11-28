@@ -1,5 +1,7 @@
 package classespackage.stringproblem;
 
+import javax.swing.*;
+
 /**
  * @author swzhao
  * @data 2022/5/6 8:41
@@ -89,6 +91,72 @@ public class Convert2NumFromStr {
         }
         return true;
     }
+
+
+    /**
+     * 二轮测试：判断字符串是否是整数字符串
+     * @param chars
+     * @return
+     */
+    public static boolean isValidCp1(char[] chars) {
+        if (chars == null || chars.length == 0) {
+            return false;
+        }
+        if ((chars[0] < '0' || chars[0] > '9') && chars[0] != '-') {
+            return false;
+        }
+        // 剩下的是 ‘-’ 和数字
+        if (chars[0] == '-' && (chars.length == 1 || chars[1] == '0')) {
+            return false;
+        }
+        if (chars[0] == '0' && chars.length > 1) {
+            return false;
+        }
+        for (int i = 1; i < chars.length; i++) {
+            if (chars[0] < '0' || chars[0] > '9') {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 二轮测试：将字符串转为int类型
+     * @param string
+     * @return
+     */
+    public static int convertCp1(String string) {
+        if (string == null || string.length() == 0) {
+            return 0;
+        }
+        char[] chars = string.toCharArray();
+        if (!isValidCp1(chars)) {
+            return 0;
+        }
+        boolean pos = !(chars[0] == '-');
+        int minq = Integer.MIN_VALUE/10;
+        int minm = Integer.MIN_VALUE%10;
+        int res = 0;
+        for (int i = pos ? 0 : 1; i < chars.length; i++) {
+            // 补码负数大，所以按照负数进行加减
+            int cur = '0' - chars[i];
+            if ((res < minq) || (res == minq && cur < minm)) {
+                return 0;
+            }
+            res = res * 10 + cur;
+        }
+        if (pos && res == Integer.MIN_VALUE) {
+            return 0;
+        }
+        return pos ? -res : res;
+    }
+
+
+    public static void main(String[] args) {
+        System.out.println(convertCp1("-6979798797979"));
+    }
+
+
 
 
 
