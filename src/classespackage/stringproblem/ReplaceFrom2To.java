@@ -48,4 +48,66 @@ public class ReplaceFrom2To {
             return Constants.EMPTY_STR;
         }
     }
+
+
+    /**
+     * 二轮测试：替换
+     * @param str
+     * @param from
+     * @param to
+     * @return
+     */
+    public static String replaceCp1(String str, String from, String to) {
+        if (str == null || from == null || to == null
+                || str.length() == 0 || from.length() == 0 || to.length() == 0){
+            return null;
+        }
+        char[] chars = str.toCharArray();
+        char[] charsFrom = from.toCharArray();
+
+        for (int i = 0; i < chars.length; i++) {
+            if (chars[i] == charsFrom[0]) {
+                int index = 0;
+                while (index < charsFrom.length) {
+                    if (charsFrom[index] != chars[i+index]) {
+                        break;
+                    }
+                    index++;
+                }
+                if (index == charsFrom.length) {
+                    // 说明全部相等.匹配成功
+                    int tmp = 0;
+                    while (tmp < index) {
+                        chars[i + tmp] = 0;
+                        tmp++;
+                    }
+                }
+                // 结束之后，i调整为index
+                i = index;
+            }
+        }
+        // chars中的0全部替换成to，连续的算一个
+        int start = -1;
+        int index = 0;
+        char[] res = new char[chars.length];
+        for (int j = 0 ; j < chars.length; j++) {
+            if (chars[j] == 0) {
+                if (start == -1) {
+                    start = j;
+                    res[index++] = 0;
+                }
+            }else {
+                res[index++] = chars[j];
+                start = -1;
+            }
+        }
+
+        return String.valueOf(res, 0, index).replace("\u0000", to);
+    }
+
+
+    public static void main(String[] args) {
+        System.out.println(replace("123abcabc", "abc", "x"));
+
+    }
 }
