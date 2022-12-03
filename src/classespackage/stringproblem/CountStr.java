@@ -96,5 +96,63 @@ public class CountStr {
     }
 
 
+    /**
+     * 二轮测试： 统计字符串
+     * @return
+     */
+    public static String countStrCp1(String str) {
+        if (str == null || str.length() == 0) {
+            return null;
+        }
+        char[] chars = str.toCharArray();
+        char cur = chars[0];
+        int count = 0;
+        String res = Constants.EMPTY_STR;
+        for (int i = 0; i < chars.length;) {
+            while (i < chars.length && chars[i] == cur) {
+                count++;
+                i++;
+            }
+            res += cur + "_" + count;
+            if (i == chars.length) {
+                break;
+            }else {
+                res += "_";
+                cur = chars[i];
+                count = 0;
+            }
+        }
+        return res;
+    }
+
+
+    /**
+     * 从统计字符串中获取指定位置的字符
+     * @param countStr
+     * @return
+     */
+    public static char getCharFromCountStr(String countStr, int index) {
+        if (countStr == null || countStr.length() == 0 || index < 0) {
+            return 0;
+        }
+        int count = 0;
+        char[] chars = countStr.toCharArray();
+        for (int i = 2; i < chars.length; i+=4) {
+            count += chars[i] - '0';
+            if (index < count) {
+                // 说明在这个之内
+                return chars[i-2];
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * 测试用例
+     * @param args
+     */
+    public static void main(String[] args) {
+        System.out.println(getCharFromCountStr("a_3_b_2_c_3", 1));
+    }
 
 }
