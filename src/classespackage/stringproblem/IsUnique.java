@@ -1,5 +1,7 @@
 package classespackage.stringproblem;
 
+import classespackage.CommonUtils;
+
 import java.util.HashMap;
 
 /**
@@ -98,6 +100,103 @@ public class IsUnique {
         chars[parent] = temp;
         // 到这里说明这次的堆排序没有遇到相同的char
         return true;
+    }
+
+
+    /**
+     * 二轮测试方法一：判断字符是否只出现过一次
+     * 空间O（N） 时间 O（n）
+     * @param chars
+     * @return
+     */
+    public static boolean isUniqueCp1(char[] chars) {
+        if (chars == null || chars.length == 0) {
+            return false;
+        }
+        boolean[] map = new boolean[256];
+        for (int i = 0; i < chars.length; i++) {
+            if (map[chars[i]]) {
+                return false;
+            }else {
+                map[chars[i]] = true;
+            }
+        }
+        return true;
+    }
+
+
+    /**
+     * 空间O（1）， 时间O（nlogn）
+     * @param chars
+     * @return
+     */
+    public static boolean isUniqueCp2(Character[] chars) {
+        if (chars == null || chars.length == 0) {
+            return false;
+        }
+        heapSortCp1(chars);
+        char pre = chars[0];
+        for (int i = 1; i < chars.length; i++) {
+            if (pre == chars[i]) {
+                return false;
+            }else{
+                pre = chars[i];
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 非递归方式的堆排序
+     * @param chars
+     */
+    private static void heapSortCp1(Character[] chars) {
+        if (chars == null || chars.length == 0) {
+            return;
+        }
+        int len = chars.length;
+        for (int i =  len/2+1; i >= 0; i--) {
+            heapfiy(chars, i, len);
+        }
+        for (int i = chars.length-1; i >= 0; i--) {
+            CommonUtils.swapPlus(chars, 0, i);
+            heapfiy(chars, 0, i);
+        }
+    }
+
+
+    /**
+     * 堆排序核心过程,这里排从小到大，大的下沉
+     * @param chars
+     * @param index
+     * @Param charLen 这个变量表示当前chars的虚拟长度，超过的不参与排序
+     */
+    private static void heapfiy(Character[] chars, int index, int charLen) {
+        int len = charLen;
+        int parent = index;
+        int left = parent*2+1;
+        while (left < len) {
+            int right = left + 1;
+            int min = chars[left] < chars[parent] ? left : parent;
+            if (right < len && chars[right] < chars[min]) {
+                min = right;
+            }
+            if (min != parent) {
+                // 交换
+                CommonUtils.swapPlus(chars, parent, min);
+            }else {
+                // 直接出去
+                break;
+            }
+            // 下一轮准备
+            parent = min;
+            left = parent*2+1;
+        }
+    }
+
+
+    public static void main(String[] args) {
+        System.out.println(isUniqueCp2(new Character[]{1,2,3,4,1}));
     }
 
 
