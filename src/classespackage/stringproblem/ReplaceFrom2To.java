@@ -68,7 +68,7 @@ public class ReplaceFrom2To {
         for (int i = 0; i < chars.length; i++) {
             if (chars[i] == charsFrom[0]) {
                 int index = 0;
-                while (index < charsFrom.length) {
+                while (index < charsFrom.length && index < chars.length) {
                     if (charsFrom[index] != chars[i+index]) {
                         break;
                     }
@@ -107,7 +107,7 @@ public class ReplaceFrom2To {
 
 
     public static void main(String[] args) {
-        System.out.println(replace("123abcabc", "abc", "x"));
+        System.out.println(replaceCp1("123abcabc", "abc", "x"));
 
     }
 }
