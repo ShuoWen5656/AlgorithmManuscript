@@ -118,4 +118,72 @@ public class StringChangeAndReplace {
         }
     }
 
+    /**
+     * 二轮测试：问题1
+     * @param chars
+     * @return
+     */
+    public static char[] pro1Cp1(char[] chars) {
+        if (chars == null || chars.length == 0) {
+            return null;
+        }
+        int index1 = chars.length-1;
+        while (chars[index1] == 0) {
+            index1--;
+        }
+        int index2 = chars.length-1;
+        while (index1 >= 0) {
+            if (chars[index1] == ' '){
+                chars[index2--] = '%';
+                chars[index2--] = '0';
+                chars[index2--] = '2';
+            }else {
+                chars[index2--] = chars[index1];
+            }
+            chars[index1] = 0;
+            index1--;
+        }
+        return chars;
+    }
+
+
+    /**
+     * 二轮测试：问题二
+     * @param chars
+     * @return
+     */
+    public static char[] moveCp2(char[] chars){
+        if (chars == null || chars.length == 0) {
+            return null;
+        }
+        int index1 = chars.length-1;
+        while (chars[index1] != '*') {
+            index1--;
+        }
+        int index2 = index1;
+        while (chars[index2] == '*') {
+            index2--;
+        }
+        while (index2 >= 0) {
+            if (chars[index2] != '*') {
+                chars[index1--] = chars[index2];
+                chars[index2] = '*';
+            }
+            index2--;
+        }
+        return chars;
+    }
+
+
+    public static void main(String[] args) {
+        char[] chars1 = {'1', '2', '*', '3', '5'};
+        char[] chars2 = new char[chars1.length * 3];
+        for (int i = 0; i < chars1.length; i++) {
+            chars2[i] = chars1[i];
+        }
+        System.out.println(moveCp2(chars1));
+    }
+
+
+
 }
