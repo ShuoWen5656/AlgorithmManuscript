@@ -202,6 +202,124 @@ public class Change2PalindRoomString {
 
 
     /**
+     * 二轮测试：问题一
+     * @return
+     */
+    public static String getPalindromeCp1(String string) {
+        if (string == null || string.length() == 0) {
+            return null;
+        }
+        char[] chars = string.toCharArray();
+        int[][] dp = getDpCp1(chars);
+        char[] res = new char[dp[0][dp.length - 1] + chars.length];
+        // 开始添加字符
+        int i = 0, j = chars.length-1;
+        int i2 = 0, j2 = res.length-1;
+        int count = dp[0][chars.length-1];
+        while (i <= j) {
+            if (chars[i] == chars[j]) {
+                // 相等直接复制
+                res[i2++] = chars[i++];
+                res[j2--] = chars[j--];
+            }else {
+                // 不相等看dp
+                char tmp = 0;
+                if (dp[i+1][j] <= dp[i][j-1]) {
+                    tmp = chars[i--];
+                }else {
+                    tmp = chars[j--];
+                }
+                res[i2++] = tmp;
+                res[j2--] = tmp;
+
+            }
+            count--;
+        }
+        return String.valueOf(res);
+    }
+
+
+    /**
+     * chars变成回文字符串所添加的最少字符数量
+     * @param chars
+     * @return
+     */
+    private static int[][] getDpCp1(char[] chars) {
+        int[][] dp = new int[chars.length][chars.length];
+        // 先填斜线
+        for (int i = 0; i < chars.length; i++) {
+            dp[i][i] = 0;
+        }
+        for (int j = 1; j < chars.length; j++) {
+            for (int i = j-1; i >= 0 ; i--) {
+                if (chars[i] == chars[j]) {
+                    // 左右边相等的情况,最小值-1，注意0的情况
+                    int min = Math.min(dp[i + 1][j], dp[i][j - 1]);
+                    // 如果min为0说明原来就是回文字符串，这波多了一个字符就需要再添一个，否则原来的减少一个
+                    dp[i][j] = min == 0? 1 : min - 1;
+                }else {
+                    //左右不相等的情况
+                    int min = Math.min(dp[i + 1][j], dp[i][j - 1]);
+                    // 不相等说明又多了一个累赘
+                    dp[i][j] = min == 0? 1 : min + 1;
+                }
+            }
+        }
+        return dp;
+    }
+
+    /**
+     * 二轮测试：问题二
+     * @param string
+     * @param stringP
+     * @return
+     */
+    public static String getpalindromeCP2(String string, String stringP) {
+        if (string == null || string.length() == 0
+                || stringP == null || stringP.length() == 0) {
+            return null;
+        }
+        char[] chars = string.toCharArray();
+        char[] chars1 = stringP.toCharArray();
+        char[] res = new char[2 * chars.length - chars1.length];
+        int i = 0, j = chars.length-1;
+        int i1 = 0, j1 = chars1.length-1;
+        int i2 = 0, j2 = res.length-1;
+        while (i2 <= j2) {
+            if (chars[i] != chars1[i1]) {
+                res[i2++] = chars[i];
+                res[j2--] = chars[i];
+                i++;
+            }else if (chars[j] != chars1[j1]) {
+                res[i2++] = chars[j];
+                res[j2--] = chars[j];
+                j--;
+            }else {
+                // 两个都相等了
+                res[i2++] = chars[i];
+                res[j2--] = chars[j];
+                i++;
+                j--;
+                i1++;
+                j1--;
+            }
+        }
+        return String.valueOf(res);
+    }
+
+
+
+
+
+
+
+    public static void main(String[] args) {
+        System.out.println(getpalindromeCP2("A1B21C", "121"));
+    }
+
+
+
+    /**
      * 翻转字符串
      * @param str
      * @return
