@@ -51,6 +51,118 @@ public class MinDistance {
 
 
     /**
+     * 二轮测试：问题一
+     * @return
+     */
+    public static int minDisCp1(char[] chars, char c1, char c2) {
+        if (chars == null || chars.length == 0) {
+            return -1;
+        }
+        if (c1 == c2) {
+            return 0;
+        }
+        // c1 最近出现的位置
+        int last1 = -1;
+        // c2 最近出现的位置
+        int last2 = -1;
+        int min = Integer.MAX_VALUE;
+        for (int i = 0; i < chars.length; i++) {
+            if (chars[i] != c1 && chars[i] != c2) {
+                continue;
+            }
+            if (chars[i] == c1) {
+                last1 = i;
+                if (last2 != -1) {
+                    min = Math.min(min,i - last2);
+                }
+            }
+            if (chars[i] == c2) {
+                last2 = i;
+                if (last1 != -1) {
+                    min = Math.min(min, i - last1);
+                }
+            }
+        }
+        return min == Integer.MAX_VALUE ? -1 : min;
+    }
+
+
+    public static void main(String[] args) {
+        //System.out.println(minDisCp1(new char[]{'1', '3', '3', '3', '2', '3', '1'}, '1', '2'));
+        MinDistanceCp2 minDistanceCp2 = new MinDistanceCp2(new char[]{'1', '3', '3', '3', '2', '3', '1'});
+        minDistanceCp2.getMinDis('1', '2');
+    }
+
+
+    /**
+     * 进阶问题使用工具类实现
+     */
+    public static class MinDistanceCp2{
+        private Map<Character, Map<Character, Integer>> map;
+
+        public MinDistanceCp2(char[] chars) {
+            this.map = new HashMap<>();
+            init(chars);
+        }
+
+        /**
+         * 初始化统计最短距离填充map
+         * @param chars
+         */
+        private void init(char[] chars) {
+            if (chars == null || chars.length == 0) {
+                return;
+            }
+            for (int i = 0; i < chars.length; i++) {
+                if (!map.containsKey(chars[i])) {
+                    map.put(chars[i], new HashMap<>());
+                    // 距离自己是0
+                    map.get(chars[i]).put(chars[i], 0);
+                }
+                dealChar(chars, i);
+            }
+        }
+
+        /**
+         * 遍历所有数组，更新最近距离
+         * @param index
+         * @Param chars
+         */
+        private void dealChar(char[] chars, int index) {
+            for (int i = 0; i < index; i++) {
+                int dis = index - i;
+                Map<Character, Integer> mapI = this.map.get(chars[i]);
+                Map<Character, Integer> mapIndex = this.map.get(chars[index]);
+                // 更新i处的
+                if (mapI.get(chars[index]) == null || mapI.get(chars[index]) > dis) {
+                    mapI.put(chars[index], dis);
+                }
+                // 更新index
+                if (mapIndex.get(chars[i]) == null || mapIndex.get(chars[i]) > dis) {
+                    mapIndex.put(chars[i], dis);
+                }
+            }
+        }
+
+        /**
+         * 获取最短距离
+         * @param c1
+         * @param c2
+         * @return
+         */
+        private int getMinDis(char c1, char c2) {
+            if (map.get(c1) == null || map.get(c2) == null) {
+                return 0;
+            }
+            return map.get(c1).get(c2) == null ? -1 : map.get(c1).get(c2);
+        }
+    }
+
+
+
+
+
+    /**
      * 该类为内部类，能够将查询最小距离的速度加快到O(1),但是准备工作时间O(n^2),空间O(n^2)
      */
     public class RecordForDistance{
