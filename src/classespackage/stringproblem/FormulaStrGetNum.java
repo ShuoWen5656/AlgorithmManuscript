@@ -1,5 +1,9 @@
 package classespackage.stringproblem;
 
+import classespackage.stackAndQueue.catDogQueue.Pet;
+import classespackage.tree.PrintTreeDirect;
+import javafx.scene.input.InputMethodTextRun;
+
 import java.util.Deque;
 import java.util.LinkedList;
 
@@ -113,6 +117,217 @@ public class FormulaStrGetNum {
         }
         return res;
     }
+
+    /**
+     * 二轮测试：计算字符串代表的值
+     * @param str
+     * @return
+     */
+    public static Integer getNumCp1(String str) {
+        if (str == null || str.length() == 0) {
+            return null;
+        }
+        char[] chars = str.toCharArray();
+        return valueCp1(chars, 0)[0];
+
+    }
+
+    private static Integer[] valueCp1(char[] chars, int start) {
+        // 保存公式队列
+        Deque<String> dq = new LinkedList<>();
+        int index = start;
+        int cur = 0;
+        while (index < chars.length && chars[index] != ')') {
+            if (chars[index] - '0' >= 0 && chars[index] - '0' <= 9) {
+                // 数值
+                cur = cur * 10 + chars[index] - '0';
+                index++;
+            }else if (chars[index] != '(') {
+                // 不会触发递归的符号类
+                addNumCp1(dq, cur);
+                // 加符号
+                dq.addLast(String.valueOf(chars[index]));
+                cur = 0;
+                index++;
+            }else {
+                // 触发递归
+                Integer[] integers = valueCp1(chars, index + 1);
+                cur = integers[0];
+                index = integers[1]+1;
+            }
+
+        }
+        addNumCp1(dq, cur);
+        // 到这里全部变成只有加减的顺序执行串了
+        return new Integer[] {calc2(dq), index};
+    }
+
+    /**
+     * 添加当前字符到队列
+     * @param dq
+     * @param cur
+     */
+    private static void addNumCp1(Deque<String> dq, int cur) {
+        if (dq.isEmpty() || dq.getLast().equals("+") || dq.getLast().equals("-")) {
+            dq.addLast(String.valueOf(cur));
+            return;
+        }
+        String poll1 = dq.pollLast();
+        Integer poll2 = Integer.parseInt(dq.pollLast());
+        if (poll1.equals("*")) {
+            dq.addLast(String.valueOf(poll2*cur));
+        }
+        if (poll1.equals("/")) {
+            dq.addLast(String.valueOf(poll2/cur));
+        }
+    }
+
+    private static int calc2(Deque<String> dq) {
+         boolean add = true;
+         int cur = 0;
+         int res = 0;
+         while (!dq.isEmpty()){
+             String s = dq.pollFirst();
+             if (s.equals("+")) {
+                 add = true;
+             }else if (s.equals("-")) {
+                 add = false;
+             }else {
+                 res = add? res + Integer.parseInt(s) : res - Integer.parseInt(s);
+             }
+         }
+         return res;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(getNumCp1("3*(4+5)+7"));
+    }
+
+
+    ///**
+    // * 二轮测试：计算字符串代表的值
+    // * @param str
+    // * @return
+    // */
+    //public static Integer getNumCp1(String str) {
+    //    if (str == null || str.length() == 0) {
+    //        return null;
+    //    }
+    //    char[] chars = str.toCharArray();
+    //    // 主
+    //    Deque<Character> dq1 = new LinkedList<>();
+    //    // 备用
+    //    Deque<Character> dq2 = new LinkedList<>();
+    //    // 1、第一轮先去掉括号，使用栈的特性
+    //    for (int i = 0; i < chars.length; i++) {
+    //        if (chars[i] == ')') {
+    //            // 计算到上一个'（'内的值
+    //            char ch;
+    //            while ((ch = dq1.pollFirst()) != '(') {
+    //                dq2.addLast(ch);
+    //            }
+    //            //计算dp2中的公式的值
+    //            int v = calc(dq2);
+    //            add2Dq(v, dq1);
+    //        }else {
+    //            dq1.addFirst(chars[i]);
+    //        }
+    //    }
+    //    // 2、最后按照正常优先级计算即可
+    //    return calc(dq1);
+    //}
+    //
+    //private static void add2Dq(int v, Deque<Character> dq1) {
+    //    char[] chars = null;
+    //    chars = String.valueOf(v).toCharArray();
+    //    if (v < 0) {
+    //        dq1.addFirst('(');
+    //    }
+    //    for (int i = 0; i < chars.length; i ++) {
+    //        dq1.addFirst(chars[i]);
+    //    }
+    //    dq1.addFirst(')');
+    //}
+    //
+    ///**
+    // * 计算队列中的值
+    // * @param
+    // * @return
+    // */
+    //private static int calc(Deque<Character> dq) {
+    //    // 辅助队列
+    //    Deque<Character> dqCp = new LinkedList<>();
+    //    Character c;
+    //    int cur = 0;
+    //    // 符号
+    //    boolean pos = true;
+    //    if((c = dq.pollLast()) == '-') {
+    //        // 开头没有括号的负数
+    //        pos = false;
+    //    }
+    //    while (!dq.isEmpty()) {
+    //        char ct = dq.pollLast();
+    //        if (ct - '0' >= 0 && ct - '0' <= 9) {
+    //            // 数值直接计算
+    //            cur = cur * 10 + (ct - '0');
+    //        }else if (ct == '(' && dq.pollLast() == '-') {
+    //            // 负数
+    //            pos = false;
+    //        }else {
+    //            // 符号
+    //            if (dqCp.isEmpty() || dqCp.getFirst() == '+' || dqCp.getFirst() == '-') {
+    //                // 空的直接加
+    //                add2Dq(cur, dqCp);
+    //            }else {
+    //                // 优先计算
+    //                char ci = dqCp.pollFirst();
+    //                int cur2 = 0;
+    //                while (dqCp.getFirst() - '0' >= 0 && dqCp.getFirst() - '0' <= 9) {
+    //                    cur2 += cur2 * 10 + (dqCp.pollFirst() - '0');
+    //                }
+    //                int resTmp = ci == '*' ? cur2 * cur : cur2 / cur;
+    //                add2Dq(resTmp, dqCp);
+    //            }
+    //            dqCp.addFirst(ct);
+    //        }
+    //    }
+    //    // 最后顺序计算
+    //    int res = 0;
+    //    cur = 0;
+    //    char ci = 0;
+    //    while (!dqCp.isEmpty()) {
+    //
+    //        if (dqCp.pollLast() == '(' && dqCp.pollLast() == '-') {
+    //            pos = false;
+    //        }else{
+    //            char cx = dqCp.pollLast();
+    //            if (cx - '0' >= 0 && cx - '0' <= 9) {
+    //                cur = cur * 10 + (cx - '0');
+    //            }else {
+    //                ci = cx;
+    //            }
+    //        }
+    //        if (ci != 0) {
+    //            cur = pos ? cur : -cur;
+    //            res += ci == '+' ? cur : -cur;
+    //        }
+    //    }
+    //    return res;
+    //}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 }
