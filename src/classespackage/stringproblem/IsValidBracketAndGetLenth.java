@@ -1,5 +1,7 @@
 package classespackage.stringproblem;
 
+import java.util.Stack;
+
 /**
  * @author swzhao
  * @data 2022/5/15 11:43
@@ -86,5 +88,72 @@ public class IsValidBracketAndGetLenth {
         }
         return max;
     }
+
+    /**
+     * 判断括号是否是有效括号
+     * @param string
+     * @return
+     */
+    public static boolean isValidCp1(String string) {
+        if (string == null || string.length() == 0) {
+            return false;
+        }
+        char[] chars = string.toCharArray();
+        Stack<Integer> stack = new Stack<>();
+        for (int i = 0; i < chars.length; i++) {
+            if (chars[i] != '(' && chars[i] != ')') {
+                return false;
+            }else if (chars[i] == '(') {
+                stack.push(i);
+            }else if (chars[i] == ')') {
+                if (stack.isEmpty()) {
+                    return false;
+                }else {
+                    stack.pop();
+                }
+            }
+        }
+        return stack.isEmpty();
+    }
+
+    /**
+     * 判断括号的最长有效长度
+     * @param str
+     * @return
+     */
+    public static int getLen(String str) {
+        if (str == null || str.length() == 0) {
+            return 0;
+        }
+        //if (!isValidCp1(str)) {
+        //    return 0;
+        //}
+        int max = Integer.MIN_VALUE;
+        char[] chars = str.toCharArray();
+        // dp[i] 代表必须以char[i]结尾的最长有效括号长度
+        int[] dp = new int[chars.length];
+        dp[0] = 0;
+        for (int i = 0; i < chars.length; i++) {
+            if (chars[i] == '(') {
+                dp[i] = 0;
+            }else {
+                // 找到第一个和自己闭合的括号
+                int pre = i - dp[i - 1] - 1;
+                if (pre >= 0 && chars[pre] == '(') {
+                    // 匹配成功
+                    dp[i] = dp[i-1] + 2 + (pre-1 >= 0 ? dp[pre-1] : 0);
+                }
+                max = Math.max(dp[i], max);
+            }
+        }
+        return max == Integer.MIN_VALUE ? 0 : max;
+    }
+
+
+    public static void main(String[] args) {
+        System.out.println(getLen("()(()()("));
+    }
+
+
 
 }
