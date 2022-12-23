@@ -1,5 +1,8 @@
 package classespackage.stringproblem;
 
+import com.sun.org.apache.xalan.internal.xsltc.compiler.util.MultiHashtable;
+
+import java.util.HashSet;
 import java.util.Stack;
 
 /**
