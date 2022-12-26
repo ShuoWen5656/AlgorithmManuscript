@@ -47,4 +47,30 @@ public class GetLowestString {
         return res;
     }
 
+
+    public static String getLowestCp1(String[] strs) {
+        if (strs == null || strs.length == 0) {
+            return null;
+        }
+        // str1和str2是反的
+        Arrays.sort(strs, (str1, str2) -> {
+            if ((str2 + str1).compareTo(str1+str2) < 0) {
+                return 1;
+            }else{
+                return -1;
+            }
+        });
+        String res = Constants.EMPTY_STR;
+        for (int i = 0 ; i < strs.length; i++) {
+            res += strs[i];
+        }
+        return res;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(getLowestCp1(new String[]{"ba", "b"}));
+
+    }
+
+
 }
