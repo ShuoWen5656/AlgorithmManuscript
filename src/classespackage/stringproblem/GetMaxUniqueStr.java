@@ -50,4 +50,52 @@ public class GetMaxUniqueStr {
     }
 
 
+    /**
+     * 二轮测试：找到字符串中没有重复的最长子串
+     * @param
+     * @return
+     */
+    public static String findMaxUniqueStrCp1(String str) {
+        if (str == null || str.length() == 0) {
+            return null;
+        }
+        char[] chars = str.toCharArray();
+        // key表示字符值，value表示该字符上次出现的位置
+        int[] map = new int[256];
+        for (int i = 0; i < map.length; i++) {
+            map[i] = -1;
+        }
+        // 表示前一个字符结尾的最长无重复子串开始的位置
+        int pre = 0;
+        int res = 0;
+        int resPre = 0;
+        for (int i = 0; i < chars.length; i++) {
+            // 当前字符上次出现的位置
+            int lastIndex = map[chars[i]];
+            if (lastIndex >= pre) {
+                // 被截断
+                pre = lastIndex+1;
+                map[chars[i]] = i;
+            }else {
+                // 前一个长度+1
+                map[chars[i]] = i;
+            }
+            if (i - pre + 1 > res) {
+                res = i - pre + 1;
+                resPre = pre;
+            }
+        }
+        char[] chars1 = new char[res];
+        for (int i = 0; i < res; i++) {
+            chars1[i] = chars[resPre + i];
+        }
+        return String.valueOf(chars1);
+    }
+
+
+    public static void main(String[] args) {
+        System.out.println(findMaxUniqueStrCp1("abaacxd"));
+    }
+
+
 }
