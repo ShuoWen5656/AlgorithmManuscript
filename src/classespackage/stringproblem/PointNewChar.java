@@ -55,6 +55,49 @@ public class PointNewChar {
     }
 
 
+    /**
+     * 二轮测试：找到指向的新型字符串
+     * @param str
+     * @param k
+     * @return
+     */
+    public static String getPointCp1(String str, int k) {
+        if (str == null || str.length() == 0
+                || k > str.length() || k <= 0) {
+            return null;
+        }
+        // 将第k个转成index数组索引
+        int index = k-1;
+        char[] chars = str.toCharArray();
+        // 从k-2开始往前数有几个连续的大写字母
+        int uNum = 0;
+        while (index >= 0 && isUpper(chars[index])) {
+            index--;
+            uNum++;
+        }
+        index = k;
+        if (uNum%2 == 0) {
+            // 偶数,说明不能拆
+            if (isUpper(chars[index])) {
+                // 当前位置大写
+                return String.valueOf(new char[]{chars[index], chars[index+1]});
+            }else {
+                // 当前位置小写
+                return String.valueOf(new char[]{chars[index]});
+            }
+        }else {
+            // 奇数
+            return String.valueOf(new char[]{chars[index-1], chars[index]});
+        }
+
+    }
+
+
+    public static void main(String[] args) {
+        System.out.println(getPointCp1("aaABCDEcBCg", 10));
+    }
+
+
     public static boolean isUpper(char c) throws RuntimeException{
         if(c >= 'A' && c <= 'Z'){
             return true;
