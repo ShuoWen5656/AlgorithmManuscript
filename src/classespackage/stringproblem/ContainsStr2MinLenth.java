@@ -93,4 +93,74 @@ public class ContainsStr2MinLenth {
         return map;
     }
 
+
+    /**
+     * 二轮测试：获取str1包含str2的最小长度
+     * @param str1
+     * @param str2
+     * @return
+     */
+    public static int getMinLen(String str1, String str2) {
+        if (str1 == null || str2 == null
+                || str1.length() < str2.length()) {
+            return 0;
+        }
+        int res = Integer.MAX_VALUE;
+        // 获取欠的字符表
+        Map<Character, Integer> map = initMap(str2);
+        // 计算总欠数
+        int oweNum = 0;
+        for (Integer i : map.values()) {
+            oweNum += i;
+        }
+        // 左右游标
+        int left = 0;
+        int right = 0;
+        char[] chars = str1.toCharArray();
+        while (left <= right && right <= chars.length) {
+            // 检查是否欠字母
+            if (oweNum > 0 && right >= chars.length) {
+                // 如果right到头了还是欠，则直接退出
+                break;
+            }else if (oweNum > 0) {
+                // 还有欠的,这波还right
+                char cur = chars[right];
+                if (!map.containsKey(cur)) {
+                    map.put(cur, -1);
+                } else {
+                    map.put(cur, map.get(cur) - 1);
+                }
+                if (map.get(cur) >= 0) {
+                    // 说明有效还
+                    oweNum--;
+                }
+                right++;
+            }else {
+                // 已经不欠了,这波去掉left
+                char cur = chars[left];
+                map.put(cur ,map.get(cur)+1);
+                if (map.get(cur) > 0) {
+                    // 说明又欠了
+                    oweNum++;
+
+                }
+                left++;
+            }
+            if (oweNum == 0) {
+                // 已经还清则更新res
+                res = Math.min(res, right-left);
+            }
+        }
+        return res == Integer.MAX_VALUE ? 0 : res;
+    }
+
+
+    public static void main(String[] args) {
+        System.out.println(getMinLen("adabbca", "abc"));
+    }
+
+
+
+
+
 }
