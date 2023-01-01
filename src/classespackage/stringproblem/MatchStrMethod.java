@@ -1,5 +1,7 @@
 package classespackage.stringproblem;
 
+import classespackage.stackAndQueue.catDogQueue.Pet;
+
 /**
  * @author swzhao
  * @data 2022/5/22 12:25
@@ -87,7 +89,7 @@ public class MatchStrMethod {
             }
             for (int i = 0; i < expChars.length; i ++){
                 if((i == 0 && expChars[i] == '*')
-                        || (expChars[i-1] == '*' && expChars[i] == '*')){
+                        || (expChars[i] == '*' && expChars[i-1] == '*')){
                     return false;
                 }
             }
@@ -179,4 +181,123 @@ public class MatchStrMethod {
         }
         return res;
     }
+
+
+    /**
+     * 二轮测试：类正则配置str
+     * @param str
+     * @param exp
+     * @return
+     */
+    public static boolean isMatchCp1(String str, String exp) {
+        if (!isValid(str, exp)) {
+            return false;
+        }
+        char[] charsStr = str.toCharArray();
+        char[] charsExp = exp.toCharArray();
+        //return processCp1(charsStr, charsExp, 0, 0);
+        return processDpCp1(charsStr, charsExp);
+    }
+
+    /**
+     * 递归主体：主要判断startExp开始往后和，startStr是否能够匹配上
+     * @param charsStr
+     * @param charsExp
+     * @param startStr
+     * @param startExp
+     * @return
+     */
+    private static boolean processCp1(char[] charsStr, char[] charsExp, int startStr, int startExp) {
+        if (!isValid(String.valueOf(charsStr, startStr, charsStr.length-startStr), String.valueOf(charsExp, startExp,charsExp.length-startExp))) {
+            return false;
+        }
+        int index1 = startStr;
+        int index2 = startExp;
+        while (index1 < charsStr.length && index2 < charsExp.length) {
+            if (charsExp[index2] == '.' && index2 + 1 < charsExp.length && charsExp[index2+1] == '*'){
+                // .* 情况
+                index2+=2;
+                while (!processCp1(charsStr, charsExp, index1, index2)) {
+                    index1++;
+                }
+            }else if (charsExp[index2] == '.' && (index2 + 1 >= charsExp.length || charsExp[index2+1] != '*')) {
+                // 单 . 的情况
+                index1++;
+                index2++;
+            }else if (index2 + 1 < charsExp.length && charsExp[index2+1] == '*'){
+                // X*的情况
+                index2+=2;
+                char x = charsStr[index1];
+                while (index1 < charsStr.length && x == charsStr[index1] && !processCp1(charsStr, charsExp, index1, index2)) {
+                    index1++;
+                }
+            } else {
+                // 非. 情况
+                if (charsStr[index1] != charsExp[index2]) {
+                    return false;
+                }else {
+                    index1++;
+                    index2++;
+                }
+            }
+        }
+        // exp结束，str必须结束
+        if (index2 == charsExp.length) {
+            return index1 == charsStr.length;
+        }else {
+            // str结束，exp只能.*或者结束
+            return index2 == charsExp.length || (index2+1 < charsExp.length && charsExp[index2] == '.' && charsExp[index2+1] == '*');
+        }
+    }
+
+    /**
+     * 方法二：动态规划
+     * @param charsStr
+     * @param charsExp
+     * @return
+     */
+    private static boolean processDpCp1(char[] charsStr, char[] charsExp) {
+        // dp[i][j]代表 charStr从i开始到结尾，是否匹配charsExp从j开始到结尾
+        boolean[][] dp = new boolean[charsStr.length+1][charsExp.length+1];
+        dp[charsStr.length][charsExp.length] = true;
+        for (int i = charsExp.length-2; i >= 0; i-=2) {
+            // exp必须A*B*...模式
+            if (charsExp[i] != '*' && charsExp[i+1] == '*'){
+                dp[charsStr.length][i] = true;
+            }else {
+                break;
+            }
+        }
+        dp[charsStr.length-1][charsExp.length-1] = charsExp[charsExp.length-1] == '.' || charsExp[charsExp.length-1] == charsStr[charsStr.length-1];
+        for (int i = charsStr.length-1; i >= 0; i--) {
+            for (int j = charsExp.length-2; j >= 0; j--) {
+                if (charsExp[j+1] != '*') {
+                    // 不是*，那么要么是.，要么相等
+                    dp[i][j] = charsExp[j] == '.' || charsExp[j] == charsStr[i];
+                }else {
+                    // 是*的情况
+                    int startStr = i;
+                    while (startStr < charsStr.length && (charsStr[startStr] == charsExp[j] || charsExp[j] == '.')) {
+                        if (dp[startStr][j+2]) {
+                            dp[i][j] = true;
+                            break;
+                        }
+                        startStr++;
+                    }
+                    // 这里是因为dp的长度要长一个，上述循环由于条件中不能超过len，所以最后一个边界无法到达，这里需要再赋值一次
+                    if (!dp[i][j]) {
+                        dp[i][j] = dp[startStr][j+2];
+                    }
+                }
+
+            }
+        }
+        return dp[0][0];
+    }
+
+
+    public static void main(String[] args) {
+        System.out.println(isMatchCp1("abb", "ab*"));
+    }
+
 }
