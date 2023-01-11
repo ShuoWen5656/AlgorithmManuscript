@@ -4,6 +4,10 @@ package classespackage.stringproblem;
  * @author swzhao
  * @data 2022/5/24 22:07
  * @Discreption <> 回文最少分割数
+ * 倒着遍历是精髓，可以降低一个维度的复杂度
+ * 1、map用来存储[i...j]是否是回文串
+ * 2、dp[i]表示从[i...j]最小分割数
+ * 3、dp[i]应该是dp[j+1] + 1中的最小值，其中i...j 是回文字符串
  */
 public class MinCut {
 

@@ -21,4 +21,23 @@ public class ChangeNum {
     }
 
 
+    /**
+     * 二轮测试：由于值传递，所以这里用数组引用
+     * @param ints
+     */
+    public static void changeNumCp1(int[] ints) {
+        if (ints.length < 2) {
+            return;
+        }
+        int a = ints[0];
+        int b = ints[1];
+        a = a ^ b;
+        b = a ^ b;
+        a = a ^ b;
+        ints[0] = b;
+        ints[1] = a;
+    }
+
+
+
 }
