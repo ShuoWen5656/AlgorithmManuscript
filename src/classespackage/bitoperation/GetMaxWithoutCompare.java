@@ -77,5 +77,80 @@ public class GetMaxWithoutCompare {
     }
 
 
+    /*************************************************************************************************
+     *                                           二轮测试                                             *
+     *************************************************************************************************/
+
+    /**
+     * 和1异或操作
+     * @return
+     */
+    public static int flipCp1(int i) {
+        return i ^ 1;
+    }
+
+    /**
+     * 获取整数i的符号
+     * 0：负数
+     * 1：整数
+     * @param i
+     * @return
+     */
+    public static int signCp1(int i) {
+        return flipCp1((i >>> 31) & 1);
+    }
+
+    /**
+     * 获取a和b
+     * 该方法将差值的符号作为依据返回较大的数，但是如果a为正数，b为负数就会存在溢出的可能，所以该方法并不通用
+     * @param a
+     * @param b
+     * @return
+     */
+    public static int getMaxCp1(int a, int b) {
+        // 取差值
+        int c = a - b;
+        // 取a和b的乘数
+        int scA = signCp1(c);
+        int scB = flipCp1(signCp1(c));
+        return scA * a + scB * b;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(getMaxCp2(11, -2));
+    }
+
+
+    /**
+     * 获取a和b较大的一个
+     * 该方法增加了判断符号过程，所以不存在溢出问题
+     * @param a
+     * @param b
+     * @return
+     */
+    public static int getMaxCp2(int a, int b) {
+        // 求差值
+        int c = a - b;
+        // 计算符号
+        int sc = signCp1(c);
+        int sa = signCp1(a);
+        int sb = signCp1(b);
+        // 判断ab符号是否相同
+        int diff = sa ^ sb;
+        int same = flipCp1(diff);
+        // a如果为大值，要么符号不同并且a为正数，要么符号相同sc为正数，返之b也相同
+        return a * (diff * (sa) + same * (sc)) + b * (diff * (sb) + same * (filp(sc)));
+    }
+
+
+
+
+
+
+
+
+
+
+
 
 }
