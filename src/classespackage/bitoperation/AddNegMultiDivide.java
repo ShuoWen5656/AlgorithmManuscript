@@ -1,5 +1,7 @@
 package classespackage.bitoperation;
 
+import java.util.Stack;
+
 /**
  * @author swzhao
  * @data 2022/6/1 20:36
@@ -263,7 +265,6 @@ public class AddNegMultiDivide {
 
 
     public static void main(String[] args) {
-
         System.out.println(add(4, 2));
     }
 

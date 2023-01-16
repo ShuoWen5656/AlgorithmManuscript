@@ -89,6 +89,63 @@ public class CountBit {
         }
     }
 
+/********************************************************************
+ *                          二轮测试                                 *
+ ********************************************************************/
+
+
+    /**
+     * 计算整数中有多少个1
+     * @return
+     */
+    public static int countCp1(int a) {
+        int res = 0;
+        while (a != 0) {
+            // 抹掉最右边的1
+            a &= (a-1);
+            res++;
+        }
+        return res;
+    }
+
+    /**
+     * 计算整数中有多少个1
+     * @return
+     */
+    public static int countCp2(int a) {
+        int res = 0;
+        while (a != 0) {
+            // 抹掉最右边的1
+            a -= a&(~a+1);
+            res++;
+        }
+        return res;
+    }
+
+
+    /**
+     * 解法三：归并相加
+     * @param a
+     * @return
+     */
+    public static int countCp3(int a) {
+        // 计算每两位有几个1
+        a = (a & 0x55555555) + (a >>> 1 & 0x55555555);
+        // 计算每四位有几个1
+        a = (a & 0x33333333) + (a >>> 2 & 0x33333333);
+        // 计算每8位有几个1
+        a = (a & 0x0f0f0f0f) + (a >>> 4 & 0x0f0f0f0f);
+        a = (a & 0x00ff00ff) + (a >>> 8 & 0x00ff00ff);
+        a = (a & 0x0000ffff) + (a >>> 16 & 0x0000ffff);
+        return a;
+    }
+
+
+
+    public static void main(String[] args) {
+        System.out.println(countCp3(3));
+    }
+
 
 
 }
