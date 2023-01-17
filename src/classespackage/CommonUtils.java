@@ -545,6 +545,7 @@ public class CommonUtils<T> {
     public static void printArr(int[] arr) {
         for (int a : arr){
             System.out.print(a);
+            System.out.println();
         }
         System.out.println();
     }

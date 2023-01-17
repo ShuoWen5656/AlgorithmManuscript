@@ -1,5 +1,7 @@
 package classespackage.bitoperation;
 
+import classespackage.CommonUtils;
+
 /**
  * @author swzhao
  * @data 2022/6/3 9:22
@@ -48,5 +50,57 @@ public class PrintOddTimeNum {
             e.printStackTrace();
         }
     }
+
+
+    /**
+     * 二轮测试:在只有一个奇数次数的情况下
+     * @param arr
+     * @return
+     */
+    public static int getOddTimeNumCp1(int[] arr) {
+        int res = 0;
+        for (int i : arr) {
+            res ^= i;
+        }
+        return res;
+    }
+
+    /**
+     * 二轮测试：在有两个奇数次的数下
+     * @param arr
+     * @return
+     */
+    public static int[] getOddTimeNum2Cp2(int[] arr) {
+        int res = 0;
+        // 得到异或结果
+        for (int i : arr) {
+            res ^= i;
+        }
+        // 获取res最左边的1,因为arr中两个奇数次的数坑定不相等
+        int rightOne = res & (~res + 1);
+        // 结果容器
+        int[] ress = new int[2];
+        int tem = res;
+        for (int i : arr) {
+            // 只有rightOne位为0的才行
+            if ((rightOne & i) == 0) {
+                tem ^= i;
+            }
+        }
+        // 到这里，res已经是其中一个结果了
+        ress[0] = tem;
+        ress[1] = tem ^ res;
+        return ress;
+    }
+
+
+
+    public static void main(String[] args) {
+        CommonUtils.printArr(getOddTimeNum2Cp2(new int[]{1,1,1,2,2,2,3,3,5,5,8,8}));
+    }
+
+
+
+
 
 }
