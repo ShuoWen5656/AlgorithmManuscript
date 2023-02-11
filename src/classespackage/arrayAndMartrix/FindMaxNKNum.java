@@ -1,9 +1,8 @@
 package classespackage.arrayAndMartrix;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import classespackage.CommonUtils;
+
+import java.util.*;
 
 /**
  * @author swzhao
@@ -134,6 +133,107 @@ public class FindMaxNKNum {
             map.remove(key);
         }
     }
+
+
+    /**
+     * 二轮测试:在arr中找到出现次数过半的数，如果没有抛出异常
+     * @param arr
+     * @return
+     */
+    public static int getMaxHalf(int[] arr) {
+        if (arr == null || arr.length == 0) {
+            throw new RuntimeException("arr中不存在符合条件的数");
+        }
+        // 记录出现次数
+        int time = 0;
+        // 后选数
+        int cand = 0;
+        for (int i = 0; i < arr.length; i++) {
+            if (time == 0) {
+                cand = arr[i];
+                time++;
+            }else if (arr[i] == cand) {
+                // 与候选者相等
+                time++;
+            }else {
+                // 不相等，则抵消一个候选者
+                time--;
+            }
+        }
+        // 次数cand为出现次数最多的数,但是不一定过半
+        time = 0;
+        // 统计出现次数
+        for (int i = 0; i < arr.length; i++) {
+            if (cand == arr[i]) {
+                time++;
+            }
+        }
+        if (time > arr.length/2) {
+            return cand;
+        }else {
+            throw new RuntimeException("arr中不存在符合条件的数");
+        }
+    }
+
+
+    /**
+     * 二轮测试：获取出现次数大于n/k 的数
+     * @param arr
+     * @return
+     */
+    public static int[] getNKTimes(int[] arr, int k) {
+        if (arr == null || arr.length == 0 || k <= 0) {
+            throw new RuntimeException("不存在符合条件的数");
+        }
+        // 记录候选者
+        Map<Integer, Integer> kMap = new HashMap<>();
+        for (int i = 0; i < arr.length; i++) {
+            // 先放入
+            kMap.put(arr[i], kMap.containsKey(arr[i]) ? kMap.get(arr[i]) + 1 : 1);
+            // 判断map是否满了
+            if (kMap.size() == k) {
+                // 各自减去一个
+                Iterator<Integer> iterator = kMap.keySet().iterator();
+                while (iterator.hasNext()) {
+                    Integer key = iterator.next();
+                    kMap.put(key, kMap.get(key) - 1);
+                    if (kMap.get(key) == 0) {
+                        iterator.remove();
+                    }
+                }
+            }
+        }
+        Map<Integer, Integer> realMap = getRealCp2(kMap, arr, k);
+        int[] res = new int[realMap.size()];
+        int index = 0;
+        for (Integer key : realMap.keySet()) {
+            res[index++] = key;
+        }
+        return res;
+    }
+
+    private static Map<Integer, Integer> getRealCp2(Map<Integer, Integer> kMap, int[] arr, int k) {
+        Map<Integer, Integer> res = new HashMap<>();
+        // 超过这个数量的记录下来
+        int count = arr.length/k;
+        for (int i = 0; i < arr.length; i++) {
+            if (kMap.containsKey(arr[i])) {
+                res.put(arr[i], res.containsKey(arr[i]) ? res.get(arr[i]) + 1 : 1);
+            }
+        }
+        // 筛选一下
+        res.keySet().removeIf(key -> res.get(key) <= count);
+        return res;
+    }
+
+
+    public static void main(String[] args) {
+        CommonUtils.printArr(getNKTimes(new int[]{1,3,3,3,2}, 2));
+    }
+
+
+
+
 
 
 }
