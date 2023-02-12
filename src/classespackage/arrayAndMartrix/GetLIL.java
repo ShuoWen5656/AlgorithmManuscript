@@ -1,5 +1,6 @@
 package classespackage.arrayAndMartrix;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -53,6 +54,90 @@ public class GetLIL {
             return 0;
         }
     }
+
+
+    /**
+     * 二轮测试：求代码可整合子数组的最长长度
+     * 可整合数组定义：对数组排序后，数组中每相邻两个数之间的差值为1
+     * @param arr
+     * @return
+     */
+    public static Record getLILCp1(int[] arr) {
+        if (arr == null || arr.length == 0) {
+            return null;
+        }
+        Record record = new Record();
+        int min;
+        int max;
+        // 用来判重
+        Set<Integer> set = new HashSet<>();
+        // 遍历每一个子数组
+        for (int i = 0; i < arr.length; i++) {
+            // 每一轮需要清空最值
+            min = arr[0];
+            max = arr[0];
+            set.clear();
+            for (int j = i; j < arr.length; j++) {
+                // 子数组为[i...j],先计算最值
+                // 更新当前子数组的最大值或最小值
+                max = Math.max(max, arr[j]);
+                min  = Math.min(min, arr[j]);
+                // 计算当前子数组是否是可整合数组
+                if (set.contains(arr[j])) {
+                    // 从j开始存在重复的,直接下一轮
+                    break;
+                }else if (max - min + 1 == j - i + 1) {
+                    // 值域 == 长度
+                    if (j - i + 1 > record.len) {
+                        record.setLen(j - i + 1);
+                        record.setArr(Arrays.copyOfRange(arr, i, j+1));
+                    }
+                    set.add(arr[j]);
+                }
+            }
+        }
+        return record;
+    }
+
+
+    /**
+     * 存储最长子数组长度和对应子数组的实体类
+     */
+    static class Record {
+        private int len;
+        private int[] arr;
+
+        public int getLen() {
+            return len;
+        }
+
+        public void setLen(int len) {
+            this.len = len;
+        }
+
+        public int[] getArr() {
+            return arr;
+        }
+
+        public void setArr(int[] arr) {
+            this.arr = arr;
+        }
+
+        @Override
+        public String toString() {
+            return "Record{" +
+                    "len=" + len +
+                    ", arr=" + Arrays.toString(arr) +
+                    '}';
+        }
+    }
+
+
+
+    public static void main(String[] args) {
+        System.out.println(getLILCp1(new int[]{5,5,3,2,6,4,3}));
+    }
+
 
 
 }
