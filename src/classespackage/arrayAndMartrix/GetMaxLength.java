@@ -48,6 +48,53 @@ public class GetMaxLength {
         return resLen;
     }
 
+    public static int maxLen2K(int[] arr, int k) {
+        if (arr == null || arr.length == 0) {
+            return 0;
+        }
+        // 两个游标从开始游走left<= right
+        int left = 0, right = 0;
+        // sum为了实时保存left到right的和
+        int sum = arr[0];
+        // 结果
+        int len = 0;
+        while (left <= right && right <= arr.length) {
+            if (sum == k) {
+                len = Math.max(len, right - left + 1);
+                // 这里right尽可能的远
+                right++;
+                // 更新sum
+                sum += right > arr.length ? 0 : arr[right];
+            }else if (sum < k) {
+                // 小了，需要拓展
+                right++;
+                sum += right >= arr.length ? 0 : arr[right];
+            }else {
+                // 大了，需要缩小
+                sum -= arr[left];
+                left++;
+            }
+        }
+        return len;
+    }
+
+    public static void main(String[] args) {
+        int[] ints = {1, 3, 2, 5, 4, 7, 8};
+        int[] ints1 = {-3, -1, -4, 6, 3, -3, 5, 6, 0};
+        int[] ints2 = {0, 1, 1, 0, 0, 0, 0, 1, 0};
+
+        int[] ints3 = {3, -2, -4, 0, 6};
+
+        //System.out.println(myGetMaxLenth(ints, 8));
+        //System.out.println(myGetMaxLengthFromPG(ints1));
+        //System.out.println(myGetMaxLengthFrom01(ints2));
+        System.out.println(maxLen2K(ints, 10));
+
+    }
+
+
+
+
     /**
      * 未排序数组中累加和为给定值的最长子数组系列问题1
      * 1、利用array[i...j] = array[j] - array[j+1]计算子数组
@@ -300,19 +347,7 @@ public class GetMaxLength {
     }
 
 
-    public static void main(String[] args) {
-        int[] ints = {1, 3, 2, 5, 4, 7, 8};
-        int[] ints1 = {-3, -1, -4, 6, 3, -3, 5, 6, 0};
-        int[] ints2 = {0, 1, 1, 0, 0, 0, 0, 1, 0};
 
-        int[] ints3 = {3, -2, -4, 0, 6};
-
-        //System.out.println(myGetMaxLenth(ints, 8));
-        //System.out.println(myGetMaxLengthFromPG(ints1));
-        //System.out.println(myGetMaxLengthFrom01(ints2));
-        System.out.println(myGetMaxLenthLessNum2(ints3, -2));
-
-    }
 
 
     /**
