@@ -4,6 +4,7 @@ import classespackage.stackAndQueue.catDogQueue.Pet;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -48,6 +49,12 @@ public class GetMaxLength {
         return resLen;
     }
 
+    /**
+     * 二轮测试：无序正数组中和为给定值的最长子数组长度
+     * @param arr
+     * @param k
+     * @return
+     */
     public static int maxLen2K(int[] arr, int k) {
         if (arr == null || arr.length == 0) {
             return 0;
@@ -76,20 +83,6 @@ public class GetMaxLength {
             }
         }
         return len;
-    }
-
-    public static void main(String[] args) {
-        int[] ints = {1, 3, 2, 5, 4, 7, 8};
-        int[] ints1 = {-3, -1, -4, 6, 3, -3, 5, 6, 0};
-        int[] ints2 = {0, 1, 1, 0, 0, 0, 0, 1, 0};
-
-        int[] ints3 = {3, -2, -4, 0, 6};
-
-        //System.out.println(myGetMaxLenth(ints, 8));
-        //System.out.println(myGetMaxLengthFromPG(ints1));
-        //System.out.println(myGetMaxLengthFrom01(ints2));
-        System.out.println(maxLen2K(ints, 10));
-
     }
 
 
@@ -255,7 +248,8 @@ public class GetMaxLength {
         }
         int[] ints = new int[3];
         int maxLen = 0;
-        Map<Integer, Integer> map = new HashMap<>();
+        // 这里用linked能够保证进入是顺序的，遍历时也是从头开始
+        Map<Integer, Integer> map = new LinkedHashMap<>();
         map.put(0, -1);
         int sum = 0;
         for (int i = 0; i < arr.length; i++){
@@ -347,11 +341,83 @@ public class GetMaxLength {
     }
 
 
+    /**
+     * 二轮测试：求和小于等于k的最长子数组长度
+     * @param arr
+     * @param k
+     */
+    public static int myGetMaxLenthLessNum2Cp1(int[] arr, int k) {
+        if (arr == null || arr.length == 0) {
+            return -1;
+        }
+        // 数组
+        int[] arrHelper = new int[arr.length + 1];
+        // 截止到0位（不包含0），和为0
+        arrHelper[0] = 0;
+        int sum = 0;
+        int res = Integer.MIN_VALUE;
+        for (int i = 0; i < arr.length; i++) {
+            sum += arr[i];
+            // 如果和比前一个小了，那么久跟前面一样
+            arrHelper[i+1] = sum < arrHelper[i] ? arrHelper[i] : sum;
+            // 差值sum1
+            int sub = sum - k;
+            // 在arr[0...i]中查找是否存在大于等于sub的index
+            int index = bFind(arrHelper, 0, i, sub);
+            if (index != -1) {
+                res = Math.max(res, i-index+1);
+            }
+        }
+        return res == Integer.MIN_VALUE ? -1 : res;
+    }
+
+    /**
+     * 二轮测试：递增数组arr中找到左边第一个大于等于sub的值
+     * @param arrHelper
+     * @param left
+     * @param right
+     * @return
+     */
+    private static int bFind(int[] arrHelper, int left, int right, int sub) {
+
+        int l = left;
+        int r = right;
+        while (l <= r) {
+            // 前中位数
+            int midIndex = (l + r)/2;
+            if (arrHelper[midIndex] >= sub) {
+                r = midIndex - 1;
+            }else {
+                l = midIndex + 1;
+            }
+        }
+        // 相等情况选择最左边的
+        while (l-1 >= 0 && arrHelper[l-1] >= sub) {
+            l--;
+        }
+        return l > right ? -1 : l;
+    }
+
+
+    public static void main(String[] args) {
+        int[] ints = {1, 3, 2, 5, 4, 7, 8};
+        int[] ints1 = {-3, -1, -4, 6, 3, -3, 5, 6, 0};
+        int[] ints2 = {0, 1, 1, 0, 0, 0, 0, 1, 0};
+
+        int[] ints3 = {3, -2, -4, 0, 6};
+
+        //System.out.println(myGetMaxLenth(ints, 8));
+        //System.out.println(myGetMaxLengthFromPG(ints1));
+        //System.out.println(myGetMaxLengthFrom01(ints2));
+        //System.out.println(maxLen2K(ints, 10));
+
+        System.out.println(myGetMaxLenthLessNum2Cp1(ints3, -2));
+    }
 
 
 
     /**
-     * 求累加和为指定值的最长子数组长度
+     * 二轮测试： 求累加和为指定值的最长子数组长度
      * @param arr
      * @param num
      * @return 1:起点index，2、终点index 3、最大长度
@@ -387,7 +453,7 @@ public class GetMaxLength {
 
 
     /**
-     * 获取数组中正负数数量相同的最长子数组长度
+     * 二轮测试：获取数组中正负数数量相同的最长子数组长度
      * @param arr
      * @return
      */
@@ -407,7 +473,7 @@ public class GetMaxLength {
 
 
     /**
-     * 数组只有0和1，求0和1个数相同的最长子数组长度
+     * 二轮测试：数组只有0和1，求0和1个数相同的最长子数组长度
      * @param arr
      * @return
      */
