@@ -362,7 +362,7 @@ public class GetMaxLength {
             arrHelper[i+1] = sum < arrHelper[i] ? arrHelper[i] : sum;
             // 差值sum1
             int sub = sum - k;
-            // 在arr[0...i]中查找是否存在大于等于sub的index
+            // 在arrHelper[0...i]中查找是否存在大于等于sub的index
             int index = bFind(arrHelper, 0, i, sub);
             if (index != -1) {
                 res = Math.max(res, i-index+1);
