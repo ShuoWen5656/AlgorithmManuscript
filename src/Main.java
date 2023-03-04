@@ -75,7 +75,16 @@ public class Main {
 
 
     public static void test1(){
-
+        try {
+            throw new Exception();
+        }catch (Exception e){
+            e.printStackTrace(System.err);
+            return;
+        }finally {
+            System.out.println("finally");
+        }
+// 有return 编译不通过
+//        System.out.println("after finally");
     }
 
 
@@ -86,6 +95,7 @@ public class Main {
      */
     public static void main(String[] args) {
         try{
+            test1();
 //            LinkedList<Object> objects = new LinkedList<>();
 
 
