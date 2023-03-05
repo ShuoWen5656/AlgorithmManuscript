@@ -77,4 +77,70 @@ public class MaxSum {
         }
     }
 
+
+    /**
+     * 二轮测试：子数组的最大累加和问题
+     * @param arr
+     * @return
+     */
+    public static int maxSumCp1(int[] arr) {
+        if (arr == null || arr.length == 0) {
+            return 0;
+        }
+        int cur = 0, max = Integer.MIN_VALUE;
+        for (int i = 0; i < arr.length; i++) {
+            cur += arr[i];
+            max = Math.max(max, cur);
+            // 首先cur不会小于0，如果小于说明当前加了一个负数
+            cur = cur <= 0 ? 0 : cur;
+        }
+        return max;
+    }
+
+
+    /**
+     * 矩阵的最大累加和子矩阵
+     * 行级别还是暴力循环
+     * @param arr
+     * @return
+     */
+    public static int maxMatrixSumCp1(int[][] arr) {
+        if (arr == null || arr.length == 0 || arr[0].length == 0) {
+            return 0;
+        }
+        // 长度为列数
+        int[] sum = null;
+        int max = Integer.MIN_VALUE;
+        // 每一行开始
+        for (int i = 0; i < arr.length; i++) {
+            sum = new int[arr[0].length];
+            // 往下每一行开始
+            for (int i1 = i; i1 < arr.length; i ++) {
+                // 这里在sum相加的时候嵌入求子数组小和逻辑少一次循环
+                int cur = 0;
+                // 先累加
+                for (int j = 0; j < arr[0].length; i++) {
+                    sum[j] += arr[i1][j];
+                    cur += sum[j];
+                    max = Math.max(max, cur);
+                    cur = cur <= 0 ? 0 : cur;
+                }
+                // 加完以后求一次最大累加和
+            }
+        }
+        return max;
+    }
+
+    public static void main(String[] args) {
+        //System.out.println(maxSumCp1(new int[]{1,-2,3,5,-2,6,-1}));
+        System.out.println(maxSumForMartrix(new int[][]{
+                {-90, 48, 78},
+                {64, -40, 64},
+                {-81, -7, 66}
+        }));
+
+
+    }
+
+
 }
