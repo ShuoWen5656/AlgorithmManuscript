@@ -35,4 +35,41 @@ public class ODDOrEVENArray {
     }
 
 
+    /**
+     * 二轮测试：完成奇数下表都是奇数或者偶数下表都是偶数
+     * @param arr
+     * @return
+     */
+    public static int[] changeCp1(int[] arr) {
+        if (arr == null || arr.length == 0) {
+            return null;
+        }
+        // 当前需要被替换的index
+        int evenIndex = 0, oddIndex = 1;
+        // 游标
+        int next = arr.length-1;
+        while (evenIndex <= next && oddIndex <= next) {
+            if ((arr[next] & 1) == 1) {
+                // 奇数
+                CommonUtils.swap(arr, next, oddIndex);
+                oddIndex+=2;
+            }else {
+                // 偶数
+                CommonUtils.swap(arr, next, evenIndex);
+                evenIndex+=2;
+            }
+            //next--;
+        }
+        return arr;
+    }
+
+
+    public static void main(String[] args) {
+        int[] ints = {1, 2, 3, 4, 5};
+        modify(ints);
+        CommonUtils.printArr(ints);
+    }
+
+
+
 }
