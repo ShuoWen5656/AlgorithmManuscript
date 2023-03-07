@@ -60,4 +60,47 @@ public class GetLessIndex {
     }
 
 
+    /**
+     * 二轮测试：返回局部最小值
+     * 返回一个极小值即可
+     * @param arr
+     * @return
+     */
+    public static int getLessIndexCp1(int[] arr) {
+        if (arr == null || arr.length == 0) {
+            throw new RuntimeException("arr is invalid");
+        }
+        // 先判断头尾是否最小值
+        if (arr.length == 1 || arr[0] < arr[1]) {
+            return arr[0];
+        }else if (arr[arr.length-1] < arr[arr.length-2]) {
+            return arr[arr.length-1];
+        }else {
+            // 开始计算极小值
+            int left = 1;
+            int right = arr.length-2;
+            while (left < right) {
+                // 前中位数
+                int mid = (left + right)/2;
+                if (arr[mid+1] < arr[mid]) {
+                    // 递减 在mid和right之间
+                    left = mid+1;
+                }else if (arr[mid-1] < arr[mid]){
+                    // 递增
+                    right = mid-1;
+                }else {
+                    // 两个都不符合说明当前值就是极小值
+                    return mid;
+                }
+            }
+            return left;
+        }
+    }
+
+    public static void main(String[] args) {
+        System.out.println(getLessIndexCp1(new int[]{6,5,7,8,4,3,9}));
+    }
+
+
+
 }
