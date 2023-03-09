@@ -119,10 +119,31 @@ public class SortNNumArray {
     }
 
 
+    ///**
+    // * 二轮测试：使用位操作交换数减少一个32位的内存
+    // * @param arr
+    // * @return
+    // */
+    //public static int[] sortNumCp3(int[] arr) {
+    //    if (arr == null || arr.length == 0) {
+    //        return null;
+    //    }
+    //    for (int i = 0; i < arr.length; i++) {
+    //        while (arr[i] != i+1) {
+    //            // 交换
+    //            arr[i] = arr[i] ^ arr[arr[i] - 1];
+    //            // 现在arr[arr[i] - 1]已经是arr[i]了
+    //            arr[arr[i] - 1] = arr[i] ^ arr[arr[i] - 1];
+    //            arr[i] = arr[i] ^ arr[arr[i] - 1];
+    //        }
+    //    }
+    //    return arr;
+    //}
+
 
     public static void main(String[] args) {
         int[] arr = new int[]{3,5,2,1,4,6,7};
-        sort2(arr);
+        //sortNumCp3(arr);
     }
 
 
