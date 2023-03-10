@@ -1,5 +1,6 @@
 package classespackage.arrayAndMartrix;
 
+import classespackage.CommonUtils;
 import dataConstruct.HeapNode;
 
 /**
@@ -110,7 +111,102 @@ public class PrintTopKFromArrays {
     private static void swap(HeapNode[] heap, int parent, int i) {
         HeapNode heapNode = heap[parent];
         heap[parent] = heap[i];
-        heap[i] = heap[parent];
+        heap[i] = heapNode;
     }
+
+
+    /**
+     * 二轮测试：打印n个数组的topk
+     * @param arr
+     * @return
+     */
+    public static int[] getTopKFormNArr(int[][] arr, int k) {
+        if (arr == null || arr.length == 0 || arr[0].length == 0) {
+            return null;
+        }
+        // 大小为n的堆
+        HeapNode[] heap = new HeapNode[arr.length];
+        int indexForHeap = 0;
+        for (int i = 0; i < arr.length; i++) {
+            // 数组从小到大，所以放每一行数组的最后一个数
+            heapInsertCp1(heap, indexForHeap,new HeapNode(arr[i][arr[i].length-1], i, arr[i].length-1));
+            indexForHeap++;
+        }
+        int[] res = new int[k];
+        // 开始计算Topk,弹出k个值
+        for (int i = 0; i < k; i++) {
+            HeapNode top = heap[0];
+            // 每一次都是堆顶
+            res[i] = top.getValue();
+            // 堆顶需要弹出:如果堆顶不是自己队列最后一个数，则自己队列找到顶替者，否则堆大小减少一个
+            if (top.getIndex() == 0) {
+                // 最后一个数,则将头替换成尾巴
+                heap[0] = heap[indexForHeap-1];
+                // 减少一个长度
+                indexForHeap--;
+            }else {
+                // 不是最后一个数,找到顶替者
+                heap[0] = new HeapNode(arr[top.getArrayID()][top.getIndex()-1], top.getArrayID(), top.getIndex()-1);
+                // 下沉
+                heapifyCp1(heap, indexForHeap);
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 从顶开始下城
+     * @param heap
+     * @param len
+     */
+    private static void heapifyCp1(HeapNode[] heap, int len) {
+        int parent = 0;
+        int left = (2 * parent) + 1;
+        while (left < len) {
+            int maxIndex = heap[parent].getValue() > heap[left].getValue() ? parent : left;
+            int right = left + 1;
+            if (right < len && heap[right].getValue() > heap[parent].getValue()) {
+                maxIndex = right;
+            }
+            if (maxIndex == parent) {
+                break;
+            }else {
+                swap(heap, parent, maxIndex);
+            }
+            parent = maxIndex;
+            left = (2*parent)+1;
+        }
+    }
+
+    /**
+     * 将heapnode插入heap中并上浮
+     * @param heap
+     * @param index
+     * @param heapNode
+     */
+    private static void heapInsertCp1(HeapNode[] heap, int index, HeapNode heapNode) {
+        heap[index] = heapNode;
+        // 上浮
+        int cur = index;
+        while (cur != 0) {
+            int parent = (cur-1)/2;
+            if (heap[parent].getValue() < heap[cur].getValue()) {
+                // 上浮
+                swap(heap, parent, cur);
+            }
+            cur = parent;
+        }
+    }
+
+    public static void main(String[] args) {
+        CommonUtils.printArr(        getTopKFormNArr(new int[][]{
+                {1,2,3,4,5,6},
+                {3,5,8},
+                {9,10,14}
+        }, 5));
+
+    }
+
+
 
 }
