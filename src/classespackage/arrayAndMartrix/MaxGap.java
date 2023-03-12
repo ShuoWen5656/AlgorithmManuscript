@@ -1,5 +1,9 @@
 package classespackage.arrayAndMartrix;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * @author swzhao
  * @data 2022/6/26 10:33
@@ -76,6 +80,152 @@ public class MaxGap {
      */
     public static int bucket(long num, long min, long max, long len){
         return (int)((num - min)/((max-min)/len));
+    }
+
+
+    /**
+     * 二轮测试：获取数组排序后相邻之间的最大值
+     * @param arr
+     * @return
+     */
+    public static int getMaxSubCp1(int[] arr) {
+        if (arr == null || arr.length == 0) {
+            return -1;
+        }
+        if (arr.length == 1) {
+            return 0;
+        }
+        // 桶个数
+        int bNum = arr.length+1;
+        // 桶列表,这里长度不会改变的使用数组类型
+        Record[] records = new Record[bNum + 1];
+        init(records);
+        Record maxAndMin = getMaxAndMin(arr);
+        int max = maxAndMin.getMaxValue();
+        int min = maxAndMin.getMinValue();
+        // 桶中的范围
+        int dis = (int)Math.ceil((max - min + 1) / (bNum-1));
+        // 最大值放入最后一个桶
+        records[bNum].updateMaxOrMin(max);
+        // 剩下的开始分类放入桶中
+        for (int i = 0; i < arr.length; i++) {
+            if (max == arr[i]) {
+                continue;
+            }
+            // 桶号
+            int bucketNum = (arr[i] - min) / dis;
+            records[bucketNum].updateMaxOrMin(arr[i]);
+        }
+        // 找到桶中第一个不为空的index
+        int noEmpty = 0;
+        while (records[noEmpty].isEmpty()) {
+            noEmpty++;
+        }
+        // 记录上一个非空位置
+        int lastNoEmpty = noEmpty;
+        int res = 0;
+        // 循环找到除当前位置外的非空桶
+        while (noEmpty < records.length) {
+            if (noEmpty != lastNoEmpty && !records[noEmpty].isEmpty()){
+                // 找到一个
+                res = Math.max(res, records[noEmpty].getMinValue() - records[lastNoEmpty].getMaxValue());
+                lastNoEmpty = noEmpty;
+            }
+            noEmpty++;
+        }
+        return res;
+    }
+
+    /**
+     * 初始化
+     * @param records
+     */
+    private static void init(Record[] records) {
+        for (int i = 0; i < records.length; i++) {
+            records[i] = new Record(Integer.MIN_VALUE, Integer.MAX_VALUE);
+        }
+    }
+
+    /**
+     * 获取arr中的最值
+     * @param arr
+     * @return
+     */
+    private static Record getMaxAndMin(int[] arr) {
+        int min = arr[0];
+        int max = arr[0];
+        for (int i = 0; i < arr.length; i++) {
+            min = Math.min(arr[i], min);
+            max = Math.max(arr[i], max);
+        }
+        return new Record(max, min);
+    }
+
+
+    /**
+     * 每一个桶只记录最大值和最小值就行
+     */
+    protected static class Record {
+        private Integer maxValue;
+        private Integer minValue;
+
+        private LinkedList<Integer> bucket;
+
+        public Record(Integer maxValue, Integer minValue) {
+            this.maxValue = maxValue;
+            this.minValue = minValue;
+        }
+
+        /**
+         * 拓展构造函数
+         * @param maxValue
+         * @param minValue
+         * @param bucket
+         */
+        public Record(Integer maxValue, Integer minValue, LinkedList<Integer> bucket) {
+            this.maxValue = maxValue;
+            this.minValue = minValue;
+            this.bucket = bucket;
+        }
+
+        public Integer getMaxValue() {
+            return maxValue;
+        }
+
+        public void setMaxValue(Integer maxValue) {
+            this.maxValue = maxValue;
+        }
+
+        public Integer getMinValue() {
+            return minValue;
+        }
+
+        public void setMinValue(Integer minValue) {
+            this.minValue = minValue;
+        }
+
+        /**
+         * 判断当前值是否能够更新最值
+         * @param value
+         */
+        public void updateMaxOrMin(int value) {
+            this.maxValue = Math.max(this.maxValue, value);
+            this.minValue = Math.min(this.minValue, value);
+        }
+
+        /**
+         * 当前桶是否为空
+         * 最值没有更新过
+         */
+        public boolean isEmpty() {
+            return this.maxValue == Integer.MIN_VALUE && this.minValue == Integer.MAX_VALUE;
+        }
+
+    }
+
+
+    public static void main(String[] args) {
+        System.out.println(getMaxSubCp1(new int[]{1,3,9,10}));
     }
 
 
