@@ -97,6 +97,20 @@ public class MaxSum {
         return max;
     }
 
+    public static int maxSumCp2(int[] arr) {
+        if (arr == null || arr.length == 0) {
+            return 0;
+        }
+        int[] dp = new int[arr.length];
+        dp[0] = arr[0];
+        int res = Integer.MIN_VALUE;
+        for (int i = 1; i < arr.length; i++) {
+            dp[i] = dp[i-1] < 0 ? arr[i] : dp[i-1] + arr[i];
+            res = Math.max(res, dp[i]);
+        }
+        return res;
+    }
+
 
     /**
      * 矩阵的最大累加和子矩阵
@@ -132,12 +146,12 @@ public class MaxSum {
     }
 
     public static void main(String[] args) {
-        //System.out.println(maxSumCp1(new int[]{1,-2,3,5,-2,6,-1}));
-        System.out.println(maxSumForMartrix(new int[][]{
-                {-90, 48, 78},
-                {64, -40, 64},
-                {-81, -7, 66}
-        }));
+        System.out.println(maxSumCp2(new int[]{1,-2,3,5,-2,6,-1}));
+        //System.out.println(maxSumForMartrix(new int[][]{
+        //        {-90, 48, 78},
+        //        {64, -40, 64},
+        //        {-81, -7, 66}
+        //}));
 
 
     }
