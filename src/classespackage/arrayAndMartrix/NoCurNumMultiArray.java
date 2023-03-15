@@ -1,5 +1,8 @@
 package classespackage.arrayAndMartrix;
 
+import classespackage.CommonUtils;
+import classespackage.stackAndQueue.catDogQueue.Pet;
+
 /**
  * @author swzhao
  * @data 2022/6/23 21:35
@@ -85,6 +88,81 @@ public class NoCurNumMultiArray {
             return new int[0];
         }
     }
+
+
+    /**
+     * 二轮测试：可以使用除法的方法
+     * @param arr
+     * @return
+     */
+    public static int[] getMultiCp1(int[] arr) {
+        if (arr == null || arr.length == 0) {
+            return null;
+        }
+        // 记录0的个数
+        int count0 = 0;
+        // 记录如果只有一个零时，零的位置
+        int index0 = 0;
+        // 累乘之和
+        int all = 1;
+        int[] res = new int[arr.length];
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] == 0) {
+                count0++;
+                index0 = i;
+            }else {
+                all *= arr[i];
+            }
+        }
+        if (count0 == 1) {
+            res[index0] = all;
+        }else if (count0 == 0){
+            // 没有零
+            for (int i = 0; i < arr.length; i++) {
+                res[i] = all/arr[i];
+            }
+        }
+        return res;
+    }
+
+
+    /**
+     * 二轮测试：不使用除法的方法
+     * @param arr
+     * @return
+     */
+    public static int[] getMultiCp2(int[] arr) {
+        if (arr == null || arr.length == 0) {
+            return null;
+        }
+        int len = arr.length;
+        // 记录到arr[i]时的累乘
+        int[] r = new int[len];
+        // l[i]代表从arr[i...len-1]的累乘
+        int[] l = new int[len];
+        r[0] = arr[0];
+        l[len-1] = arr[len-1];
+        // 填充r和l
+        for (int i = 1; i < len; i++) {
+            r[i] = r[i-1] * arr[i];
+            l[len-i-1] = l[len-i] * arr[len-i-1];
+        }
+        // 计算结果
+        int[] res = new int[len];
+        // 两个边界值先写好
+        res[0] = arr[0];
+        res[len-1] = arr[len-1];
+        for (int i = 1; i < res.length-1; i++) {
+            res[i] = r[i-1] * l[i+1];
+        }
+        return res;
+    }
+
+    public static void main(String[] args) {
+        CommonUtils.printArr(getMultiCp2(new int[]{2,3,1,4}));
+    }
+
+
 
 
 }
