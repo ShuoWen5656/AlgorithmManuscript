@@ -80,4 +80,145 @@ public class MinPathValue {
         cq.add(toC);
     }
 
+
+    /**
+     * 二轮测试：广度优先：求最短通路值
+     * @param arr
+     * @return
+     */
+    public static int getMinPathCp1(int[][] arr) {
+        if (arr == null || arr.length == 0 || arr[0].length == 0
+                || arr[0][0] == 0) {
+            return 0;
+        }
+        int row = arr.length;
+        int col = arr[0].length;
+        // map[i][j] 代表到arr[i][j]的最短距离
+        int[][] map = new int[row][col];
+        map[0][0] = 1;
+        // 队列用于广度优先遍历
+        Queue<Coordinate> queue = new LinkedList<>();
+        // 起点先进入
+        queue.offer(new Coordinate(0, 0));
+        while (!queue.isEmpty()) {
+            Coordinate poll = queue.poll();
+            // 选出四周的：不为零、最小值
+            int min = getMinPathCp2(map, poll);
+            // 先判断是否到终点了
+            if (poll.getRow() == row-1 && poll.getCol() == col-1) {
+                return min+1;
+            }
+            map[poll.getRow()][poll.getCol()] = min+1;
+            addNextSkip(queue, map, arr, poll);
+        }
+        // 出来说明循环结束但是没有到终点
+        return 0;
+    }
+
+    /**
+     * 将下一跳的节点放入
+     * @param queue
+     * @param map
+     * @param arr
+     * @param poll
+     */
+    private static void addNextSkip(Queue<Coordinate> queue, int[][] map, int[][] arr, Coordinate poll) {
+        int row = poll.getRow();
+        int col = poll.getCol();
+        // 每一个节点需要满足要求：1、节点在map中没有计算过2、节点位置为1
+        if (col - 1 >= 0 && map[row][col-1] == 0 && arr[row][col-1] == 1) {
+            queue.add(new Coordinate(row, col-1));
+        }
+        if (col + 1 < map[0].length && map[row][col+1] == 0 && arr[row][col+1] == 1) {
+            queue.add(new Coordinate(row, col+1));
+        }
+        if (row-1 >= 0 && map[row-1][col] == 0 && arr[row-1][col] == 1) {
+            queue.add(new Coordinate(row-1, col));
+        }
+        if (row+1 < map.length && map[row+1][col] == 0 && arr[row+1][col] == 1) {
+            queue.add(new Coordinate(row+1, col));
+        }
+    }
+
+    /**
+     * 选出四周计算过的最小值
+     * @param map
+     * @param poll
+     * @return
+     */
+    private static int getMinPathCp2(int[][] map, Coordinate poll) {
+        int row = poll.getRow();
+        int col = poll.getCol();
+        int left = Integer.MAX_VALUE;
+        int right = Integer.MAX_VALUE;
+        int top = Integer.MAX_VALUE;
+        int down = Integer.MAX_VALUE;
+        if (col - 1 >= 0 && map[row][col-1] != 0) {
+             // 计算过
+            left = map[row][col-1];
+        }
+        if (col + 1 < map[0].length && map[row][col+1] != 0) {
+            right = map[row][col+1];
+        }
+        if (row-1 >= 0 && map[row-1][col] != 0) {
+            top = map[row-1][col];
+        }
+        if (row+1 < map.length && map[row+1][col] != 0)
+        {
+            down = map[row+1][col];
+        }
+        int res =  Math.min(top, Math.min(left, Math.min(right, down)));
+        return res == Integer.MAX_VALUE ? 0 : res;
+    }
+
+
+    /**
+     * 坐标
+     */
+    static class Coordinate {
+        private int row;
+        private int col;
+
+
+        public Coordinate(int row, int col) {
+            this.row = row;
+            this.col = col;
+        }
+
+        public int getRow() {
+            return row;
+        }
+
+        public void setRow(int row) {
+            this.row = row;
+        }
+
+        public int getCol() {
+            return col;
+        }
+
+        public void setCol(int col) {
+            this.col = col;
+        }
+
+        @Override
+        public String toString() {
+            return "Coordinate{" +
+                    "row=" + row +
+                    ", col=" + col +
+                    '}';
+        }
+    }
+
+
+
+    public static void main(String[] args) {
+        System.out.println(getMinPathCp1(new int[][]{
+                {1,0,1,1,1},
+                {1,0,1,0,1},
+                {1,1,1,0,1},
+                {0,0,0,0,1}
+        }));
+    }
+
 }
