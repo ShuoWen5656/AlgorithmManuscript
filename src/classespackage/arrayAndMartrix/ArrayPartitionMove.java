@@ -64,14 +64,79 @@ public class ArrayPartitionMove {
     }
 
 
+    /**
+     * 二轮测试：数组的partition调整
+     * @param arr
+     */
+    public static void partionMoveCp1(int[] arr) {
+        if (arr == null || arr.length == 0) {
+            return;
+        }
+        int cur = 1;
+        // 从1位置开始找到需要更换的地方
+        while (cur < arr.length && arr[cur] != arr[cur-1]) {
+            cur++;
+        }
+        // 从next开始，找与cur不同的
+        int next = cur+1;
+        while (next < arr.length) {
+            if (arr[next] == arr[cur-1]) {
+                next++;
+            }else {
+                // 不相等,交换
+                CommonUtils.swap(arr, next, cur);
+                next++;
+                cur++;
+            }
+        }
+    }
+
+
+    /**
+     * 二轮测试：012数组排序
+     * @param arr
+     */
+    public static void partitionMoveCp2(int[] arr) {
+        if (arr == null || arr.length == 0) {
+            return;
+        }
+        int left = 0;
+        int right = arr.length-1;
+        // left指向第一个不为0的
+        while (arr[left] == 0){
+            left++;
+        }
+        // right指向第一个不为2的
+        while (arr[right] == 2) {
+            right--;
+        }
+        int cur = left+1;
+        // 从left+1开始遍历
+        while (cur < right) {
+            if (arr[cur] == 2) {
+                CommonUtils.swap(arr, cur, right);
+                right--;
+            }else if (arr[cur] == 0) {
+                CommonUtils.swap(arr, cur, left);
+                left++;
+            }else {
+                cur++;
+            }
+        }
+    }
+
+
+
+    public static void main(String[] args) {
+        int[] ints = {1, 2, 2, 2, 3, 3, 4, 5, 6, 6, 7, 7, 8, 8, 8, 9};
+        int[] ints1 = {2, 2, 0, 1, 1, 0, 2};
+        partitionMoveCp2(ints1);
+        CommonUtils.printArr(ints1);
+    }
 
 
 
 
 
-
-
-
-    //写日报!!!!!!!!!!
 
 }
