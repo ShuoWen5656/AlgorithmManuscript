@@ -32,4 +32,17 @@ public class GCD {
         return n == 0? m : gcd(n, m%n);
     }
 
+
+
+
+    public static int gcdCp1(int m, int n) {
+        return Math.max(m, n) % Math.min(m, n) == 0 ? Math.min(m, n) : gcdCp1(Math.min(m, n), Math.max(m, n) % Math.min(m, n));
+    }
+
+
+    public static void main(String[] args) {
+        System.out.println(gcdCp1(22, 16));
+    }
+
+
 }
