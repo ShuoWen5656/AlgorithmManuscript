@@ -1,5 +1,7 @@
 package classespackage.other;
 
+import classespackage.CommonUtils;
+
 import java.util.Random;
 import java.util.function.Function;
 
@@ -190,10 +192,179 @@ public class RandomExtention {
     }
 
 
+    /**
+     * 随机返回1到5之间的数
+     * @return
+     */
+    public static int random1to5Cp1() {
+        return (int) (Math.random() * 5 + 1);
+    }
+
+    /**
+     * 以p的概率出现0和1
+     * @param p
+     * @return
+     */
+    public static int randomP01Cp1(double p) {
+        return Math.random() < p ? 0 : 1;
+    }
+
+
+    /**
+     * 随机返回1到7之间的数
+     * 要求：1、仅使用random1to5实现2、必须等概率
+     * 方法：插空法、筛选法
+     * @return
+     */
+    public static int random1to7Cp1() {
+        int p = 0;
+        while ((p = (random1to5Cp1() - 1) * 5 + (random1to5Cp1() - 1)) > 20) {
+            p = (random1to5Cp1() - 1) * 5 + (random1to5Cp1() - 1);
+        }
+        return (int)(p%7) + 1;
+    }
+
+    /**
+     * 等概率实现1到6的随机函数
+     * 要求1、仅使用randomP01Cp1实现2、等概率
+     * @return
+     */
+    public static int random1to6Cp1() {
+        // 0-6
+        int p = 0;
+        while ((p = get03Cp1()*2 + (get01Cp1() + 1)) > 6) {
+            p = get03Cp1()*2 + (get01Cp1() + 1);
+        }
+        return (int)(p%6) + 1;
+    }
+
+    /**
+     * 将不等概率的变成等概率返回0和1
+     * @return
+     */
+    private static int get01Cp1() {
+        int num1 = 0, num2 = 0;
+        while (((num1 = randomP01Cp1(0.83)) ^ (num2 = randomP01Cp1(0.83))) != 1);
+        return num1;
+    }
+
+    /**
+     * 等概率获取0123
+     * @return
+     */
+    private static int get03Cp1() {
+        return get01Cp1() * 2 + get01Cp1();
+    }
+
+
+    /**
+     * 给定一个m，返回1-m等概率出现
+     * @param m
+     * @return
+     */
+    private static int get1ToM(int m) {
+        return (int)(Math.random() * m) + 1;
+    }
+
+    /**
+     * 通过等概率的1-m，求等概率的1-n
+     * @param m
+     * @param n
+     * @return
+     */
+    private static int get1TonFromM(int m, int n) {
+        // 首先求用m进制表示的n-1
+        int[] mSysN = getSysMNum(n-1, m);
+        // 产生一个小于mSysN的m进制的数
+        int[] mSys1ToN = getSysM1ToN(mSysN, m);
+        // 再转回到10进制
+        return get10SysFromM(mSys1ToN, m) + 1;
+    }
+
+    /**
+     * 从m进制转回到10进制
+     * @param mSys1ToN
+     * @param m
+     * @return
+     */
+    private static int get10SysFromM(int[] mSys1ToN, int m) {
+        int index = mSys1ToN.length-1;
+        int res = 0;
+        while (index >= 0) {
+            res += Math.pow(m, (mSys1ToN.length-1) - index) * mSys1ToN[index];
+            index--;
+        }
+        return res;
+    }
+
+    /**
+     * 等概率随机获取一个小于mSysN的值
+     * @param mSysN
+     * @param m
+     * @return
+     */
+    private static int[] getSysM1ToN(int[] mSysN, int m) {
+        // 找到左边第一个不为0的
+        int start = 0;
+        while (mSysN[start] == 0) {
+            start++;
+        }
+        // 生成数游标
+        int index = start;
+        int[] res = new int[32];
+        // 表示上一个值是否和mSysN相等，如果相等，则这波还要继续生成，如果不相等说明已经大于了直接随机生成即可
+        boolean isLastEquals = true;
+        // 从高位开始随机获取
+        while (index != mSysN.length) {
+            // 先生成
+            res[index] = get1ToM(m)-1;
+            // 判断该位置的上一个是否相等
+            if (isLastEquals) {
+                // 相等则该位置需要比较
+                if (res[index] > mSysN[index]) {
+                    // 说明生成的超过了，归位,全部重来
+                    index = start;
+                    isLastEquals = true;
+                    continue;
+                }else {
+                    isLastEquals = res[index] == mSysN[index];
+                }
+            }
+            // 该位置不需要比较
+            index++;
+        }
+        return res;
+    }
+
+    /**
+     * 用m进制表示value
+     * @param value
+     * @param m
+     * @return
+     */
+    private static int[] getSysMNum(int value, int m) {
+        int[] res = new int[32];
+        int mod = value;
+        int tem = value;
+        int index = res.length-1;
+        while (tem != 0) {
+            res[index--] = mod % m;
+            tem = mod/m;
+            mod = mod%m;
+        }
+        return res;
+    }
 
 
 
     public static void main(String[] args) {
-        System.out.println(String.format("%.2f", 0.0124124124));
+        int[] ints = new int[5];
+        for (int i = 0; i < 100 ; i++ ){
+            //System.out.println(get1TonFromM(7, 5));
+            ints[get1TonFromM(7,5)-1] ++;
+            //System.out.println();
+        }
+        CommonUtils.printArr(ints);
+        //System.out.println(String.format("%.2f", 0.0124124124));
     }
 }
