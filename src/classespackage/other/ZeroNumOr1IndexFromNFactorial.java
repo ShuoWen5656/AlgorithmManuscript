@@ -113,6 +113,73 @@ public class ZeroNumOr1IndexFromNFactorial {
     }
 
 
+    /**
+     * 二轮测试：求n!中结果中有多少个0
+     * @param n
+     * @return
+     */
+    public static int getZeroNumsCp1(int n) {
+        if (n <= 0) {
+            return 0;
+        }
+        int value = n;
+        int res = 0;
+        while (value != 0) {
+            res += value/5;
+            value /= 5;
+        }
+        return res;
+    }
+
+
+    /**
+     * 二轮测试：求n！中的二进制表达中，最右边的1的位置
+     * 每出现一个2的因子就会出现一个0，所以计算出2因子的个数即可
+     * @param n
+     * @return
+     */
+    public static int getOneIndexCp1(int n) {
+        if (n <= 0) {
+            return 0;
+        }
+        int value = n;
+        int res = 0;
+        while (value != 0) {
+            res += value >>> 1;
+            value >>>= 1;
+        }
+        return res;
+    }
+
+    /**
+     * 二轮测试：求n！中的二进制表达中，最右边的1的位置
+     * 解法二：根据 结果=n-n中1的个数
+     * @param n
+     * @return
+     */
+    public static int getOneIndexCp2(int n) {
+        if (n <= 0) {
+            return 0;
+        }
+        int value = n;
+        int ones = 0;
+        while (value != 0) {
+            value -= value & (~value + 1);
+            ones++;
+        }
+        return n - ones;
+    }
+
+
+
+    public static void main(String[] args) {
+        System.out.println(getOneIndexCp2(2));
+    }
+
+
+
+
+
 
 
 
