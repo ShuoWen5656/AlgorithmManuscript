@@ -1,5 +1,7 @@
 package classespackage.other;
 
+import classespackage.Constants;
+
 /**
  * @author swzhao
  * @data 2022/7/7 21:31
@@ -85,5 +87,113 @@ public class MaxABS {
             return 0;
         }
     }
+
+
+    /**
+     * 二轮测试：
+     * 方法一：最笨的办法，每一次对两边的数字进行一次获取最值计算
+     * @param arr
+     * @return
+     */
+    public static int getMaxSubCp1(int[] arr) {
+        if (arr == null || arr.length == 0) {
+            return -1;
+        }
+        int index = 0;
+        int res = Integer.MIN_VALUE;
+        // 从0到len-2
+        while (index < arr.length - 1) {
+            int maxL = getMaxOrMin(arr, 0, index+1, "max");
+            int maxR = getMaxOrMin(arr, index + 1, arr.length, "max");
+            res = Math.max(res, Math.abs(maxL - maxR));
+            index ++;
+        }
+        return res;
+    }
+
+    /**
+     * 获取i到index的最大值
+     * 范围[1...index)
+     * @param arr
+     * @param start
+     * @param index
+     * @param maxOrMin
+     * @return
+     */
+    private static int getMaxOrMin(int[] arr, int start, int index, String maxOrMin) {
+        boolean isMax = "max".equals(maxOrMin);
+        int res = isMax ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+        for (int i = start; i < index; i ++) {
+            if (isMax) {
+                res = Math.max(res, arr[i]);
+            }else {
+                res = Math.min(res, arr[i]);
+            }
+        }
+        return res;
+    }
+
+
+
+
+    /**
+     * 二轮测试：
+     * 方法二：常规优化，预处理数组
+     * @param arr
+     */
+    public static int getMaxSubCp2(int[] arr) {
+        if (arr == null || arr.length == 0) {
+            return -1;
+        }
+        // left[i]表示左边[0...i]最大值
+        int[] left = new int[arr.length];
+        // right[i]表示右边[i...arr.lenght-1]的最小值
+        int[] right = new int[arr.length];
+        fillLeftAndRight(left, right, arr);
+        // 获取最值
+        int res = 0;
+        for (int i = 0; i < arr.length-1; i++) {
+            int leftMax = left[i];
+            int rightMin = right[i+1];
+            res = Math.max(res, Math.abs(leftMax - rightMin));
+        }
+        return res;
+    }
+
+    /**
+     * 填充left和right
+     * @param left
+     * @param right
+     * @param arr
+     */
+    private static void fillLeftAndRight(int[] left, int[] right, int[] arr) {
+        int maxL = Integer.MIN_VALUE;
+        int maxR = Integer.MIN_VALUE;
+        for (int i = 0; i < arr.length; i++) {
+            // 更新最值
+            maxL = Math.max(maxL, arr[i]);
+            maxR = Math.max(maxR, arr[arr.length - 1 - i]);
+            left[i] = maxL;
+            right[arr.length-1-i] = maxR;
+        }
+    }
+
+
+
+    /**
+     * 二轮测试：
+     * 方法三：最优解
+     * @param arr
+     */
+    public static int getMaxSubCp3(int[] arr) {
+        int max = getMaxOrMin(arr, 0, arr.length, "max");
+        return max - Math.min(arr[0], arr[arr.length-1]);
+    }
+
+
+    public static void main(String[] args) {
+        System.out.println(getMaxSubCp3(new int[]{2,7,3,1,1}));
+    }
+
 
 }
