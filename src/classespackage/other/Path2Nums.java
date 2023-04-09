@@ -1,5 +1,7 @@
 package classespackage.other;
 
+import classespackage.CommonUtils;
+
 /**
  * @author swzhao
  * @data 2022/7/10 11:20
@@ -116,7 +118,121 @@ public class Path2Nums {
     }
 
 
+    /**
+     * 二轮测试：从arr[i] = j 代表数值i的结点指向j含义转化为 arr[i]代表到首都的距离为i的结点数量
+     * 时间复杂度O(N)，空间复杂度O(1)
+     * @param arr
+     * @return
+     */
+    public static int[] path2NumsCp1(int[] arr) {
+        if (arr == null) {
+            return null;
+        }else if (arr.length == 0) {
+            return new int[]{0};
+        }
+        // 在原arr的基础上直接计算每一个点到首都的距离
+        int cap = convertPath2Length(arr);
+        arr = convertLength2Nums(arr, cap);
+        return arr;
+    }
 
+
+
+    /**
+     * 将代表path的arr转换成距离首都的距离（用负数表达）
+     * @param arr
+     */
+    private static int convertPath2Length(int[] arr) {
+        // 记录一下首都的index
+        int capIndex = -1;
+        for (int i = 0; i < arr.length; i++) {
+            // 首先判断i是否已经计算过
+            if (arr[i] < 0 || i == capIndex) {
+                continue;
+            }
+            // 记录一下起点,标记起点为-1
+            int cur = i;
+            // next代表下一跳
+            int next = arr[cur];
+            arr[cur] = -1;
+            while (arr[next] >= 0 && next != capIndex) {
+                // 先判断是否是首都
+                if (arr[next] == next) {
+                    // 首都直接返回,并且首都到首都的距离是0
+                    arr[next] = 0;
+                    capIndex = next;
+                    break;
+                }
+                // 需要跳跃
+                int temValue = arr[next];
+                // 记录回去的路
+                arr[next] = cur;
+                cur = next;
+                next = temValue;
+            }
+            // 到这里next可能代表首都，也可能arr[next]已经计算过,cur代表着上一个节点的index
+            // 所以从这里开始往回更新距离了
+            while (arr[cur] != -1) {
+                // 暂存一下下一个的位置
+                int tem = arr[cur];
+                // 上一个距离-1
+                arr[cur] = arr[next] - 1;
+                // 更新游标
+                next = cur;
+                cur = tem;
+            }
+            // 最后再更新一下arr[cur]
+            arr[cur] = arr[next] - 1;
+        }
+        return capIndex;
+    }
+
+
+    /**
+     * 从长度到统计数组的转换
+     * @param arr
+     * @return
+     */
+    private static int[] convertLength2Nums(int[] arr, int cap) {
+        for (int i = 0; i < arr.length; i ++) {
+            if (arr[i] >= 0 && i != cap) {
+                // 大于0的说明统计过了
+                continue;
+            }
+            // 到这里的都要进行统计
+            // 首先拿出来arr[i],取相反数才是真的len
+            int cur = arr[i];
+            arr[i] = 0;
+            boolean flag = false;
+            while (cur <= 0) {
+                // 当前位置距离首都的距离
+                int len = -cur;
+
+                if (arr[len] >= 0) {
+                    arr[len] ++;
+                    flag = true;
+                    break;
+                }else {
+                    // 说明了需要循环替换
+                    int next = arr[len];
+                    // 替换
+                    arr[len] = 0;
+                    arr[len] ++;
+                    // 下一个游标
+                    cur = next;
+                }
+            }
+            if (!flag) {
+                arr[cur] ++;
+            }
+        }
+        return arr;
+    }
+
+
+    public static void main(String[] args) {
+        CommonUtils.printArr(path2NumsCp1(new int[]{9,1,4,9,0,4,8,9,0,1}));
+    }
 
 
 }
