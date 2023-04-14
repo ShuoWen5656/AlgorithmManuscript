@@ -1,10 +1,6 @@
 package classespackage.other;
 
-import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author swzhao
@@ -66,6 +62,82 @@ public class UnformedSum {
         process(array, i+1, sum+array[i], set);
     }
 
+
+    /**
+     * 二轮测试：暴力递归算出所有可能性遍历即可
+     * @param arr
+     * @return
+     */
+    public static int unformedSumCp1(int[] arr) {
+        if (arr == null || arr.length == 0) {
+            return 0;
+        }
+        // 保存所有集合的和
+        HashSet<Integer> sumSet = new HashSet<>();
+        processCp1(arr, 0 , 0,sumSet);
+        int min = Collections.min(sumSet);
+        for (int i = min; ; i++) {
+            if (!sumSet.contains(i)) {
+                return i;
+            }
+        }
+    }
+
+    /**
+     * 递归循环填充sumSet
+     * @param arr
+     * @param start 从 arr[start]开始计算
+     * @param sum 前面的和
+     * @param sumSet
+     */
+    private static void processCp1(int[] arr, int start, int sum, HashSet<Integer> sumSet) {
+        if (start == arr.length) {
+            return;
+        }
+        sumSet.add(sum + arr[start]);
+        //当前位置有两种可能性，一种有start位置的和，一种无start位置的和
+        processCp1(arr, start + 1, sum + arr[start], sumSet);
+        processCp1(arr, start + 1, sum, sumSet);
+    }
+
+    public static void main(String[] args) {
+        unformSumCp3(new int[]{1,2,4});
+    }
+
+
+    /**
+     * 方法二：通过动态规划的方式计算
+     * @param arr
+     */
+    public static int unformeSumCp2(int[] arr) {
+        if (arr == null || arr.length == 0) {
+            return 0;
+        }
+        // 计算所有和
+        int sum = 0;
+        for (int i = 0; i < arr.length; i++) {
+            sum += arr[i];
+        }
+        // dp[i]代表是否存在sum为i的集合
+        boolean[] dp = new boolean[sum + 1];
+        dp[0] = true;
+        for (int i = 0; i < arr.length; i++) {
+            for (int j = sum; j > 0; j--) {
+                 if (j - arr[i] >= 0) {
+                     dp[j] = dp[j - arr[i]] || dp[j];
+                 }
+            }
+        }
+        for (int i = 0; i < dp.length; i++) {
+            if (!dp[i]) {
+                return i;
+            }
+        }
+        return sum+1;
+    }
+
+
+
     /**
      * 方法二：
      * 动态规划
@@ -96,6 +168,28 @@ public class UnformedSum {
         }
         return sum+1;
     }
+
+
+    /**
+     * 进阶问题：如果数组中存在一个1，如何能够最快的求得答案
+     * @param arr
+     * @return
+     */
+    public static int unformSumCp3(int[] arr){
+        if (arr == null || arr.length == 0) {
+            return 0;
+        }
+        int range = 0;
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] > range+1) {
+                return range+1;
+            }else {
+                range += arr[i];
+            }
+        }
+        return range+1;
+    }
+
 
     /**
      * 进阶问题
