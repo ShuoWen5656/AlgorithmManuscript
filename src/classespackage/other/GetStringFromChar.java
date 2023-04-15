@@ -70,4 +70,60 @@ public class GetStringFromChar {
     }
 
 
+    /**
+     * 二轮测试：给定num，获取String的值
+     * @param num
+     * @return
+     */
+    public static String num2StringCp1(int num, char[] chars) {
+        if (num < 0 || chars == null || chars.length == 0) {
+            return null;
+        }
+        int len = chars.length;
+        // 先判断需要多少位存储
+        int n = 0;
+        while((int)(num / Math.pow(len, n))!= 0) {
+            n++;
+        }
+        char[] res = new char[n];
+        // 将所有位全部置为A
+        for (int i = 0; i < res.length; i++) {
+            res[i] = 'A';
+            num -= Math.pow(len, i);
+        }
+        // 此时num剩下的需要进行进制转换,从最高位开始判断
+        for (int i = 0; i < res.length; i++) {
+            int r = (int) (num/Math.pow(len, res.length-1 - i));
+            res[i] += r;
+            num -= r * Math.pow(len, res.length-1 - i);
+        }
+        return String.valueOf(res);
+    }
+
+
+    /**
+     * 二轮测试：通过字符串获取num数字
+     * @param str
+     * @param chars
+     * @return
+     */
+    public static int string2Num(String str, char[] chars) {
+        if (str == null || chars == null
+                || str.length() == 0 || chars.length == 0) {
+            return 0;
+        }
+        int len = chars.length;
+        char[] chars1 = str.toCharArray();
+        int res = 0;
+        for (int i = 0; i < chars1.length; i++) {
+            int cur = chars1[i] - 'A' + 1;
+            res += cur * Math.pow(len, chars1.length - 1 - i);
+        }
+        return res;
+    }
+
+
+    public static void main(String[] args) {
+        System.out.println(string2Num("BABC", new char[]{'A', 'B', 'C'}));
+    }
 }
