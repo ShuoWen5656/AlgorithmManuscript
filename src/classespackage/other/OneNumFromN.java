@@ -1,5 +1,9 @@
 package classespackage.other;
 
+import org.omg.CORBA.MARSHAL;
+
+import java.util.Map;
+
 /**
  * @author swzhao
  * @data 2022/7/15 19:36
@@ -76,6 +80,52 @@ public class OneNumFromN {
         }
         return res;
     }
+
+
+    /**
+     * 二轮测试： 给定整数num，求1-num中1出现的次数
+     * @param num
+     * @return
+     */
+    public static int oneNumCp1(int num) {
+        if (num < 1) {
+            return 0;
+        }
+        if (num < 10) {
+            // 10以内的数只有一个1
+            return 1;
+        }
+        // 计算位数
+        int len = 0;
+        int tem = num;
+        while (tem != 0) {
+            len ++;
+            tem /= 10;
+        }
+        // 求起点
+        tem = num;
+        // 最高位
+        int height = (int)(tem / Math.pow(10, len-1));
+        // 当前轮的起点
+        int start = (int)(tem - (height) * Math.pow(10, len-1)) + 1;
+        // 计算当前层的1的个数
+        int oneNum = 0;
+        // 先计算最高位是1的情况
+        if (height == 1) {
+            // 最高位是1
+            oneNum += start;
+        }else {
+            oneNum += Math.pow(10, len-1);
+        }
+        // 剩余的自由组合
+        oneNum += Math.pow(10, len-2) * height * (len-1);
+        return oneNum + oneNumCp1(start-1);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(oneNumCp1(114));
+    }
+
 
 
 
