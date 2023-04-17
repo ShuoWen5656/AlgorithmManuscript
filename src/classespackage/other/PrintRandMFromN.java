@@ -37,4 +37,35 @@ public class PrintRandMFromN {
     }
 
 
+    /**
+     * 在长度为n的数组中等概率打印m个数
+     * @param arr
+     * @param m
+     * @return
+     */
+    public static  int[] printRandM(int[] arr, int m) {
+        if (arr == null || arr.length == 0) {
+            return null;
+        }
+        int[] res = new int[m];
+        int count = m-1;
+        int len = arr.length;
+        while (count >= 0) {
+            // 取值
+            int i = (int) (Math.random() * len);
+            res[count] = arr[i];
+            CommonUtils.swap(arr, i, len-1);
+            len--;
+            count--;
+        }
+        return res;
+    }
+
+
+    public static void main(String[] args) {
+        CommonUtils.printArr(printRandM(new int[]{3,5,2,1,6,7}, 3));
+    }
+
+
+
 }
