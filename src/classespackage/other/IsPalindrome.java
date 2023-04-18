@@ -35,4 +35,38 @@ public class IsPalindrome {
     }
 
 
+    /**
+     * 二轮测试：判断一个数是否是回文数
+     * @param num
+     * @return
+     */
+    public static boolean isPalindRomeCp1(int num) {
+        if (num == Integer.MIN_VALUE) {
+            return false;
+        }
+        num = Math.abs(num);
+        int base = 1;
+        while (num / base != 0) {
+            base *= 10;
+        }
+        // 让base的位数和num的相同
+        base /= 10;
+        while (num != 0) {
+            if (num / base != num % 10) {
+                return false;
+            }
+            num -= (num / base) * base;
+            num /= 10;
+            base /= 100;
+        }
+        return true;
+    }
+
+
+    public static void main(String[] args) {
+        System.out.println(isPalindRomeCp1(13331));
+    }
+
+
+
 }
