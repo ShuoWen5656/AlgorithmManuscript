@@ -58,4 +58,54 @@ public class GetMinFromRotate {
     }
 
 
+    /**
+     * 二轮测试：旋转数组的二分法查找
+     * @param arr
+     * @return
+     */
+    public static int getMinCp1(int[] arr) {
+        if (arr == null || arr.length == 0) {
+            return 0;
+        }
+        int low = 0;
+        int mid = 0;
+        int high = arr.length - 1;
+        while (low < high) {
+            if (low == high - 1) {
+                break;
+            }
+            if (arr[low] < arr[high]) {
+                return arr[low];
+            }
+            mid = (low + high) / 2;
+            if (arr[low] > arr[mid]) {
+                high = low;
+                continue;
+            }
+            if (arr[low] < arr[mid]) {
+                low = mid;
+                continue;
+            }
+            while (low < mid) {
+                if (arr[low] < arr[mid]) {
+                    return arr[low];
+                }else if (arr[low] == arr[mid]) {
+                    low++;
+                    continue;
+                }else {
+                    high = mid;
+                    break;
+                }
+            }
+        }
+        return Math.min(arr[low], arr[high]);
+    }
+
+
+    public static void main(String[] args) {
+        System.out.println(getMinCp1(new int[] {1,2,3,4,5}));
+    }
+
+
+
 }
