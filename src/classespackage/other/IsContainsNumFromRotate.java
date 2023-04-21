@@ -1,5 +1,7 @@
 package classespackage.other;
 
+import classespackage.CommonUtils;
+
 /**
  * @author swzhao
  * @data 2022/7/20 19:46
@@ -107,5 +109,79 @@ public class IsContainsNumFromRotate {
             return false;
         }
     }
+
+
+    /**
+     * 二轮测试：判断num是否在旋转数组arr中
+     * @param arr
+     * @param num
+     * @return
+     */
+    public static boolean findNumCp1(int[] arr, int num) {
+        if (arr == null || arr.length == 0) {
+            return false;
+        }
+        int left = 0;
+        int right = arr.length-1;
+        while (left < right) {
+            int mid = (left + right) / 2;
+            if (arr[mid] == num) {
+                return true;
+            }
+
+            if (arr[mid] == arr[left] && arr[left] == arr[right]) {
+                // 三个地方都相等，需要通过遍历打破这个局面
+                while (arr[left] == arr[mid] && left < mid) {
+                    left++;
+                }
+                if (left == mid) {
+                    // 防止越界
+                    left = mid+1;
+                    continue;
+                }
+            }
+
+            if (arr[left] != arr[mid]) {
+                if (arr[left] < arr[mid]) {
+                    if (num >= arr[left] && num < arr[mid]) {
+                        right = mid-1;
+                    }else {
+                        left = mid + 1;
+                    }
+                }else {
+                    if (num > arr[mid] && num <= arr[right]) {
+                        left = mid + 1;
+                    }else {
+                        right = mid - 1;
+                    }
+                }
+            }else {
+                if (arr[mid] < arr[right]) {
+                    if (num > arr[mid] && num < arr[right]) {
+                        left = mid + 1;
+                    }else {
+                        right = mid - 1;
+                    }
+                }else {
+                    if (num > arr[left] && num < arr[mid]) {
+                        right = mid - 1;
+                    }else {
+                        left = mid + 1;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+
+    public static void main(String[] args) {
+        System.out.println(findNumCp1(new int[]{2,3,4,5,1}, 0));
+    }
+
+
+
+
+
 
 }
