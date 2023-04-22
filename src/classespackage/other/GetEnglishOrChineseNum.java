@@ -1,6 +1,8 @@
 package classespackage.other;
 
+import classespackage.CommonUtils;
 import classespackage.Constants;
+import classespackage.stackAndQueue.catDogQueue.Pet;
 
 import java.util.concurrent.CompletionService;
 
@@ -266,8 +268,224 @@ public class GetEnglishOrChineseNum {
     }
 
 
+    /*****************************************************************************************************************
 
 
+    /**
+     * 二轮测试:数字的英文表达
+     * 英文都是3位一组：
+     * 如   XXxx thousand XXXX(剩下的自行处理)
+     * 其中XXXX的处理过程都是一样的
+     * 注意几个特殊处理的地方
+     * 1、零
+     * 2、负数
+     * 3、Integer.MIN_VALUE
+     * Integer的最大值为20亿
+     * @param num
+     * @return
+     */
+    public static String getEnglishNumCp1(int num) {
+        if (num == 0) {
+            return "Zero";
+        }
+        String res = Constants.EMPTY_STR;
+        if (num < 0) {
+            res += "Negative, ";
+        }
+        if (num == Integer.MIN_VALUE) {
+            res += "Tow Billion, ";
+            num -= 2000000000;
+        }
+        String[] nams = {" Billion", " Million", " Thousand", ""};
+        int initNum = 1000000000;
+        int high = 0;
+        while (num != 0) {
+            int cur = num / initNum;
+            if (cur != 0) {
+                res += num1To999Cp1(cur) + nams[high] + ((num %= initNum) == 0 ? "" : ", ");
+            }
+            high++;
+            initNum/=1000;
+        }
+        return res;
+    }
+
+    /**
+     * 获取数字1-19的英文表达
+     * @param num
+     * @return
+     */
+    public static String num1To19Cp1(int num){
+        if (num < 1 || num > 19){
+            return Constants.EMPTY_STR;
+        }
+        // [1:19] 的英文表达
+        String[] nums = {"One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
+                "Eleven", "Twelve", "Thirteen", "Fourteen", "FifTeen", "SixTeen", "SevenTeen", "Eighteen", "Nineteen"};
+        return nums[num-1];
+    }
+
+
+    /**
+     * 获取数字1-99的英文表达
+     * @param num
+     * @return
+     */
+    public static String num1To99Cp1(int num) {
+        if (num < 1 || num > 99) {
+            return Constants.EMPTY_STR;
+        }
+        // 从20开始的十位数表达
+        String[] nums = {"Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighteen", "Ninety"};
+        return num < 20 ? num1To19Cp1(num) : (nums[num/10 - 2] + " " + num1To19Cp1(num%10));
+    }
+
+    /**
+     * 获取数字1-999的英文表达
+     * @param num
+     * @return
+     */
+    public static String num1To999Cp1(int num) {
+        if (num < 1 || num > 999) {
+            return Constants.EMPTY_STR;
+        }
+        // 从20开始的十位数表达
+        String[] nums = {"One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"};
+        return num < 100 ? num1To99Cp1(num) : String.format("%s Hundred %s", nums[num/100 - 1], num1To99Cp1(num%100));
+    }
+
+
+    /*****************************************************************************************************************/
+
+
+    /**
+     * 二轮测试：中文表达
+     * 1、零
+     * 2、负数
+     * 3、最小值
+     * 4、判断这组结束后是否要加 零
+     * @param num
+     * @return
+     */
+    public static String getChineseNumCp1(int num) {
+        if (num == 0) {
+            return Constants.ZERO_ZH;
+        }
+        String res = Constants.EMPTY_STR;
+        if (num < 0) {
+            res += "负";
+        }
+        if (num == Integer.MIN_VALUE) {
+            res += "二十亿";
+            num -= 2000000000;
+        }
+        String[] nums = {"亿", "万", ""};
+        int initNum = 100000000;
+        int high = 0;
+        while (num != 0) {
+            int cur = num / initNum;
+            if (cur != 0) {
+                res += num1to9999ZHCp(cur) + nums[high];
+                num %= initNum;
+                // 判断是否需要加零
+                if (initNum != 1 && (num % initNum)/(initNum/10) == 0) {
+                    res += Constants.ZERO_ZH;
+                }
+            }
+            initNum /= 10000;
+            high++;
+        }
+        return res;
+    }
+
+    /**
+     * 获取1到9
+     * @param num
+     * @return
+     */
+    public static String num1to9ZHCp1(int num) {
+        if (num < 1 || num > 9) {
+            return Constants.EMPTY_STR;
+        }
+        String[] nums = {"一", "二", "三","四","五","六","七","八", "九"};
+        return nums[num-1];
+    }
+
+    /**
+     * 获取1-99
+     * 注意：
+     * 如果含有百位，则应该在十前面加上一
+     * 如111  = 一百一十一
+     * @param num
+     * @param hasBai
+     * @return
+     */
+    public static String num1to99ZHCp1(int num, boolean hasBai) {
+        if (num < 1 || num > 99) {
+            return Constants.EMPTY_STR;
+        }
+        String[] nums = {"十", "二十", "三十", "四十", "五十", "六十", "七十", "八十", "九十"};
+        String res = Constants.EMPTY_STR;
+        if (num / 10 == 1 && hasBai) {
+            res += "一";
+        }
+        return  res += nums[num/10 - 1] + num1to9ZHCp1(num%10);
+    }
+
+    /**
+     * 获取1 - 999
+     * @param num
+     * @return
+     */
+    public static String num1to999ZHCp(int num) {
+        if (num < 1 || num > 999) {
+            return Constants.EMPTY_STR;
+        }
+        if (num < 100) {
+            return num1to99ZHCp1(num, false);
+        }
+        String res = num1to9ZH(num / 100) + "百";
+        num %= 100;
+        if (num == 0) {
+            return res;
+        }
+        res += num /10 == 0 ? "零" : "";
+        res += num1to99ZHCp1(num, true);
+        return res;
+    }
+
+
+    /**
+     * 获取1 - 999
+     * @param num
+     * @return
+     */
+    public static String num1to9999ZHCp(int num) {
+        if (num < 1 || num > 9999) {
+            return Constants.EMPTY_STR;
+        }
+        if (num < 1000) {
+            return num1to999ZHCp(num);
+        }
+        String res = num1to9ZH(num / 1000) + "千";
+        num %= 1000;
+        if (num == 0) {
+            return res;
+        }
+        res += num /100 == 0 ? "零" : "";
+        res += num1to999ZHCp(num);
+        return res;
+    }
+
+
+
+
+
+
+
+    public static void main(String[] args) {
+        System.out.println(getChineseNumCp1(1111111112));
+    }
 
 
 
