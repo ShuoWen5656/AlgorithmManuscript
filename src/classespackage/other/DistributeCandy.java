@@ -168,4 +168,175 @@ public class DistributeCandy {
     }
 
 
+    /**
+     * 二轮测试：分糖果问题（原问题）
+     * 1、首先分爬坡
+     * 2、左右坡度合一
+     * @param arr
+     * @return
+     */
+    public static int distributeCandyCp1(int[] arr) {
+        if (arr == null || arr.length == 0) {
+            return 0;
+        }else if (arr.length == 1){
+            return 1;
+        }
+        int len = arr.length;
+        // 找到下一个爬坡的起点
+        int index = getNextStartCp1(arr, 0);
+        int res = getRightCandy(0, index++);
+        // 左边的糖果数量最大值
+        int lbase = 1;
+        // 右边糖果数量最大值
+        int rbase = 0;
+        while (index < len) {
+            if (arr[index] > arr[index - 1]) {
+                // 上坡过程
+                res += ++lbase;
+                index ++;
+            }else if (arr[index] < arr[index-1]) {
+                // 下坡过程,直接找到下一个上坡点
+                int next = getNextStartCp1(arr, index-1);
+                // 右边需要的糖果
+                int rcand = getRightCandy(index - 1, next);
+                rbase = next - index + 1;
+                res += rcand - (lbase > rbase ? rbase : lbase);
+                lbase = 1;
+                index = next+1;
+            }else {
+                // 相等时相当于下一坡
+                res += 1;
+                lbase = 1;
+                index ++;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 计算下坡需要的糖果数量[...3,2,1]
+     * 等差数列求和公式
+     * @param left
+     * @param right
+     * @return
+     */
+    private static int getRightCandy(int left, int right) {
+        int len = right - left + 1;
+        return  (len * (len + 1))/2;
+    }
+
+    /**
+     * 找到下一个爬坡起点
+     * @param arr
+     * @param start
+     * @return
+     */
+    private static int getNextStartCp1(int[] arr, int start) {
+        for (int i = start; i < arr.length; i++) {
+            if (arr[i] < arr[i + 1]) {
+                return i;
+            }
+        }
+        return arr.length-1;
+    }
+
+
+    /**
+     * 二轮测试：分糖果问题（进阶问题）
+     * 1、首先分爬坡
+     * 2、左右坡度合一
+     * @param arr
+     * @return
+     */
+    public static int distributeCandyCp2(int[] arr) {
+        if (arr == null || arr.length == 0) {
+            return 0;
+        }else if (arr.length == 1){
+            return 1;
+        }
+        int len = arr.length;
+        // 找到下一个爬坡的起点
+        int index = getNextStartCp2(arr, 0);
+        int[] data = getRightCandyCp2(arr, 0, index++);
+        int res = data[0];
+        // 左边的糖果数量最大值
+        int lbase = 1;
+        // 右边糖果数量最大值
+        int rbase = data[1];
+        // 计算有多少个相同的
+        int same = 1;
+        while (index < len) {
+            if (arr[index] > arr[index - 1]) {
+                // 上坡过程
+                res += ++lbase;
+                same = 1;
+                index ++;
+            }else if (arr[index] == arr[index - 1]) {
+                res += lbase;
+                same++;
+                index ++;
+            } else if (arr[index] < arr[index-1]) {
+                // 下坡过程,直接找到下一个上坡点
+                int next = getNextStartCp2(arr, index-1);
+                // 右边需要的糖果
+                int[] resAndRcand = getRightCandyCp2(arr, index - 1, next);
+                int rcand = resAndRcand[0];
+                rbase = resAndRcand[1];
+                if (rbase < lbase) {
+                    res += rcand - rbase;
+                }else {
+                    res += rcand - same * lbase - rbase + same * rbase;
+                }
+                lbase = 1;
+                index = next+1;
+            }
+        }
+        return res;
+    }
+
+    /**
+     * 计算下坡需要的糖果数量[...3,3,2,2,1]
+     * 等差数列求和公式
+     * @param left
+     * @param right
+     * @return
+     */
+    private static int[] getRightCandyCp2(int[] arr, int left, int right) {
+        int base = 1;
+        int res = 0;
+        for (int i = right; i >= left; i--) {
+            if (i == right || arr[i] == arr[i + 1]) {
+                res += base;
+            }else {
+                res += ++base;
+            }
+        }
+        return new int[]{res, base};
+    }
+
+    /**
+     * 找到下一个爬坡起点
+     * @param arr
+     * @param start
+     * @return
+     */
+    private static int getNextStartCp2(int[] arr, int start) {
+        for (int i = start; i < arr.length-1; i++) {
+            if (arr[i] < arr[i + 1]) {
+                return i;
+            }
+        }
+        return arr.length-1;
+    }
+
+
+
+    public static void main(String[] args) {
+        System.out.println(distributeCandyCp2(new int[]{0,1,2,3,3,3,2,2,2,2,2,1,1}));
+    }
+
+
+
+
+
 }
