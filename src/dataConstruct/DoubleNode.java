@@ -57,4 +57,11 @@ public class DoubleNode {
         this.last = last;
     }
 
+    public Integer getIntegerValue() {
+        return integerValue;
+    }
+
+    public void setIntegerValue(Integer integerValue) {
+        this.integerValue = integerValue;
+    }
 }
