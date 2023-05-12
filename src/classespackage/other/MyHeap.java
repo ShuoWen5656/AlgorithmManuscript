@@ -42,7 +42,7 @@ public class MyHeap<K> {
     }
 
     public K getHead(){
-        return head == null ? head.getValue() : null;
+        return head == null ? null : head.getValue();
     }
 
     public int getSize(){
@@ -103,7 +103,7 @@ public class MyHeap<K> {
     private void heapInsertModify() {
         MyTreeNodePlus<K> node = tail;
         MyTreeNodePlus<K> parent = node.getParent();
-        if (parent == null && comp.compare(node.getValue(), parent.getValue()) < 0){
+        if (parent != null && comp.compare(node.getValue(), parent.getValue()) < 0){
             // 这里是第一波交换，tail需要变成第一波交换的那个值
             tail = parent;
         }
@@ -117,6 +117,7 @@ public class MyHeap<K> {
             // 头结点需要更新
             this.head = head.getParent();
         }
+        // 查看是否尾结点需要交换
     }
 
     /**
@@ -238,7 +239,9 @@ public class MyHeap<K> {
             }
             // 交换
             if (most != oldTail){
-                swapClosedTwoNodes(most, oldTail);
+                swapClosedTwoNodes(oldTail, most);
+            }else {
+                break;
             }
             left = oldTail.getLeft();
             right = oldTail.getRight();
@@ -259,7 +262,7 @@ public class MyHeap<K> {
 
 
     /**
-     * 弹出队尾节点并设置tail为新的队尾节点
+     * 弹出队头节点并设置tail为新的队头节点
      * @return
      */
     private MyTreeNodePlus<K> popLastAndSetPreviousLast() {

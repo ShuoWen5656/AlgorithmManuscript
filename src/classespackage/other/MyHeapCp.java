@@ -200,6 +200,9 @@ public class MyHeapCp<V> {
         }
     }
 
+    public boolean isEmpty(){
+        return size == 0;
+    }
 
     /**
      * 弹出堆头并重新下沉
@@ -237,6 +240,10 @@ public class MyHeapCp<V> {
             // 交换完成后，进行一次下沉动作
             heapify();
             size--;
+            if (size == 1) {
+                // 如果只有一个了  头尾相等
+                this.last = this.head;
+            }
             return value;
         }
     }
@@ -255,6 +262,8 @@ public class MyHeapCp<V> {
             }
             if (cur != swapNode) {
                 swap(cur, swapNode);
+            }else {
+                break;
             }
             // 如果交换的是last，需要将last一直保持在最后一个位置
             if (swapNode == this.last) {
