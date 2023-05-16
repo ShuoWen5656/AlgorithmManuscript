@@ -179,6 +179,7 @@ public class UnformedSum {
         if (arr == null || arr.length == 0) {
             return 0;
         }
+        Arrays.sort(arr);
         int range = 0;
         for (int i = 0; i < arr.length; i++) {
             if (arr[i] > range+1) {
