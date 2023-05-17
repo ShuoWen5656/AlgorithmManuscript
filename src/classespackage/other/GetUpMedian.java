@@ -55,4 +55,44 @@ public class GetUpMedian {
 
 
 
+    /**
+     * 二轮测试：求相同长度的排序数组的上中位数
+     * @param arr1
+     * @param arr2
+     * @return
+     */
+    public static int getUpMedianCp1(int[] arr1, int[] arr2){
+        if (arr1 == null || arr2 == null || arr1.length != arr2.length){
+            throw new RuntimeException("非法array");
+        }
+        int left1 = 0;
+        int left2 = 0;
+        int right1 = arr1.length-1;
+        int right2 = arr2.length-1;
+        while (left1 < right1) {
+            // 求终点
+            int mid1 = (left1 + right1)/2;
+            int mid2 = (left2 + right2)/2;
+            if (arr1[mid1] == arr2[mid2]) {
+                return arr1[mid1];
+            }else {
+                // 判断当前数组长度是奇数还是偶数
+                int offset = ((right1 - left1 + 1) & 1) ^ 1;
+                if (arr1[mid1] < arr2[mid2]) {
+                    left1 = mid1 + offset;
+                    right2 = mid2;
+                }else {
+                    right1 = mid1;
+                    left2 = mid2 + offset;
+                }
+            }
+        }
+        return Math.min(arr1[left1], arr1[left2]);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(getUpMedianCp1(new int[]{3,4,5,6}, new int[]{1,2,3,4}));
+    }
+
+
 }
