@@ -142,4 +142,127 @@ public class TopKFromTowArr {
     }
 
 
+    /**
+     * 获取两个有序数组中的相加和topk
+     * @param arr1
+     * @param arr2
+     * @return
+     */
+    public static int[] getTopKFromArrCp1(int[] arr1, int[] arr2, int k) {
+        if (arr1 == null || arr2 == null
+                || arr1.length == 0 || arr2.length == 0
+                || arr1.length < k || arr2.length < k) {
+            return null;
+        }
+        int row = arr1.length-1;
+        int col = arr2.length-1;
+        // 存储topk的容器
+        RowColNode[] heap = new RowColNode[k+1];
+        heap[0] = new RowColNode(row, col, arr1[row] + arr2[col]);
+        int count = k;
+        int[] res = new int[k];
+        int heapSize = 1;
+        while (k > 0) {
+            // 弹出堆顶
+            RowColNode head = heap[0];
+            res[count-k] = head.getValue();
+            CommonUtils.swapPlus(heap, 0, heapSize-1);
+            heap[heapSize-1] = null;
+            heapSize--;
+            heapifyCp1(heap, heapSize);
+            // 加入左边和上边的两个元素
+            row = head.getRow();
+            col = head.getCol();
+            if (row - 1 >= 0) {
+                heap[heapSize++] = new RowColNode(row-1, col, arr1[row-1] + arr2[col]);
+                // 上浮
+                heapInsertCp(heap, heapSize);
+            }
+            if (col - 1 >= 0) {
+                heap[heapSize++] = new RowColNode(row, col-1, arr1[row] + arr2[col-1]);
+                heapInsertCp(heap, heapSize);
+            }
+            k--;
+        }
+        return res;
+    }
+
+    private static void heapInsertCp(RowColNode[] heap, int heapSize) {
+        int cur = heapSize-1;
+        int parent = (cur-1)/2;
+        while (cur != 0) {
+            if (heap[cur].getValue() > heap[parent].getValue()) {
+                CommonUtils.swapPlus(heap, cur, parent);
+                cur = parent;
+            }else {
+                break;
+            }
+        }
+    }
+
+    private static void heapifyCp1(RowColNode[] heap, int heapSize) {
+        int parent = 0;
+        int left = (parent * 2) + 1;
+        while (left < heapSize) {
+            int maxIndex = heap[parent].getValue() > heap[left].getValue() ? parent : left;
+            int right = left + 1;
+            while (right < heapSize && heap[right].getValue() >heap[maxIndex].getValue()) {
+                maxIndex = right;
+            }
+            if (maxIndex == parent) {
+                break;
+            }
+            CommonUtils.swapPlus(heap, parent, maxIndex);
+            parent = maxIndex;
+            left = (parent * 2) + 1;
+        }
+    }
+
+
+    public static void main(String[] args) {
+        CommonUtils.printArr(getTopKFromArrCp1(new int[]{2,3,4,5,6}, new int[]{5,6,7,8,9}, 3));
+    }
+
+
+    public static class RowColNode {
+
+        int row;
+        int col;
+        int value;
+
+        public RowColNode(int row, int col, int value) {
+            this.row = row;
+            this.col = col;
+            this.value = value;
+        }
+
+        public int getRow() {
+            return row;
+        }
+
+        public void setRow(int row) {
+            this.row = row;
+        }
+
+        public int getCol() {
+            return col;
+        }
+
+        public void setCol(int col) {
+            this.col = col;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public void setValue(int value) {
+            this.value = value;
+        }
+    }
+
+
+
+
+
 }
