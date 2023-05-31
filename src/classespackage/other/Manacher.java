@@ -119,7 +119,110 @@ public class Manacher {
     }
 
 
+    /**
+     * 二轮测试：求字符串中的最长回文字符串长度
+     * @return
+     */
+    public static int manacherCp1(String str) {
+        if (str == null || str.length() == 0) {
+            return 0;
+        }
+        // 字符串处理
+        char[] charsArr = dealStr2Char(str);
+        int pR = -1;
+        int index = 0;
+        int[] helpArr = new int[charsArr.length];
+        int count = 0;
+        int res = 0;
+        while (pR <= charsArr.length) {
+            helpArr[count] = count < pR-1 ? helpArr[index * 2 - count] : 1;
+            while (count - helpArr[count] >= 0 && count + helpArr[count] < charsArr.length) {
+                if (charsArr[count - helpArr[count]] == charsArr[count + helpArr[count]]) {
+                    helpArr[count]++;
+                }else {
+                    break;
+                }
+            }
+            if (helpArr[count] + count > pR) {
+                pR = helpArr[count] + count + 1;
+                index = count;
+            }
+            res = Math.max(res, helpArr[count]);
+            count++;
+        }
+        // res需要再处理一下(（2*res - 1 - 1） / 2)
+        return res-1;
+    }
 
+    /**
+     * 字符串填充
+     * @param str
+     * @return
+     */
+    private static char[] dealStr2Char(String str) {
+        int length = str.length();
+        char[] res = new char[length * 2 + 1];
+        char[] chars = str.toCharArray();
+        int count = 0;
+        for (; count < length; count++) {
+            res[count * 2] = '#';
+            res[count * 2 + 1] = chars[count];
+        }
+        res[count * 2] = '#';
+        return res;
+    }
+
+
+    /**
+     * 进阶问题：只能在右边加字符串的情况下，添加最少的字符串使得整个字符串变成回文字符串
+     * @param str
+     * @return
+     */
+    public static char[] getShortestChar(String str) {
+        if (str == null || str.length() == 0) {
+            return null;
+        }
+        char[] chars = dealStr2Char(str);
+        int pR = -1;
+        int index = 0;
+        int[] helpArr = new int[chars.length];
+        int count = 0;
+        while (pR < helpArr.length) {
+            helpArr[count] = count < pR - 1 ? helpArr[2 * index - count] : 1;
+            while (count + helpArr[count] < chars.length && count - helpArr[count] >= 0) {
+                if (chars[count + helpArr[count]] == chars[count - helpArr[count]]) {
+                    helpArr[count] ++;
+                }else {
+                    break;
+                }
+            }
+            if (helpArr[count] + count > pR) {
+                pR = helpArr[count] + count + 1;
+                index = count;
+            }
+            count++;
+        }
+        // pr到达了最终的地方，直接处理当前index所在的位置
+        int end = index + 1 - helpArr[index];
+        char[] res = new char[end];
+        count = end-1;
+        index = 0;
+        while (count >= 0) {
+            if ((count & 1) == 1) {
+                res[index++] = chars[count];
+            }
+            count--;
+        }
+        return res;
+    }
+
+
+
+    public static void main(String[] args) {
+
+        System.out.println(String.valueOf(getShortestChar("abc1234321")));
+
+    }
 
 
 }
