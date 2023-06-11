@@ -1,5 +1,7 @@
 package classespackage.other;
 
+import java.util.Map;
+
 /**
  * @author swzhao
  * @data 2022/8/1 21:58
@@ -42,6 +44,43 @@ public class ThrowPiece {
         return min+1;
     }
 
+    /**
+     * 二轮测试-方法1：暴力递归
+     * @param levelNum
+     * @param chessNum
+     * @return
+     */
+    public static int solution1Cp1(int levelNum, int chessNum) {
+        if (levelNum < 1 || chessNum < 1){
+            // 棋子没了或者在0层的话直接返回
+            return 0;
+        }
+        return process1Cp1(levelNum, chessNum);
+    }
+
+    /**
+     * 二轮测试-方法1：递归主体
+     * @param levelNum 代表还剩余的层数没有测试
+     * @param chessNum 代表还有多少个棋子
+     * @return
+     */
+    private static int process1Cp1(int levelNum, int chessNum) {
+        if (levelNum < 1 || chessNum < 1) {
+            return 0;
+        }
+        if (chessNum == 1) {
+            // 剩余一颗棋子在最坏的情况下就要扔层数次
+            return levelNum;
+        }
+        int min = Integer.MAX_VALUE;
+        // 从当前状态的1层开始测试
+        for (int i = 1; i < levelNum + 1;i ++) {
+            min = Math.min(min, Math.max(process1Cp1(i-1, chessNum - 1), process1Cp1(levelNum - i, chessNum)))+1;
+        }
+        return min;
+    }
+
+
 
     /**
      * 方法2：动态规划方法
@@ -74,6 +113,34 @@ public class ThrowPiece {
         return dp[levelNum][pieceNum];
     }
 
+
+    public static int dpSolutionCp2(int levelNum, int chessNum) {
+        if (levelNum < 1 || chessNum < 1) {
+            return 0;
+        }
+        if (chessNum == 1) {
+            // 剩余一颗棋子在最坏的情况下就要扔层数次
+            return levelNum;
+        }
+        // dp[i][j] 还剩下i个棋子，j层最坏情况下的最少次数
+        int[][] dp = new int[chessNum][levelNum+1];
+        for (int i = 0; i < chessNum; i ++) {
+            dp[i][0] = 0;
+        }
+        for (int j = 0; j < levelNum+1; j++) {
+            dp[0][j] = j;
+        }
+        for (int i = 1; i < chessNum; i++) {
+            for (int j = 1; j <levelNum+1; j ++) {
+                int min = Integer.MAX_VALUE;
+                for (int k = 1; k <= j; k++) {
+                    min = Math.min(min, Math.max(dp[i-1][k-1], dp[i][j-k]));
+                }
+                dp[i][j] = min+1;
+            }
+        }
+        return dp[chessNum-1][levelNum];
+    }
 
     /**
      * 方法三：压缩动态规划
@@ -158,6 +225,47 @@ public class ThrowPiece {
 
 
     /**
+     * 二轮测试-方法4：四边形不等式
+     * @return
+     */
+    public static int solutionCp4(int levelNum, int chessNum) {
+        if (levelNum < 1 || chessNum < 1){
+            return 0;
+        }
+        if (chessNum == 1){
+            return levelNum;
+        }
+        // dp[i][j] 还剩下i个棋子，j层最坏情况下的最少次数
+        int[][] dp = new int[levelNum+1][chessNum+1];
+        int[] cands = new int[chessNum + 1];
+        for (int i = 1; i < levelNum + 1; i++) {
+            dp[i][1] = i;
+        }
+        for (int j = 1; j < chessNum+1; j++) {
+            dp[1][j] = 1;
+            // 最优解都是1
+            cands[j] = 1;
+        }
+        for (int i = 2; i < levelNum + 1; i++) {
+            for (int j = chessNum; j >= 2; j--) {
+                int min = Integer.MAX_VALUE;
+                int down = cands[j];
+                // todo 为什么？
+                int up = j == chessNum? i/2 + 1 : cands[j+1];
+                for (int k = down; k <= up; k++) {
+                    int cur = Math.max(dp[k-1][j-1], dp[i-k][j]);
+                    if (cur < min) {
+                        min = cur;
+                        cands[j] = k;
+                    }
+                }
+                dp[i][j] = min+1;
+            }
+        }
+        return dp[levelNum][chessNum];
+    }
+
+    /**
      * 最优解
      * 原理：二分法寻找是最少步骤的最优解，如果棋子够就直接用二分法扔即可
      * 2、计算k个棋子在扔n次后能够搞定最多多少楼层
@@ -199,6 +307,39 @@ public class ThrowPiece {
     }
 
 
+    /**
+     * 二轮测试-最优解
+     * 换个角度：m个棋子扔k次最多搞定的楼层，第一次超过目标值的次数就是最优解
+     * @param levelNum
+     * @param chessNum
+     * @return
+     */
+    public static int bestSolutionCp5(int levelNum, int chessNum) {
+        if (levelNum < 1 || chessNum < 1){
+            return 0;
+        }
+        int bsTimes = log2N(levelNum);
+        // 二分法如果能够解决就用二分法
+        if (chessNum > bsTimes){
+            return bsTimes;
+        }
+        int[] dp = new int[chessNum+1];
+        // 上一轮，相当于[i-1,j-1]
+        int count = 1;
+        while (true) {
+            int pre = 0;
+            for (int i = 1; i < dp.length; i++) {
+                int tmp = dp[i];
+                dp[i] = dp[i] + pre + 1;
+                pre = tmp;
+                if (dp[i] >= levelNum) {
+                    return count;
+                }
+            }
+            count++;
+        }
+    }
+
 
     /**
      * 找到2的几次方边界
@@ -210,6 +351,7 @@ public class ThrowPiece {
         int res = -1;
         while (num != 0){
             num >>>= 1;
+            res++;
         }
         return res;
     }
@@ -220,7 +362,7 @@ public class ThrowPiece {
      * @param args
      */
     public static void main(String[] args) {
-
+        System.out.println(bestSolutionCp5(105, 2));
     }
 
 
