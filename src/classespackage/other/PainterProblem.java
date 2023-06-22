@@ -2,6 +2,8 @@ package classespackage.other;
 
 import classespackage.CommonUtils;
 
+import java.util.Iterator;
+
 /**
  * @author swzhao
  * @data 2022/8/7 9:46
@@ -185,13 +187,182 @@ public class PainterProblem {
             }
             return maxV;
         }
-
-
-
-
-
     }
 
+
+    /**
+     * 二轮测试：普通动态规划
+     * @param arr
+     * @param num
+     * @return
+     */
+    public static int solution1Cp1(int[] arr, int num) {
+        if (arr == null || num == 0) {
+            return -1;
+        }
+        // dp[i][j]代表i个画匠解决arr[0...j]个画所需要的最少时间
+        int[][] dp = new int[num+1][arr.length];
+        // 初始化
+        dp[1][0] = arr[0];
+        // 完成一个花匠需要的时间
+        for (int j = 1; j < dp[0].length; j++) {
+            dp[1][j] = dp[1][j-1] + arr[j];
+        }
+        for (int i = 2; i < num + 1; i++) {
+            dp[i][0] = arr[0];
+            for (int j = 1; j < dp[0].length; j++) {
+                // 开始分配让[k...j]给到一个人完成，剩下的[0...k]让i-1个人完成即可,所需要的最少时间
+                int tmp = 0;
+                int min = Integer.MAX_VALUE;
+                for (int k = j-1; k >= 0; k--) {
+                    // 当前人干
+                    tmp += arr[k+1];
+                    // 剩下人干
+                    int n1 = dp[i-1][k];
+                    min = Math.min(Math.max(tmp, n1), min);
+                }
+                dp[i][j] = min;
+            }
+        }
+        return dp[num][arr.length-1];
+    }
+
+
+    /**
+     * 二轮测试：四边形不等式优化
+     * @param arr
+     * @param num
+     * @return
+     */
+    public static int solution2Cp2(int[] arr, int num) {
+        if (arr == null || num == 0) {
+            return -1;
+        }
+        // dp[i][j]代表i个画匠解决arr[0...j]个画所需要的最少时间
+        int[][] dp = new int[num+1][arr.length];
+        // map[i][j]代表当前状态下最优解时的k值是多少
+        int[][] map = new int[num+1][arr.length];
+        // 初始化
+        dp[1][0] = arr[0];
+        // 完成一个花匠需要的时间
+        for (int j = 1; j < dp[0].length; j++) {
+            dp[1][j] = dp[1][j-1] + arr[j];
+        }
+        for (int i = 2; i < num + 1; i++) {
+            dp[i][0] = arr[0];
+            for (int j = arr.length-1; j >= 0; j--) {
+                // 开始分配让[k...j]给到一个人完成，剩下的[0...k]让i-1个人完成即可,所需要的最少时间
+                int min = Integer.MAX_VALUE;
+                // 增加一个范围确定
+                int l = map[i-1][j];
+                // 如果是最右边的j，则直接赋值为j，也就是最大范围，这个说明右边无界限
+                int r = j == arr.length-1 ? j : map[i][j+1];
+                int tmp = getTmp(arr, r, j);
+                int k = r-1;
+                int mink = -1;
+                for (; k >= l; k--) {
+                    // 当前人干
+                    tmp += arr[k+1];
+                    // 剩下人干
+                    int n1 = dp[i-1][k];
+                    if (Math.max(tmp, n1) < min) {
+                        min = Math.max(tmp, n1);
+                        mink = k;
+                    }
+                    dp[i][j] = min;
+                    map[i][j] = mink;
+                }
+            }
+        }
+        return dp[num][arr.length-1];
+    }
+
+    /**
+     * 获取arr中 r到j 的和，不包括r
+     * @param arr
+     * @param r
+     * @param j
+     * @return
+     */
+    private static int getTmp(int[] arr, int r, int j) {
+        int t = 0;
+        r++;
+        while (r <= j) {
+            t += arr[r];
+            r++;
+        }
+        return t;
+    }
+
+
+    /**
+     * 方法三：最优解
+     * 二分法求
+     * @param arr
+     * @param num
+     * @return
+     */
+    public static int solutionCp3(int[] arr, int num) {
+        if (arr == null || num == 0) {
+            return -1;
+        }
+        if (num >= arr.length) {
+            // 花匠数超过了
+            int max = Integer.MIN_VALUE;
+            for (int i = 0; i < arr.length; i++) {
+                max = Math.max(max, arr[i]);
+            }
+            return max;
+        }else {
+            int minSum = 0;
+            int maxSum = 0;
+            for (int i = 0; i < arr.length; i++) {
+                maxSum += arr[i];
+            }
+            // 这里如果不-1会无限死循环
+            while (minSum < maxSum-1) {
+                // 求中间值作为时间限制
+                int mid = (minSum + maxSum)/2;
+                if (getNeedNumCp1(arr, mid) > num) {
+                    // 所需要的花匠多于num,调高限度
+                    minSum = mid;
+                }else {
+                    maxSum = mid;
+                }
+            }
+            return maxSum;
+        }
+    }
+
+
+
+    /**
+     * 规定每一个花匠时间不能超过limit，则最少需要多少个画匠
+     * @param arr
+     * @param limit
+     * @return
+     */
+    private static int getNeedNumCp1(int[] arr, int limit) {
+        int res = 1;
+        int tem = 0;
+        for (int i = 0; i < arr.length; i++) {
+            // 有一幅画超过了就算不可能完成的
+            if (arr[i] > limit) {
+                return Integer.MAX_VALUE;
+            }
+            if (tem + arr[i] > limit) {
+                tem = arr[i];
+                res++;
+            }else {
+                tem += arr[i];
+            }
+        }
+        return res;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(solution2Cp2(new int[]{3,1,4}, 2));
+    }
 
 
 }
