@@ -93,5 +93,117 @@ public class PoststationChoose {
         return dp[num-1][arr.length-1];
     }
 
+    /**
+     * 二轮测试：动态规划解法
+     * @return
+     */
+    public static int solution1Cp1(int[] arr, int num) {
+        if (arr == null || num == 0) {
+            return -1;
+        }
+        // wArr[i][j] 表示 arr[i...j]中只放一个邮局时需要的最短距离数
+        int[][] wArr = getWArr(arr);
+        // dp[i][j]代表i个邮局解决 arr[0..j]的居民问题
+        int[][] dp = new int[num + 1][arr.length];
+        // 初始化dp
+        dp[1][0] = 0;
+        for (int j = 1; j < dp[0].length; j++) {
+            dp[1][j] = wArr[0][j];
+        }
+        // 动态规划主体
+        for (int i = 2; i < dp.length; i++) {
+            for (int j = 0; j < dp[0].length; j++) {
+                if (j <= i) {
+                    // 每一个居民都能分到邮局，直接没有距离
+                    dp[i][j] = 0;
+                    continue;
+                }
+                int min = Integer.MAX_VALUE;
+                // 第一个邮局负责arr[k...j]，剩下的负责arr[0..k-1]
+                for (int k = j; k >= 1; k--) {
+                    // 第一个邮局解决的最短距离
+                    int first = wArr[k][j];
+                    int second = dp[i-1][k-1];
+                    min = Math.min(min, first+second);
+                }
+                dp[i][j] = min;
+            }
+        }
+        return dp[num][arr.length-1];
+    }
+
+    /**
+     * wArr[i][j] 表示 arr[i...j]中只放一个邮局时需要的最短距离数
+     * @param arr
+     * @return
+     */
+    private static int[][] getWArr(int[] arr) {
+        int[][] wArr = new int[arr.length][arr.length];
+        // 只需要填充上半部分
+        for (int i = 0; i < arr.length; i++) {
+            for (int j = i+1; j < arr.length; j++) {
+                // 这里需要解释一下，中点因为两边的元素数目相同（偶数特殊，但也相同），滑动时保持两边数相同时能够保证总合不变
+                wArr[i][j] = wArr[i][j-1] + arr[j] - arr[(i+j)/2];
+            }
+        }
+        return wArr;
+    }
+
+    /**
+     * 二轮测试：四边形不等式
+     * @return
+     */
+    public static int solution2Cp2(int[] arr, int num) {
+        if (arr == null || num == 0) {
+            return -1;
+        }
+        // wArr[i][j] 表示 arr[i...j]中只放一个邮局时需要的最短距离数
+        int[][] wArr = getWArr(arr);
+        // dp[i][j]代表i个邮局解决 arr[0..j]的居民问题的最短距离
+        int[][] dp = new int[num + 1][arr.length];
+        // map[i][j]代表i个邮局解决 arr[0..j]的居民问题最优解时的k值
+        int[][] map = new int[num + 1][arr.length];
+        // 初始化dp
+        dp[1][0] = 0;
+        for (int j = 1; j < dp[0].length; j++) {
+            dp[1][j] = wArr[0][j];
+        }
+        // 动态规划主体
+        for (int i = 2; i < dp.length; i++) {
+            for (int j = 0; j < dp[0].length; j++) {
+                if (j <= i) {
+                    // 每一个居民都能分到邮局，直接没有距离
+                    dp[i][j] = 0;
+                    continue;
+                }
+                int min = Integer.MAX_VALUE;
+                // 左边至少给一个居民让给剩下的邮局，因为邮局至少有两个
+                int l = map[i-1][j] == 0 ? 1 : map[i-1][j];
+                int r = j == dp[0].length-1 ? dp[0].length-1 : map[i][j+1];
+                // 第一个邮局负责arr[k...j]，剩下的负责arr[0..k-1]
+                for (int k = r; k >= l; k--) {
+                    // 第一个邮局解决的最短距离
+                    int first = wArr[k][j];
+                    int second = dp[i-1][k-1];
+                    if (first + second < min) {
+                        min = first+second;
+                        map[i][j] = k;
+                    }
+                }
+                dp[i][j] = min;
+            }
+        }
+        return dp[num][arr.length-1];
+    }
+
+
+
+
+    public static void main(String[] args) {
+        System.out.println(solution2Cp2(new int[]{1,2,3,4,5,1000}, 2));
+    }
+
+
+
 
 }
