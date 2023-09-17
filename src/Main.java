@@ -3,6 +3,7 @@
 import dataConstruct.LinkNode;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 存父节点和本值，角标要不要？？
@@ -96,6 +97,10 @@ public class Main {
     public static void main(String[] args) {
         try{
             test1();
+            ThreadLocal threadLocal = new InheritableThreadLocal();
+
+
+
 //            LinkedList<Object> objects = new LinkedList<>();
 
 
@@ -317,6 +322,30 @@ public class Main {
         }catch (Exception e){
             e.printStackTrace();
             return false;
+        }
+    }
+
+
+    public static void testHeapify(int[] arr) {
+        // 默认根节点
+        int parent = 0;
+        int left = 2 * parent + 1;
+        while (left < arr.length) {
+//            找最大值
+            int maxIndex = arr[left] > arr[parent] ? left : parent;
+            if (left + 1 < arr.length && arr[maxIndex] < arr[left+1]) {
+                maxIndex = left + 1;
+            }
+            if (maxIndex == parent) {
+                break;
+            }
+//            交换
+            int tmp = arr[parent];
+            arr[parent] = arr[maxIndex];
+            arr[maxIndex] = tmp;
+            // 下一位
+            parent = maxIndex;
+            left = 2 * parent + 1;
         }
     }
 //    public static void main(String[] args) {
