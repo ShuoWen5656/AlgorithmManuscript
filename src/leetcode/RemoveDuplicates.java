@@ -10,10 +10,38 @@ public class RemoveDuplicates {
 
 
     public static void main(String[] args) {
-        int[] ints = {1,2,2};
-        System.out.println(solution(ints));
+        int[] ints = {1,1,1,2,2,2,3,3};
+        System.out.println(process2(ints));
     }
 
+
+    /**
+     * 最优解
+     * @param nums
+     * @param k
+     * @return
+     */
+    public static int process(int[] nums, int k) {
+        int u = 0;
+        for (int x : nums) {
+            if (u < k || nums[u - k] != x) nums[u++] = x;
+        }
+        return u;
+    }
+
+    public static int process2(int[] nums) {
+        int cur = 0;
+        for (int pre = 0; pre < nums.length; pre++) {
+            if (cur < 2) {
+                cur++;
+                continue;
+            }
+            if (nums[pre] != nums[cur-2]) {
+                nums[cur++] = nums[pre];
+            }
+        }
+        return cur;
+    }
 
     public static int solution(int[] nums) {
         if (nums.length <= 2) {
@@ -35,7 +63,13 @@ public class RemoveDuplicates {
         // 正式循环
         int i = 2;
         for (; i < nums.length; i++) {
-            if (nums[i-2] != nums[i]) {
+            if (nums[i] >= nums[i-1] && nums[i] > nums[i-2]) {
+                if (i >= pre) {
+                    pre = i;
+                    while (pre < nums.length && nums[pre] == nums[i]) {
+                        pre++;
+                    }
+                }
                 // 不相等说明没问题
                 continue;
             }
@@ -48,7 +82,8 @@ public class RemoveDuplicates {
             if (pre == nums.length) {
                 return i;
             }
-            nums[i] = nums[pre++];
+            swap(nums, i, pre++);
+            i--;
         }
         return i;
     }
