@@ -37,7 +37,15 @@ public class SpiralOrder {
     }
 
 
-
+    /**
+     * 注意点：
+     * 1、每次的起点不可重合
+     * 2、横向一条线多个判断
+     * 3、纵向一条线多个判断
+     * @param i
+     * @param matrix
+     * @param list
+     */
     private static void getInteger(int i, int[][] matrix, List<Integer> list) {
         // 起点
         int startRow = i;
