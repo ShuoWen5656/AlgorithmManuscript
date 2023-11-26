@@ -36,7 +36,8 @@ public class MaxSubarraySumCircular {
             // 更新当前的sum值
             sum += helper[i];
             res = Math.max(res, sum - deque.peekFirst()[1]);
-            // 将当前队列中，合大于sum的提出
+            // 放入之前将比sum大的队尾都弹出
+            // 因为后面计算的都是sum-peekfirst，我们要保证不过期的同时，队列队头应该尽可能小，差值才能尽可能大
             while (!deque.isEmpty() && deque.peekLast()[1] >= sum) {
                 deque.pollLast();
             }
