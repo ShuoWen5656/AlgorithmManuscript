@@ -1,3 +1,4 @@
+import java.io.File;
 import java.util.Stack;
 
 /**
@@ -12,8 +13,21 @@ public class TestAnyThing {
 
     public static void main(String[] args) {
 
-        System.out.println("hello world!");
-
+        File file = new File("/Volumes/SWZHAOU/tingshu");
+//        System.out.println(file.listFiles());
+//
+        String[] fileNames = file.listFiles()[0].list();
+        for (String fileName : fileNames) {
+            String[] split = fileName.split("\\.");
+            StringBuilder firstStr = new StringBuilder(split[0]);
+            int add0 = 4 - firstStr.length();
+            for (int i = 0; i < add0; i++) {
+                firstStr.insert(0, "0");
+            }
+            File fileold = new File("/Volumes/SWZHAOU/tingshu/斗罗大陆_亿万点击玄幻经典（多人小说剧）_有声的紫襟播讲/" + fileName);
+            File filenew = new File("/Volumes/SWZHAOU/tingshu/斗罗大陆_亿万点击玄幻经典（多人小说剧）_有声的紫襟播讲/" + firstStr + "-" + fileName);
+            fileold.renameTo(filenew);
+        }
 
     }
 
