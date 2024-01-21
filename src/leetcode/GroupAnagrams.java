@@ -55,5 +55,25 @@ public class GroupAnagrams {
 //    }
 
 
+    /**
+     * 二轮练手
+     * @param strs
+     * @return
+     */
+    public static List<List<String>> solutionCp1(String[] strs) {
+        // 结果
+        Map<String, List<String>> res = new HashMap<>();
+        for (String s : strs) {
+            char[] chars = s.toCharArray();
+            Arrays.sort(chars);
+            String tem = new String(chars);
+            List<String> list = res.getOrDefault(tem, new ArrayList<>());
+            list.add(s);
+            res.put(tem, list);
+        }
+        return new ArrayList<>(res.values());
+    }
+
+
 
 }
