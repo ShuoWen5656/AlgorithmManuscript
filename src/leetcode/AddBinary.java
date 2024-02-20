@@ -9,7 +9,7 @@ public class AddBinary {
 
 
     public static void main(String[] args) {
-        solution("1", "111");
+        solution3("1", "111");
     }
 
 
@@ -60,6 +60,46 @@ public class AddBinary {
             res[indexC] = '1';
         }
         return new String(res).replace("\u0000", "");
+    }
+
+
+    /**
+     * 逃课玩法,但是不能过所有的测试用例
+     * @param a
+     * @param b
+     * @return
+     */
+    public static String solution2(String a, String b) {
+        return Integer.toBinaryString(
+        Integer.parseInt(a, 2) + Integer.parseInt(b, 2));
+    }
+
+
+    /**
+     * 第三种玩法，按照位计算，精简版本
+     * @param a
+     * @param b
+     * @return
+     */
+    public static String solution3(String a, String b) {
+        StringBuffer res = new StringBuffer();
+
+        int len = Math.max(a.length(), b.length());
+        // 进位
+        int carry = 0;
+        for (int i = 0; i < len; i++) {
+            carry += i >= a.length() ? 0 : a.charAt(a.length() - 1 - i) - '0';
+            carry += i >= b.length() ? 0 : b.charAt(b.length() - 1 - i) - '0';
+            // carry最大不超过3，最小为0
+            res.append(carry % 2);
+            // 计算进位
+            carry /= 2;
+        }
+        if (carry > 0) {
+            res.append("1");
+        }
+        res.reverse();
+        return res.toString();
     }
 
 
